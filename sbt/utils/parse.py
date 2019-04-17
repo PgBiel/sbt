@@ -50,6 +50,8 @@ class DateTime():
         argument = argument.lower()
         self.now = datetime.datetime.utcnow()
 
+        # refactor
+
         if (argument.isdigit()):
             # default to minutes
             minutes = int(argument)
