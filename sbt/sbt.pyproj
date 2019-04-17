@@ -68,6 +68,9 @@
     <Compile Include="utils\parse.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\parse_.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="utils\regex.py">
       <SubType>Code</SubType>
     </Compile>
