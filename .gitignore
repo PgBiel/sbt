@@ -342,3 +342,4 @@ healthchecksdb
 
 # user specified
 *.json
+*.pyproj
