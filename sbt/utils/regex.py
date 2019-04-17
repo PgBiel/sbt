@@ -28,11 +28,11 @@ import re
 
 class Regex:
     DIGIT = re.compile(r"""
-                           \d
+                           (?P<digit>\d)
                         """, re.VERBOSE)
     
     DIGITS = re.compile(r"""
-                           \d+
+                           (?P<digits>\d+)
                         """, re.VERBOSE)
 
     # 12
