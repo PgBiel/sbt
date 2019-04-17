@@ -81,10 +81,15 @@
     <InterpreterReference Include="Global|PythonCore|3.8" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="data\general\" />
+    <Folder Include="data\sbt\" />
     <Folder Include="modules\" />
     <Folder Include="utils\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data\general\reminder.json" />
+    <Content Include="data\sbt\settings.json" />
     <Content Include="utils\bytecode_instructions.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

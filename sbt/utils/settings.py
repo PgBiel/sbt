@@ -62,14 +62,6 @@ class Settings():
         return self.settings["djs"]
 
     @property
-    def prefixes(self) -> list:
-        return self.settings["prefixes"]
-    
-    @prefixes.setter
-    def prefixes(self, prefixes: list):
-        self.settings["prefixes"] = prefixes
-
-    @property
     def moderator_role(self) -> str:
         return self.settings["moderator_role"]
 
@@ -84,6 +76,14 @@ class Settings():
     @property
     def owner(self) -> int:
         return self.settings["owner"]
+
+    @property
+    def prefixes(self) -> list:
+        return self.settings["prefixes"]
+    
+    @prefixes.setter
+    def prefixes(self, prefixes: list):
+        self.settings["prefixes"] = prefixes
 
     @property
     def secret(self) -> str:

@@ -45,7 +45,7 @@ def save(file_path: str, data: dict) -> int:
 
 def __save(file_path: str, data: dict):
     with open(file_path, encoding="utf-8", mode="w") as file_stream:
-        json.dump(data, file_stream, indent=4, separators=(",", ": "))
+        json.dump(data, file_stream, indent=2, separators=(",", ": "))
 
 def load(file_path: str) -> dict:
     return __load(file_path)
