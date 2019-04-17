@@ -34,13 +34,6 @@ from utils import (
 )
 
 
-class Date():
-    pass
-
-class Time():
-    pass
-
-
 class DateTime():
     """
     parses humanized datetime and returns a datetime.datetime object
@@ -49,8 +42,6 @@ class DateTime():
     def __init__(self, argument: str):
         argument = argument.lower()
         self.now = datetime.datetime.utcnow()
-
-        # refactor
 
         if (argument.isdigit()):
             # default to minutes
