@@ -1,0 +1,718 @@
+"""
+/modules/information.py
+
+    Copyright (c) 2019 ShineyDev
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+"""
+
+__authors__           = [("shineydev", "contact@shiney.dev")]
+__maintainers__       = [("shineydev", "contact@shiney.dev")]
+
+__version_info__      = (2, 0, 0, "alpha", 0)
+__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+
+
+import copy
+import datetime
+import dis
+import inspect
+import io
+import random
+import re
+import struct
+import unicodedata
+
+import discord
+from discord.ext import commands
+
+from utils import (
+    checks,
+    format,
+)
+
+
+class Information(commands.Cog, name="information"):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.bot._extensions.add_extension(self)
+
+        super().__init__()
+
+    def cog_unload(self):
+        del self.bot._extensions.extensions[self.qualified_name]
+
+    @commands.command(name="color", aliases=["colour"])
+    async def _color(self, ctx: commands.Context, *, code: str = None):
+        """
+        parse and display a color
+
+        defaults to a random color
+
+        examples:
+            `>color`           :: random
+            `>color 0xFF0000`  :: red
+            `>color 255, 0, 0` :: red
+
+        see source for regex patterns
+        """
+
+        if (not code):
+            code = "".join([random.choice("0123456789ABCDEF") for _ in range(6)])
+
+        code = code.upper()
+
+        if (code.startswith("0X")):
+            code = code[2:]
+        elif (code.startswith("#")):
+            code = code[1:]
+
+        pattern = re.compile("^(([A-F0-9]{6}))|(([A-F0-9]{3}))$")
+        match = re.match(pattern, code)
+        if (match):
+            hexadecimal = match.group(0)
+            
+            if (len(hexadecimal) == 3):
+                hexadecimal = "".join(i * 2 for i in hexadecimal)
+
+            r, g, b = struct.unpack("BBB", bytes.fromhex(hexadecimal))
+        else:
+            pattern = re.compile("^\(?([0-9]{1,3}, ?){2},? ?[0-9]{1,3}\)?$")
+            match = re.match(pattern, code)
+            if (match):
+                rgb = match.group(0)
+                rgb = (rgb.replace("(", "")
+                          .replace(")", "")
+                          .replace(" ", ""))
+
+                r, g, b = [int(i) for i in rgb.split(",")]
+
+                if ((r < 0) or (g < 0) or (b < 0)):
+                    await ctx.bot.send_help(ctx)
+                    return
+
+                if ((r > 255) or (g > 255) or (b > 255)):
+                    await ctx.bot.send_help(ctx)
+                    return
+
+                hexadecimal = "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
+            else:
+                await ctx.bot.send_help(ctx)
+                return
+
+        rgb = "({0}, {1}, {2})".format(r, g, b)
+        cmyk = "({0}, {1}, {2}, {3})".format(*self.cmyk(r, g, b))
+
+        e = discord.Embed(title="Color", color=int(hexadecimal, 16))
+        e.add_field(name="Hexadecimal", value="0x{0}".format(hexadecimal))
+        e.add_field(name="Red, Green, Blue", value=rgb)
+        e.add_field(name="Cyan, Magenta, Yellow, Key", value=cmyk)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.command(name="contributors", aliases=["affiliates"])
+    async def _contributors(self, ctx: commands.Context):
+        """
+        display sbt's contributors
+        """
+
+        pass
+        
+    @commands.command(name="dis")
+    async def _dis(self, ctx: commands.Context, *, command: str):
+        """
+        display the disassembled source of a command
+
+        example:
+            `>dis owner` :: show the disassembled source of `owner`
+        """
+
+        command = ctx.bot.get_command(command)
+        if (not command):
+            await ctx.bot.send_help(ctx)
+            return
+
+        if (not await command.can_run(ctx)):
+            await ctx.bot.send_help(ctx)
+            return
+
+        message = dis.Bytecode(command.callback).dis()
+        if (not message):
+            await ctx.bot.send_help(ctx)
+            return
+
+        message = message.replace("```", "``")
+        
+        for (page) in format.pagify(message, shorten_by=8):
+            if (page):
+                await ctx.send("```\n{0}```".format(page))
+
+    @commands.command(name="discriminator", aliases=["discrim"])
+    async def _discriminator(self, ctx: commands.Context, discriminator: str = None):
+        """
+        display all users with a discriminator
+
+        defaults to your own
+
+        examples:
+            `>discriminator`      :: display all users with your discriminator
+            `>discriminator 0001` :: display all users with the `0001` discriminator
+        """
+
+        if (not discriminator):
+            discriminator = ctx.author.discriminator
+
+        if ((not len(discriminator) == 4) or (not discriminator.isdigit())):
+            await ctx.bot.send_help(ctx)
+            return
+
+        members = list()
+        for (guild) in ctx.bot.guilds:
+            for (member) in guild.members:
+                if (member.discriminator == discriminator):
+                    members.append(member)
+
+        if (not members):
+            await ctx.send("no results")
+            return
+
+        message = ""
+        for (member) in members:
+            message += "{0}#{1}\n".format(member.name, member.discriminator)
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(color=color)
+        e.add_field(name="Members", value=message)
+        e.set_footer(
+            text="{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.command(name="flags")
+    async def _flags(self, ctx: commands.Context, member: discord.Member = None):
+        """
+        display a user's flags
+
+        defaults to your own
+
+        examples:
+            `>flags`
+            `>flags 310418322384748544`
+        """
+
+        author = ctx.author
+
+        if (member):
+            ctx = copy.copy(ctx)
+            ctx.author = member
+
+        flags = list()
+
+        if (checks.is_owner_check(ctx)):
+            flags.append("owner")
+
+        if (checks.is_supervisor_check(ctx)):
+            flags.append("supervisor")
+
+        if (checks.is_support_check(ctx)):
+            flags.append("support team")
+
+        if (checks.is_alpha_check(ctx)):
+            flags.append("alpha tester")
+
+        if (checks.is_beta_check(ctx)):
+            flags.append("beta tester")
+
+        if (checks.is_dj_check(ctx)):
+            flags.append("dj")
+
+        if (ctx.author.id in ctx.bot._settings.whitelist):
+            flags.append("whitelisted")
+
+        if (ctx.author.id in ctx.bot._settings.blacklist):
+            flags.append("blacklisted")
+
+        if (not flags):
+            await ctx.send("no results")
+            return
+
+        message = ", ".join(flags)
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(color=color)
+        e.add_field(name="Flags for {0}".format(ctx.author.name), value=message)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                author.name,
+                format.humanize_time()
+            ),
+            icon_url=author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.command(name="invite")
+    async def _invite(self, ctx: commands.Context):
+        """
+        display sbt's invite links
+        """
+
+        sbt_guild = "not yet"
+        sbt_oauth = ctx.bot._settings.oauth
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(color=color)
+        e.add_field(name="SBT Support Guild", value=sbt_guild)
+        e.add_field(name="SBT OAuth Invite", value=sbt_oauth)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.command(name="latency", aliases=["ping"])
+    async def _latency(self, ctx: commands.Context):
+        """
+        display sbt's latency
+
+        examples:
+            `>latency` :: 111382 microseconds
+            `>ping`    :: pong! 111382μs
+        """
+
+        if (ctx.invoked_with == "ping"):
+            latency = format.humanize_seconds(ctx.bot.latency, long=False)
+            await ctx.send("pong! {0}".format(latency))
+        else:
+            latency = format.humanize_seconds(ctx.bot.latency)
+            await ctx.send(latency)
+
+    @commands.command(name="messagecount", aliases=["messages"])
+    async def _messagecount(self, ctx: commands.Context, member: discord.Member = None):
+        """
+        display how many messages a user has sent in the past 24 hours
+
+        defaults to your own
+        """
+
+        pass
+
+    @commands.command(name="now", aliases=["time"])
+    async def _now(self, ctx: commands.Context):
+        """
+        display the current time in utc
+        """
+
+        time = format.humanize_time()
+        await ctx.send(time)
+        
+    @commands.command(name="source", aliases=["src"])
+    async def _source(self, ctx: commands.Context, *, command: str):
+        """
+        display the source of a command
+
+        examples:
+            `>source owner` :: show the source of `owner`
+        """
+
+        command = ctx.bot.get_command(command)
+        if (not command):
+            await ctx.bot.send_help(ctx)
+            return
+
+        if (not await command.can_run(ctx)):
+            await ctx.bot.send_help(ctx)
+            return
+
+        source = inspect.getsource(command.callback)
+        
+        message = format.dedent(source)
+        message = message.replace("```", "``")
+        
+        for (page) in format.pagify(message, shorten_by=10):
+            if (page):
+                await ctx.send("```py\n{0}```".format(page))
+
+    @commands.command(name="statistics", aliases=["stats"])
+    async def _statistics(self, ctx: commands.Context):
+        """
+        display sbt's statictics
+        """
+
+        uptime = (datetime.datetime.utcnow() - ctx.bot._uptime).total_seconds()
+        uptime = format.humanize_seconds(uptime, long=False)
+        latency = format.humanize_seconds(ctx.bot.latency, long=False)
+        version = ctx.bot.__version__
+
+        users = 0
+        for (user) in ctx.bot.get_all_members():
+            if (not user.bot):
+                users += 1
+
+        channels = 0
+        for (channel) in ctx.bot.get_all_channels():
+            if (not isinstance(channel, discord.CategoryChannel)):
+                channels += 1
+
+        guilds = len(ctx.bot.guilds)
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(color=color)
+        e.add_field(name="Uptime", value=uptime)
+        e.add_field(name="Latency", value=latency)
+        e.add_field(name="Version", value=version)
+        e.add_field(name="Users", value=users)
+        e.add_field(name="Channels", value=channels)
+        e.add_field(name="Guilds", value=guilds)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.command(name="unicode", aliases=["char", "character"])
+    async def _unicode(self, ctx: commands.Context, *, characters: str):
+        """
+        show unicode information on a character
+
+        example:
+            `>unicode :zero:`   :: \\U00000030\\U000020e3
+        """
+
+        message = ""
+
+        max_ = max([len(character) for (character) in characters])
+
+        for (character) in characters:
+            digit = "{0:x}".format(ord(character))
+            name = unicodedata.name(character, "unknown name")
+
+            # fix weird bug with the enclosing keycap
+            if (name == "COMBINING ENCLOSING KEYCAP"):
+                i = " "
+            else:
+                i = ""
+
+            message += "\u200b {0:>{width}} {1} \\U{2:>08}  \\N{{{3}}}\n".format(
+                character, i, digit, name,
+                width=max_
+            )
+
+        for (page) in format.pagify(message, shorten_by=8):
+            if (page):
+                await ctx.send("```\n{0}```".format(page))
+        
+    @commands.command(name="until", aliases=["since"])
+    async def _until(self, ctx: commands.Context, month: int, day: int, year: int = None):
+        """
+        display distance between today and a date
+
+        year defaults to current year
+
+        examples:
+            `>until 02 22 2050`
+            `>since 01 01`
+        """
+
+        if (not year):
+            year = datetime.datetime.utcnow().year
+
+        try:
+            date = datetime.datetime(year, month, day)
+        except (ValueError) as e:
+            await ctx.bot.send_help(ctx)
+            return
+
+        days = (date - datetime.datetime.today()).days
+
+        if (days < 0):
+            days = +days
+            check = "since"
+        else:
+            check = "until"
+
+        message = "{0} {1} {2}".format(
+            format.humanize_seconds(days * 86400),
+            check,
+            format.humanize_time(date)
+        )
+
+        await ctx.send(message)
+
+    @commands.command(name="uptime")
+    async def _uptime(self, ctx: commands.Context):
+        """
+        show uptime in a humanized manner
+        """
+
+        uptime = datetime.datetime.utcnow() - ctx.bot._uptime
+        await ctx.send("i've been online for {0}".format(format.humanize_seconds(uptime.total_seconds())))
+
+    @commands.command(name="version")
+    async def _version(self, ctx: commands.Context):
+        """
+        display sbt's version
+        """
+
+        sbt_version = ctx.bot.__version__
+        dpy_version = discord.__version__
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(color=color)
+        e.add_field(name="SBT Version", value=sbt_version)
+        e.add_field(name="discord.py Version", value=dpy_version)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
+    @commands.group(name="information", aliases=["info"])
+    async def _information(self, ctx: commands.Context):
+        """
+        information group
+        """
+
+        if (ctx.invoked_subcommand):
+            return
+
+        await ctx.bot.send_help(ctx)
+
+    @_information.command(name="bot", aliases=["client"])
+    async def _information_bot(self, ctx: commands.Context):
+        """
+        display sbt's information
+        """
+
+        user = ctx.bot.user
+        authors = ctx.bot.__authors__
+        authors = ", ".join([n for (n, u) in authors])
+        maintainers = ctx.bot.__maintainers__
+        maintainers = ", ".join([n for (n, u) in maintainers])
+        version = ctx.bot.__version__
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(title="Bot Information", color=color)
+        e.add_field(name="User", value="{0.name} ({0.id})".format(user), inline=False)
+        e.add_field(name="Authors", value=authors)
+        e.add_field(name="Maintainers", value=maintainers)
+        e.add_field(name="Version", value=version)
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+        
+    @checks.is_guild()
+    @_information.command(name="channel")
+    async def _information_channel(self, ctx: commands.Context, channel: discord.abc.GuildChannel = None):
+        """
+        display channel information
+
+        defaults to the current channel
+        """
+
+        pass
+    
+    @checks.is_guild()
+    @_information.command(name="guild", aliases=["server"])
+    async def _information_guild(self, ctx: commands.Context, guild: discord.Guild = None):
+        """
+        display guild information
+
+        defaults to the current guild
+        """
+
+        pass
+
+    @checks.is_guild()
+    @_information.command(name="member")
+    async def _information_member(self, ctx: commands.Context, member: discord.Member):
+        """
+        display member information
+
+        defaults to you
+        """
+
+        pass
+
+    @_information.command(name="message")
+    async def _information_message(self, ctx: commands.Context, message: int):
+        """
+        display message information
+        """
+
+        try:
+            message = await ctx.channel.fetch_message(message)
+        except (discord.errors.NotFound) as e:
+            await ctx.bot.send_help(ctx)
+            return
+
+        mentions = list()
+        
+        if (message.mention_everyone):
+            mentions.append("@everyone")
+
+        for (member) in message.mentions:
+            mentions.append(member.mention)
+
+        for (role) in message.role_mentions:
+            mentions.append(role.mention)
+
+        for (channel) in message.channel_mentions:
+            mentions.append(channel.mention)
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+
+        e = discord.Embed(title="Message Information", color=color)
+        e.add_field(name="Content", value=message.content, inline=False)
+        e.add_field(name="ID", value="{0.id}".format(message))
+        e.add_field(name="Author", value="{0.name} ({0.id})".format(message.author))
+        e.add_field(name="Timestamp", value=format.humanize_time(message.created_at), inline=False)
+        e.add_field(name="TTS", value=message.tts)
+        e.add_field(name="Type", value=message.type)
+
+        if (mentions):
+            e.add_field(name="Mentions [{0}]".format(len(mentions)), value=", ".join(mentions))
+
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+        
+    @checks.is_guild()
+    @_information.command(name="role")
+    async def _information_role(self, ctx: commands.Context, role: discord.Role):
+        """
+        display role information
+        """
+
+        pass
+
+    @_information.command(name="system")
+    async def _information_system(self, ctx: commands.Context):
+        """
+        display system information
+        """
+
+        pass
+
+    @_information.command(name="user")
+    async def _information_user(self, ctx: commands.Context, user: discord.User):
+        """
+        display user information
+        """
+
+        pass
+
+    @commands.group(name="permissions", aliases=["perms"])
+    async def _permissions(self, ctx: commands.Context):
+        """
+        permissions group
+        """
+
+        if (ctx.invoked_subcommand):
+            return
+
+        await ctx.bot.send_help(ctx)
+
+    @_permissions.command(name="number")
+    async def _permissions_number(self, ctx: commands.Context, number: int):
+        """
+        display a number's permissions
+        """
+
+        pass
+
+    @_permissions.command(name="role")
+    async def _permissions_role(self, ctx: commands.Context, role: discord.Role):
+        """
+        display a role's permissions
+        """
+
+        pass
+
+    @_permissions.command(name="member")
+    async def _permissions_member(self, ctx: commands.Context, member: discord.Member = None):
+        """
+        display a user's permissions
+
+        defaults to you
+        """
+
+        pass
+
+    def cmyk(self, r : int, g : int, b : int) -> tuple:
+        if ((r == 0) and (g == 0) and (b == 0)):
+            return (0, 0, 0, 100)
+
+        c = 1 - r / 255.
+        m = 1 - g / 255.
+        y = 1 - b / 255.
+
+        min_cmy = min(c, m, y)
+
+        c = (c - min_cmy) / (1 - min_cmy)
+        m = (m - min_cmy) / (1 - min_cmy)
+        y = (y - min_cmy) / (1 - min_cmy)
+        k = min_cmy
+
+        c = round(c * 100, 0)
+        m = round(m * 100, 0)
+        y = round(y * 100, 0)
+        k = round(k * 100, 0)
+
+        return (c, m, y, k)
+                
+def setup(bot : commands.Bot):
+    extension = Information(bot)
+    bot.add_cog(extension)
