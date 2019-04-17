@@ -27,6 +27,14 @@ import re
 
 
 class Regex:
+    DIGIT = re.compile(r"""
+                           \d
+                        """, re.VERBOSE)
+    
+    DIGITS = re.compile(r"""
+                           \d+
+                        """, re.VERBOSE)
+
     # 12
     # 11
     # 10
