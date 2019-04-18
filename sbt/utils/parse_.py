@@ -158,8 +158,15 @@ class Time():
 
         self.now = datetime.datetime.utcnow()
         result = None
+        
+        if (match := re.fullmatch(regex.Regex.DIGITS, argument)):
+            # 0+
 
-        if (match := re.fullmatch(regex.Regex.HOUR, argument)):
+            minutes = int(match.group(digits))
+            if (minutes):
+                new = self.now + datetime.timedelta(minutes=minutes)
+                result = datetime.time(new.hour, new.minute, new.second)
+        elif (match := re.fullmatch(regex.Regex.HOUR, argument)):
             # 0
             # 0am
             # 0 am
@@ -258,13 +265,6 @@ class Time():
                 second = 0
 
             result = datetime.time(hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.DIGITS, argument)):
-            # 0+
-
-            minutes = int(match.group(digits))
-            if (minutes):
-                new = self.now + datetime.timedelta(minutes=minutes)
-                result = datetime.time(new.hour, new.minute, new.second)
 
         return result
 
