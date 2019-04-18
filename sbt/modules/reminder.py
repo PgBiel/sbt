@@ -57,6 +57,9 @@ class Reminder(commands.Cog):
         self.save()
         self.send_reminders.cancel()
 
+    def add_reminder(self, ctx: commands.Context, reminder: str):
+        pass
+
     def get_reminders(self, member: discord.Member, max: int = None):
         i = 0
         for (reminder) in self.reminders:
@@ -69,6 +72,9 @@ class Reminder(commands.Cog):
 
     def load(self):
         self.reminders = dataio.load("data/general/reminders.json")
+
+    def remove_reminder(self, ctx: commands.Context, id: int):
+        pass
 
     def save(self):
         dataio.save("data/general/reminders.json", self.reminders)

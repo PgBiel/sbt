@@ -308,15 +308,13 @@ class General(commands.Cog, name="general"):
             await ctx.send(r"¯\_(ツ)_/¯")
             return
 
-        reminder_.add(ctx, reminder)
-
-        datetime_ = datetime.datetime.fromtimestamp(time.timestamp)
+        reminder_.add_reminder(ctx, reminder)
 
         color = ctx.guild.me.color if ctx.guild else None
         e = format.embed("Reminder Added",
                          "{0}\n\nfor {1}".format(
                              reminder,
-                             format.humanize_time(datetime_)
+                             format.humanize_time(datetime.datetime.fromtimestamp(time.timestamp))
                          ),
                          color=color,
                          footer="{0} | {1}".format(
