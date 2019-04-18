@@ -349,12 +349,12 @@ class Help(commands.Cog, name="help"):
 
                 return False
 
-            futures = [
-                ctx.bot.wait_for("reaction_add", check = check, timeout = 120),
-                ctx.bot.wait_for("reaction_remove", check = check, timeout = 120),
-            ]
+            tasks = {
+                asyncio.create_task(ctx.bot.wait_for("reaction_add", check = check, timeout = 120)),
+                asyncio.create_task(ctx.bot.wait_for("reaction_remove", check = check, timeout = 120)),
+            }
 
-            done, pending = await asyncio.wait(futures, return_when = asyncio.FIRST_COMPLETED)
+            done, pending = await asyncio.wait(tasks, return_when = asyncio.FIRST_COMPLETED)
 
             try:
                 reaction, _ = done.pop().result()
@@ -366,8 +366,8 @@ class Help(commands.Cog, name="help"):
 
                 return
 
-            for (future) in pending:
-                future.cancel()
+            for (task) in pending:
+                task.cancel()
 
             if (str(reaction.emoji) == reactions[0]):
                 if (current == 0):
