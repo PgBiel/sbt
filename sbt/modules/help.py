@@ -22,6 +22,8 @@ __maintainers__       = [("shineydev", "contact@shiney.dev")]
 __version_info__      = (2, 0, 0, "alpha", 0)
 __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
+__level__             = 2
+
 
 import asyncio
 
@@ -45,6 +47,12 @@ class Help(commands.Cog, name="help"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
+
+        self.__authors__ = __authors__
+        self.__maintainers__ = __maintainers__
+        self.__version_info__ = __version_info__
+        self.__version__ = __version__
+        self.__level__ = __level__
 
         command = bot.get_command("help")
         self.old_help = commands.Command(command.callback, name="help", hidden=True)
