@@ -683,6 +683,16 @@ class Owner(commands.Cog, name="owner"):
 
         await ctx.send("done.")
 
+    @checks.is_owner()
+    @_settings.command(name="load")
+    async def _load(self, ctx: commands.Context):
+        """
+        load settings
+        """
+
+        ctx.bot._settings.load()
+        await ctx.send("done.")
+
     @checks.is_guild()
     @commands.cooldown(1, 120, commands.cooldowns.BucketType.guild)
     @_settings.command(name="muterole", aliases=["mute"])

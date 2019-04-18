@@ -167,6 +167,9 @@ class Settings():
             return self.settings["restart_message"]
 
         return (None, None)
+
+    def load(self):
+        self.settings = dataio.load("data/sbt/settings.json")
     
     def save(self):
         dataio.save("data/sbt/settings.json", self.settings)
