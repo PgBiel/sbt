@@ -34,7 +34,7 @@ from discord.ext import commands
 import pyfiglet
 
 from utils import (
-    enumeration,
+    enumerators,
     checks,
     format,
     parse,
@@ -396,9 +396,9 @@ class General(commands.Cog, name="general"):
         """
 
         player_choice = choice.choice
-        player_symbol = getattr(enumeration.RPS, player_choice)
+        player_symbol = getattr(enumerators.RPS, player_choice)
         sbt_choice = random.choice(["r", "p", "s"])
-        sbt_symbol = getattr(enumeration.RPS, sbt_choice)
+        sbt_symbol = getattr(enumerators.RPS, sbt_choice)
 
         conditions = {
             ("r", "r"): None,

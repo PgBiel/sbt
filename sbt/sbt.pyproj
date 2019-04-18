@@ -53,7 +53,7 @@
     <Compile Include="utils\dataio.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="utils\enumeration.py">
+    <Compile Include="utils\enumerators.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="utils\extensions.py">
