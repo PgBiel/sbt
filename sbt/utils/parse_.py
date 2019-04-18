@@ -42,10 +42,7 @@ class Date():
         """
 
         if (argument):
-            self.argument = argument
-            self.now = datetime.datetime.utcnow()
-
-            self.result = self.parse()
+            self.result = self.parse(argument)
             if (not self.result):
                 raise commands.BadArgument(argument)
             
@@ -55,12 +52,6 @@ class Date():
         parses humanized datetime and returns a timezone naive
         datetime.date object or None
         """
-
-        if (not argument):
-            if (not hasattr(self, "argument")):
-                raise commands.BadArgument("argument is undefined in all scopes")
-            
-            argument = self.argument
 
         self.now = datetime.datetime.utcnow()
         result = None
@@ -154,10 +145,7 @@ class Time():
         """
 
         if (argument):
-            self.argument = argument
-            self.now = datetime.datetime.utcnow()
-
-            self.result = self.parse()
+            self.result = self.parse(argument)
             if (not self.result):
                 raise commands.BadArgument(argument)
             
@@ -167,12 +155,6 @@ class Time():
         parses humanized datetime and returns a timezone naive
         datetime.time object or None
         """
-
-        if (not argument):
-            if (not hasattr(self, "argument")):
-                raise commands.BadArgument("argument is undefined in all scopes")
-            
-            argument = self.argument
 
         self.now = datetime.datetime.utcnow()
         result = None
@@ -321,10 +303,7 @@ class DateTime():
         """
 
         if (argument):
-            self.argument = argument
-            self.now = datetime.datetime.utcnow()
-
-            self.result = self.parse()
+            self.result = self.parse(argument)
             if (not self.result):
                 raise commands.BadArgument(argument)
             
@@ -334,12 +313,6 @@ class DateTime():
         parses humanized datetime and returns a timezone naive
         datetime.datetime object or None
         """
-
-        if (not argument):
-            if (not hasattr(self, "argument")):
-                raise commands.BadArgument("argument is undefined in all scopes")
-            
-            argument = self.argument
 
         self.now = datetime.datetime.utcnow()
         result = None
