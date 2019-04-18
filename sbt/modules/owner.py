@@ -43,7 +43,7 @@ from utils import (
     channels,
     checks,
     dataio,
-    enumeration,
+    enumerators,
     extensions,
     format,
     parse,
