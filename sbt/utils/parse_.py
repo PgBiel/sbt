@@ -129,7 +129,7 @@ class FutureDate(Date):
         result = super().parse(argument)
 
         if (not result):
-            raise commands.BadArgument("no match")
+            raise commands.BadArgument(argument)
 
         now = datetime.date(self.now.year, self.now.month, self.now.day)
         if (result <= now):
@@ -287,7 +287,7 @@ class FutureTime(Time):
         result = super().parse(argument)
 
         if (not result):
-            raise commands.BadArgument("no match")
+            raise commands.BadArgument(argument)
 
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
         if (result <= now):
@@ -446,7 +446,7 @@ class FutureDateTime(DateTime):
         result = super().parse(argument)
 
         if (not result):
-            raise commands.BadArgument("no match")
+            raise commands.BadArgument(argument)
 
         if (result <= self.now):
             raise commands.BadArgument("datetime is not in the future")
