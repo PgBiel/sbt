@@ -96,7 +96,7 @@ class Date():
             # tomorrow
             new = self.now + datetime.timedelta(days=1)
             result = datetime.date(new.year, new.month, new.day)
-        elif (match := re.fullmatch(regex.Regex.DAYS)):
+        elif (match := re.fullmatch(regex.Regex.DAYS, argument)):
             # 1d
             # in 1d
             # 1 day
