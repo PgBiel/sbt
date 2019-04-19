@@ -246,36 +246,6 @@ class General(commands.Cog, name="general"):
 
         await ctx.send("```\n{0}```".format(text))
 
-    @commands.command(name="regex", aliases=["re"])
-    async def _regex(self, ctx: commands.Context, pattern: str, *, text: str):
-        """
-        do regex things
-
-        example:
-            `>regex \d test123` :: (1, 2, 3)
-        """
-
-        try:
-            pattern = re.compile(pattern)
-        except (re.error) as e:
-            await ctx.send("couldn't compile regex pattern")
-            return
-
-        
-        matches = re.findall(pattern, text)
-        if (not matches):
-            await ctx.send("no match")
-            return
-
-        message = ""
-
-        for (i, match) in enumerate(matches):
-            message += "{0:>5} | {1}\n".format(i, match)
-
-        for (page) in format.pagify(message, shorten_by=8):
-            if (page):
-                await ctx.send("```\n{0}```".format(page))
-
     @checks.is_alpha()
     @commands.command(name="reminder", aliases=["remind", "remindme"])
     async def _reminder(self, ctx: commands.Context, time: parse.DateTime, *, reminder: str):
@@ -533,6 +503,64 @@ class General(commands.Cog, name="general"):
         """
 
         pass
+
+    @commands.group(name="regex", aliases=["re"])
+    async def _regex(self, ctx: commands.Context):
+        """
+        do regex things
+        """
+
+        if (ctx.invoked_subcommand):
+            return
+
+        await ctx.bot.send_help(ctx)
+
+    @_regex.command(name="findall")
+    async def _regex_findall(self, ctx: commands.Context, pattern: str, *, string: str):
+        """
+        re.findall
+
+        example:
+            `>regex \d test123`
+        """
+
+        try:
+            pattern = re.compile(pattern)
+        except (re.error) as e:
+            await ctx.send("couldn't compile regex pattern")
+            return
+
+        matches = re.findall(pattern, string)
+        if (not matches):
+            await ctx.send("no matches")
+            return
+
+        # cont
+        
+    @_regex.command(name="fullmatch")
+    async def _regex_fullmatch(self, ctx: commands.Context, pattern: str, *, string: str):
+        """
+        re.fullmatch
+
+        example:
+            `regex fullmatch r"https?:\/\/(?:.+)\.dev\/?" https://shiney.dev/`
+        """
+
+        try:
+            pattern = re.compile(pattern)
+        except (re.error) as e:
+            await ctx.send("couldn't compile regex pattern")
+            return
+
+        match = re.fullmatch(pattern, string)
+        if (not match):
+            await ctx.send("no match")
+            return
+
+        for (group) in match.groups():
+            pass
+
+        # cont
                 
 
 def setup(bot: commands.Bot):
