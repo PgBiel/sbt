@@ -354,7 +354,7 @@ class Help(commands.Cog, name="help"):
                 asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
             }
 
-            done, pending = await asyncio.wait(tasks, return_when = asyncio.FIRST_COMPLETED)
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
 
             try:
                 reaction, _ = done.pop().result()
