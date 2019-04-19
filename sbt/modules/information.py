@@ -33,6 +33,7 @@ import io
 import random
 import re
 import struct
+import typing
 import unicodedata
 
 import discord
@@ -61,7 +62,7 @@ class Information(commands.Cog, name="information"):
         del self.bot._extensions.extensions[self.qualified_name]
 
     @commands.command(name="color", aliases=["colour"])
-    async def _color(self, ctx: commands.Context, *, code: str = None):
+    async def _color(self, ctx: commands.Context, *, code: typing.Optional[str]):
         """
         parse and display a color
 
@@ -173,7 +174,7 @@ class Information(commands.Cog, name="information"):
                 await ctx.send("```\n{0}```".format(page))
 
     @commands.command(name="discriminator", aliases=["discrim"])
-    async def _discriminator(self, ctx: commands.Context, discriminator: str = None):
+    async def _discriminator(self, ctx: commands.Context, discriminator: typing.Optional[str]):
         """
         display all users with a discriminator
 
@@ -220,7 +221,7 @@ class Information(commands.Cog, name="information"):
         await ctx.send(embed=e)
 
     @commands.command(name="flags")
-    async def _flags(self, ctx: commands.Context, member: discord.Member = None):
+    async def _flags(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         """
         display a user's flags
 
@@ -325,7 +326,7 @@ class Information(commands.Cog, name="information"):
             await ctx.send(latency)
 
     @commands.command(name="messagecount", aliases=["messages"])
-    async def _messagecount(self, ctx: commands.Context, member: discord.Member = None):
+    async def _messagecount(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         """
         display how many messages a user has sent in the past 24 hours
 
@@ -342,6 +343,16 @@ class Information(commands.Cog, name="information"):
 
         time = format.humanize_time()
         await ctx.send(time)
+
+    @commands.command(name="permissions", aliases=["perms"])
+    async def _permissions(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.Role, discord.Member, int]]):
+        """
+        display permissions for an object
+
+        defaults to you
+        """
+
+        pass
         
     @commands.command(name="source", aliases=["src"])
     async def _source(self, ctx: commands.Context, *, command: str):
@@ -445,7 +456,7 @@ class Information(commands.Cog, name="information"):
                 await ctx.send("```\n{0}```".format(page))
         
     @commands.command(name="until", aliases=["since"])
-    async def _until(self, ctx: commands.Context, month: int, day: int, year: int = None):
+    async def _until(self, ctx: commands.Context, month: int, day: int, year: typing.Optional[int]):
         """
         display distance between today and a date
 
@@ -557,7 +568,7 @@ class Information(commands.Cog, name="information"):
         
     @checks.is_guild()
     @_information.command(name="channel")
-    async def _information_channel(self, ctx: commands.Context, channel: discord.abc.GuildChannel = None):
+    async def _information_channel(self, ctx: commands.Context, channel: typing.Optional[discord.abc.GuildChannel]):
         """
         display channel information
 
@@ -568,7 +579,7 @@ class Information(commands.Cog, name="information"):
     
     @checks.is_guild()
     @_information.command(name="guild", aliases=["server"])
-    async def _information_guild(self, ctx: commands.Context, guild: discord.Guild = None):
+    async def _information_guild(self, ctx: commands.Context, guild: typing.Optional[discord.Guild]):
         """
         display guild information
 
@@ -579,7 +590,7 @@ class Information(commands.Cog, name="information"):
 
     @checks.is_guild()
     @_information.command(name="member")
-    async def _information_member(self, ctx: commands.Context, member: discord.Member):
+    async def _information_member(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         """
         display member information
 
@@ -658,43 +669,6 @@ class Information(commands.Cog, name="information"):
     async def _information_user(self, ctx: commands.Context, user: discord.User):
         """
         display user information
-        """
-
-        pass
-
-    @commands.group(name="permissions", aliases=["perms"])
-    async def _permissions(self, ctx: commands.Context):
-        """
-        permissions group
-        """
-
-        if (ctx.invoked_subcommand):
-            return
-
-        await ctx.bot.send_help(ctx)
-
-    @_permissions.command(name="number")
-    async def _permissions_number(self, ctx: commands.Context, number: int):
-        """
-        display a number's permissions
-        """
-
-        pass
-
-    @_permissions.command(name="role")
-    async def _permissions_role(self, ctx: commands.Context, role: discord.Role):
-        """
-        display a role's permissions
-        """
-
-        pass
-
-    @_permissions.command(name="member")
-    async def _permissions_member(self, ctx: commands.Context, member: discord.Member = None):
-        """
-        display a user's permissions
-
-        defaults to you
         """
 
         pass
