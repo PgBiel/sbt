@@ -96,20 +96,28 @@ class Owner(commands.Cog, name="owner"):
         try:
             result = eval(shit, globals_, locals())
         except (Exception) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            self._exception = e
-            
+            message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             await ctx.message.add_reaction("\U0000274e")
+            self._exception = e
+
+            await asyncio.sleep(3)
+            
+            await message.delete()
+            await ctx.message.delete()
             return
 
         try:
             if (asyncio.iscoroutine(result)):
                 result = await result
         except (Exception) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            self._exception = e
-            
+            message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             await ctx.message.add_reaction("\U0000274e")
+            self._exception = e
+
+            await asyncio.sleep(3)
+            
+            await message.delete()
+            await ctx.message.delete()
             return
         else:
             await ctx.message.add_reaction("\U00002705")
@@ -123,9 +131,34 @@ class Owner(commands.Cog, name="owner"):
         result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
         result = result.replace(ctx.bot._settings.token, "[REDACTED]")
 
+        pages = list()
+
         for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
             if (page):
-                await ctx.send("```\n{0}```".format(page))
+                page = await ctx.send("```\n{0}```".format(page))
+                pages.append(page)
+
+        await ctx.message.add_reaction("\U0001f5d1")
+
+        def check(reaction: discord.Reaction, member: discord.Member):
+            if (member == ctx.author):
+                if (reaction.message.id == ctx.message.id):
+                    if (str(reaction.emoji) == "\U0001f5d1"):
+                        return True
+
+            return False
+
+        try:
+            task = asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check))
+            reaction, _ = await asyncio.wait_for(task, 10)
+        except (asyncio.TimeoutError) as e:
+            await ctx.message.remove_reaction("\U0001f5d1", ctx.guild.me)
+            return
+
+        await ctx.message.delete()
+        
+        for (page) in pages:
+            await page.delete()
 
     @checks.is_owner()
     @commands.command(name="do")
