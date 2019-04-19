@@ -26,6 +26,7 @@ __level__             = 1
 
 
 import asyncio
+import collections
 import copy
 import datetime
 import dis
@@ -35,6 +36,7 @@ import pprint
 import re
 import sys
 import traceback
+import typing
 
 import discord
 from discord.ext import commands
@@ -63,6 +65,8 @@ class Owner(commands.Cog, name="owner"):
         self.__version__ = __version__
         self.__level__ = __level__
 
+        self._results = collections.deque(maxlen=9)
+
         super().__init__()
 
     def cog_unload(self):
@@ -70,7 +74,7 @@ class Owner(commands.Cog, name="owner"):
         
     @checks.is_owner()
     @commands.command(name="debug", aliases=["eval"])
-    async def _debug(self, ctx: commands.Context, *, shit: str):
+    async def _debug(self, ctx: commands.Context, index: typing.Optional[int], *, shit: str):
         """
         debug shit
 
@@ -83,8 +87,8 @@ class Owner(commands.Cog, name="owner"):
         globals_["self"] = self
         globals_["ctx"] = ctx
 
-        if (hasattr(self, "_result")):
-            globals_["_"] = self._result
+        for (i, result) in enumerate(self._results):
+            globals_[f"_{i}"] = result
     
         if (hasattr(self, "_exception")):
             globals_["x"] = self._exception
@@ -110,7 +114,10 @@ class Owner(commands.Cog, name="owner"):
         else:
             await ctx.message.add_reaction("\U00002705")
 
-        self._result = result
+        if (index in range(len(self._results))):
+            self._results[index] = result
+        else:
+            self._results.append(result)
 
         result = str(result)
         result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
@@ -122,7 +129,7 @@ class Owner(commands.Cog, name="owner"):
 
     @checks.is_owner()
     @commands.command(name="do")
-    async def _do(self, ctx: commands.Context, times: int, *, command: str):
+    async def _do(self, ctx: commands.Context, times: int, member: typing.Optional[discord.Member], *, command: str):
         """
         do command, times, or something
 
@@ -132,6 +139,9 @@ class Owner(commands.Cog, name="owner"):
 
         message = copy.copy(ctx.message)
         message.content = ctx.prefix + command
+
+        if (member):
+            message.author = member
 
         for (_) in range(times):
             await ctx.bot.process_commands(message)
@@ -272,15 +282,17 @@ class Owner(commands.Cog, name="owner"):
 
     @checks.is_owner()
     @commands.command(name="shutdown")
-    async def _shutdown(self, ctx: commands.Context):
+    async def _shutdown(self, ctx: commands.Context, code : typing.Optional[int]):
         """
         send sbt back to the launcher
         """
 
-        await ctx.send("shutting down...")
+        if (not code):
+            code = 50
 
+        await ctx.send("shutting down...")
         await ctx.bot.logout()
-        sys.exit(50)
+        sys.exit(code)
 
     @checks.is_owner()
     @commands.command(name="sudo")
