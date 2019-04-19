@@ -26,6 +26,7 @@ __level__             = 1
 
 
 import asyncio
+import typing
 
 import discord
 from discord.ext import commands
@@ -36,7 +37,7 @@ from utils import (
 
 
 class Moderation(commands.Cog, name="moderation"):
-    def __init__(self, bot : commands.Bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
 
@@ -54,28 +55,44 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)
     @commands.command(name="ban")
-    async def _ban(self, ctx : commands.Context, member : discord.Member, *, reason : str = None):
+    async def _ban(self, ctx: commands.Context, member: typing.Union[discord.Member, discord.User], days: typing.Optional[int], *, reason: typing.Optional[str]):
         """
         ban a member
 
+        while deleting `days` worth of messages (default: 7)
+
         examples:
             `>ban 310418322384748544`
-            `>ban 310418322384748544 spam`
+            `>ban 310418322384748544 bad`
         """
 
-        if (ctx.author != ctx.guild.owner):
-            if (member.top_role >= ctx.author.top_role):
-                raise commands.errors.MissingPermissions([])
+        if (days):
+            if (days < 0):
+                days = 0
+            elif (days > 7):
+                days = 7
+        else:
+            days = 7
 
-        await member.ban(reason=reason)
+        if (isinstance(member, discord.Member)):
+            if (ctx.author != ctx.guild.owner):
+                if (member.top_role >= ctx.author.top_role):
+                    raise commands.errors.MissingPermissions([])
+
+            await member.ban(reason=reason, delete_message_days=days)
+        else:
+            await ctx.guild.ban(user, reason=reason, delete_message_days=days)
+
         await ctx.send("done.")
     
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)
     @commands.command(name="hackban", aliases=["idban"])
-    async def _hackban(self, ctx : commands.Context, user : discord.User, *, reason : str = None):
+    async def _hackban(self, ctx: commands.Context, user: discord.User, days: typing.Optional[int], *, reason: typing.Optional[str]):
         """
         ban a user
+
+        while deleting `days` worth of messages (default: 0)
 
         allows you to ban a user who is no longer a member
 
@@ -84,13 +101,21 @@ class Moderation(commands.Cog, name="moderation"):
             `>hackban 310418322384748544 spam`
         """
 
-        await ctx.guild.ban(user, reason=reason)
+        if (days):
+            if (days < 0):
+                days = 0
+            elif (days > 7):
+                days = 7
+        else:
+            days = 0
+
+        await ctx.guild.ban(user, reason=reason, delete_message_days=days)
         await ctx.send("done.")
     
     @checks.is_guild()
     @checks.moderator_or_permissions(kick_members=True)
     @commands.command(name="kick")
-    async def _kick(self, ctx : commands.Context, member : discord.Member, *, reason : str = None):
+    async def _kick(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]):
         """
         kick a member
 
@@ -109,13 +134,14 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_messages=True)
     @commands.command(name="mute")
-    async def _mute(self, ctx : commands.Context, member : discord.Member, seconds : int, *, reason : str = None):
+    async def _mute(self, ctx: commands.Context, member: discord.Member, seconds: typing.Optional[int], *, reason: typing.Optional[str]):
         """
         mute a member
 
         examples:
             `>mute 310418322384748544`
             `>mute 310418322384748544 spam`
+            `>mute 310418322384748544 5 spam`
         """
         
         if (ctx.author != ctx.guild.owner):
@@ -127,7 +153,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_nicknames=True)
     @commands.command(name="names", aliases=["nicknames"])
-    async def _names(self, ctx : commands.Context, member : discord.Member):
+    async def _names(self, ctx: commands.Context, member: typing.Optional[discord.Member, discord.User]):
         """
         show a member's previous names and nicknames
 
@@ -140,7 +166,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_messages=True)
     @commands.command(name="prune", aliases=["clear", "delete", "purge"])
-    async def _prune(self, ctx : commands.Context, limit : int):
+    async def _prune(self, ctx: commands.Context, limit: int):
         """
         prune a number of messages
 
@@ -161,7 +187,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_nicknames=True)
     @commands.command(name="rename")
-    async def _rename(self, ctx : commands.Context, member : discord.Member, *, name : str = None):
+    async def _rename(self, ctx: commands.Context, member: discord.Member, *, name: typing.Optional[str]):
         """
         change a member's nickname
 
@@ -183,7 +209,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)
     @commands.command(name="softban")
-    async def _softban(self, ctx : commands.Context, member : discord.Member, *, reason : str = None):
+    async def _softban(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]):
         """
         ban and unban a member
 
@@ -204,7 +230,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)
     @commands.command(name="unban")
-    async def _unban(self, ctx : commands.Context, user : discord.User, *, reason : str = None):
+    async def _unban(self, ctx: commands.Context, user: discord.User, *, reason: typing.Optional[str]):
         """
         unban a user
 
@@ -224,7 +250,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_messages=True)
     @commands.command(name="unmute")
-    async def _unmute(self, ctx : commands.Context, member : discord.Member, *, reason : str = None):
+    async def _unmute(self, ctx: commands.Context, member: discord.Member, *, reason: typing.Optional[str]):
         """
         unmute a member
 
