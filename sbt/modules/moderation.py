@@ -153,7 +153,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_nicknames=True)
     @commands.command(name="names", aliases=["nicknames"])
-    async def _names(self, ctx: commands.Context, member: typing.Optional[discord.Member, discord.User]):
+    async def _names(self, ctx: commands.Context, member: typing.Union[discord.Member, discord.User]):
         """
         show a member's previous names and nicknames
 

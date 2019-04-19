@@ -344,14 +344,14 @@ class Help(commands.Cog, name="help"):
             def check(reaction: discord.Reaction, member: discord.Member):
                 if (member == ctx.author):
                     if (reaction.message.id == help.id):
-                        if (str(reaction.emoji in reactions)):
+                        if (str(reaction.emoji) in reactions):
                             return True
 
                 return False
 
             tasks = {
-                asyncio.create_task(ctx.bot.wait_for("reaction_add", check = check, timeout = 120)),
-                asyncio.create_task(ctx.bot.wait_for("reaction_remove", check = check, timeout = 120)),
+                asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
+                asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
             }
 
             done, pending = await asyncio.wait(tasks, return_when = asyncio.FIRST_COMPLETED)
