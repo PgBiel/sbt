@@ -25,7 +25,9 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 __level__             = 3
 
 
+import asyncio
 import datetime
+import json
 import random
 import re
 
@@ -153,6 +155,96 @@ class General(commands.Cog, name="general"):
         choice = random.choice(choices)
         await ctx.send(choice)
 
+    @checks.is_alpha()
+    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.command(name="embed")
+    async def _embed(self, ctx: commands.Context):
+        """
+        create and edit an embed, then get either the json or the
+        code given back to you :)
+        """
+
+        previous = list()
+        current = format.embed()
+        next = list()
+
+        message = await ctx.send(embed=current)
+
+        reactions = [
+            "\U0001f4dd",
+            "\U0001f4dc",
+            "\U00002b05",
+            "\U000027a1",
+            "\U00002705",
+            "\U0001f5d1",
+        ]
+
+        for (reaction) in reactions:
+            await message.add_reaction(reaction)
+
+        while (True):
+            def check(reaction: discord.Reaction, member: discord.Member):
+                if (member == ctx.author):
+                    if (reaction.message.id == message.id):
+                        if (str(reaction.emoji) in reactions):
+                            return True
+
+                return False
+
+            tasks = {
+                asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
+                asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
+            }
+
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+
+            try:
+                reaction, _ = done.pop().result()
+            except (asyncio.TimeoutError) as e:
+                await message.clear_reactions()
+                return
+
+            for (task) in pending:
+                task.cancel()
+
+            if (str(reaction.emoji) == reactions[0]):
+                pass
+            elif (str(reaction.emoji) == reactions[1]):
+                def check(message: discord.Message):
+                    pass
+
+                message_ = await ctx.send("enter a dictionary of attributes")
+
+                try:
+                    json_ = await ctx.bot.wait_for("message", check=check, timeout=60)
+                    json_ = json.loads(json_, encoding="utf-8")
+                except (asyncio.TimeoutError, json.JSONDecodeError) as e:
+                    message_.delete()
+                else:
+                    pass
+            elif (str(reaction.emoji) == reactions[2]):
+                if (previous):
+                    pass
+            elif (str(reaction.emoji) == reactions[3]):
+                if (next):
+                    pass
+            elif (str(reaction.emoji) == reactions[4]):
+                await message.clear_reactions()
+
+                json_ = current.to_dict()
+                if (json_):
+                    json_ = json.dumps(json_, encoding="utf-8", indent=2)
+                    
+                    for (page) in format.pagify(json_, shorten_by=8):
+                        await ctx.send("```\n{0}```".format(page))
+
+                    return
+            elif (str(reaction.emoji) == reactions[5]):
+                await message.delete()
+                return
+
+            await message.remove_reaction(str(reaction.emoji), ctx.author)
+            
     @commands.command(name="figlet", aliases=["figletformat", "ff", "font"])
     async def _figlet(self, ctx: commands.Context, font: str, *, text: str):
         """
