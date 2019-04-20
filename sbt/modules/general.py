@@ -156,7 +156,6 @@ class General(commands.Cog, name="general"):
         choice = random.choice(choices)
         await ctx.send(choice)
 
-    @checks.is_alpha()
     @commands.cooldown(1, 300, commands.BucketType.user)
     @commands.command(name="embed")
     async def _embed(self, ctx: commands.Context):
