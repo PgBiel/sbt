@@ -26,6 +26,7 @@ __level__             = 3
 
 
 import asyncio
+import collections
 import datetime
 import json
 import random
@@ -164,11 +165,25 @@ class General(commands.Cog, name="general"):
         code given back to you :)
         """
 
-        previous = list()
+        previous = collections.deque(maxlen=3)
         current = format.embed()
-        next = list()
+        next = collections.deque(maxlen=3)
 
         message = await ctx.send(embed=current)
+
+        keys = [
+            "title",
+            "description",
+            "color",
+            "thumbnail",
+            "author",
+            "author_url",
+            "author_icon_url",
+            "field",
+            "image",
+            "footer",
+            "footer_icon_url",
+        ]
 
         reactions = [
             "\U0001f4dd",
@@ -176,6 +191,7 @@ class General(commands.Cog, name="general"):
             "\U00002b05",
             "\U000027a1",
             "\U00002705",
+            "\U0000267b",
             "\U0001f5d1",
         ]
 
@@ -191,6 +207,18 @@ class General(commands.Cog, name="general"):
 
                 return False
 
+            print()
+            if (previous):
+                print("previous:")
+                for (embed) in previous:
+                    print(embed.to_dict())
+            print("current:")
+            print(current.to_dict())
+            if (next):
+                print("next:")
+                for (embed) in next:
+                    print(embed.to_dict())
+
             tasks = {
                 asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
                 asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
@@ -202,45 +230,146 @@ class General(commands.Cog, name="general"):
                 reaction, _ = done.pop().result()
             except (asyncio.TimeoutError) as e:
                 await message.clear_reactions()
+                ctx.command.reset_cooldown(ctx)
                 return
 
             for (task) in pending:
                 task.cancel()
 
             if (str(reaction.emoji) == reactions[0]):
-                pass
-            elif (str(reaction.emoji) == reactions[1]):
                 def check(message: discord.Message):
-                    pass
-
-                message_ = await ctx.send("enter a dictionary of attributes")
+                    if (message.author == ctx.author):
+                        if (message.channel == ctx.channel):
+                            if (message.content.count("=") == 1):
+                                if (message.content.startswith("field")):
+                                    if (message.content.count("|") == 1):
+                                        return True
+                                    elif (message.content.count("|") == 2):
+                                        _, _, inline = message.content.split("|")
+                                        if (inline.isdigit()):
+                                            if (int(inline) in [0, 1]):
+                                                return True
+                                elif (message.content.split("=")[0] in keys):
+                                    return True
+                            elif (message.content == "field-"):
+                                return True
 
                 try:
-                    json_ = await ctx.bot.wait_for("message", check=check, timeout=60)
-                    json_ = json.loads(json_, encoding="utf-8")
-                except (asyncio.TimeoutError, json.JSONDecodeError) as e:
-                    message_.delete()
+                    message_ = await ctx.bot.wait_for("message", check=check, timeout=60)
+                except (asyncio.TimeoutError) as e:
+                    await message.remove_reaction(str(reaction.emoji), ctx.author)
+                    continue
                 else:
-                    pass
+                    if (message_.content == "field-"):
+                        if (len(current.fields) != 0):
+                            current.remove_field(len(current.fields) - 1)
+                            message.edit(embed=current)
+                    else:
+                        key, value = message_.content.split("=")
+
+                        if ((len(value) + len(current)) > 6000):
+                            await message_.delete()
+                            await message.remove_reaction(str(reaction.emoji), ctx.author)
+                            continue
+
+                        try:
+                            if (key == "title"):
+                                if (len(value) <= 256):
+                                    previous.append(current.copy())
+                                    next.clear()
+                                    current.title = value
+                            elif (key == "description"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.description = value
+                            elif (key == "color"):
+                                pass
+                            elif (key == "thumbnail"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_thumbnail(url=value)
+                            elif (key == "author"):
+                                if (len(value) <= 256):
+                                    previous.append(current.copy())
+                                    next.clear()
+                                    current.set_author(name=value, url=current.author.url, icon_url=current.author.icon_url)
+                            elif (key == "author_url"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_author(name=current.author.name, url=value, icon_url=current.author.icon_url)
+                            elif (key == "author_icon_url"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_author(name=current.author.name, url=current.author.url, icon_url=value)
+                            elif (key == "field"):
+                                if (len(current.fields) < 25):
+                                    if (value.count("|") == 2):
+                                        name, value = value.split("|")
+                                
+                                        if (len(name) <= 256):
+                                            previous.append(current.copy())
+                                            next.clear()
+                                            current.add_field(name=name, value=value)
+                                    else:
+                                        name, value, inline = value.split("|")
+
+                                        if (len(name) <= 256):
+                                            previous.append(current.copy())
+                                            next.clear()
+                                            current.add_field(name=name, value=value, inline=bool(int(inline)))
+                            elif (key == "image"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_image(url=value)
+                            elif (key == "footer"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_footer(text=value, icon_url=current.footer.icon_url)
+                            elif (key == "footer_icon_url"):
+                                previous.append(current.copy())
+                                next.clear()
+                                current.set_footer(text=current.footer.text, icon_url=value)
+
+                            await message.edit(embed=current)
+                        except (discord.HTTPException) as e:
+                            pass
+                        
+                await message_.delete()
+            elif (str(reaction.emoji) == reactions[1]):
+                pass
             elif (str(reaction.emoji) == reactions[2]):
                 if (previous):
-                    pass
+                    next.appendleft(current.copy())
+                    current = previous.pop()
+                    
+                    await message.edit(embed=current)
             elif (str(reaction.emoji) == reactions[3]):
                 if (next):
-                    pass
+                    previous.append(current.copy())
+                    current = next.pop()
+                    
+                    await message.edit(embed=current)
             elif (str(reaction.emoji) == reactions[4]):
                 await message.clear_reactions()
 
                 json_ = current.to_dict()
                 if (json_):
-                    json_ = json.dumps(json_, encoding="utf-8", indent=2)
+                    json_ = json.dumps(json_, indent=2)
                     
                     for (page) in format.pagify(json_, shorten_by=8):
                         await ctx.send("```\n{0}```".format(page))
-
+                        
+                    ctx.command.reset_cooldown(ctx)
                     return
             elif (str(reaction.emoji) == reactions[5]):
+                previous.append(current.copy())
+                current = format.embed()
+                next.clear()
+
+                await message.edit(embed=current)
+            elif (str(reaction.emoji) == reactions[6]):
                 await message.delete()
+                ctx.command.reset_cooldown(ctx)
                 return
 
             await message.remove_reaction(str(reaction.emoji), ctx.author)
