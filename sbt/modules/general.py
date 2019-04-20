@@ -174,7 +174,7 @@ class General(commands.Cog, name="general"):
         keys = [
             "title",
             "description",
-            "color",
+            "color", "colour",
             "thumbnail",
             "author",
             "author_url",
@@ -228,17 +228,18 @@ class General(commands.Cog, name="general"):
                 def check(message: discord.Message):
                     if (message.author == ctx.author):
                         if (message.channel == ctx.channel):
-                            if (message.content.count("=") == 1):
-                                if (message.content.startswith("field")):
-                                    if (message.content.count("|") == 1):
+                            if ("=" in message.content):
+                                if (message.content.split("=", 1)[0] in keys):
+                                    if (message.content.startswith("field")):
+                                        if (message.content.count("|") == 1):
+                                            return True
+                                        elif (message.content.count("|") == 2):
+                                            _, _, inline = message.content.split("|")
+                                            if (inline.isdigit()):
+                                                if (int(inline) in [0, 1]):
+                                                    return True
+                                    else:
                                         return True
-                                    elif (message.content.count("|") == 2):
-                                        _, _, inline = message.content.split("|")
-                                        if (inline.isdigit()):
-                                            if (int(inline) in [0, 1]):
-                                                return True
-                                elif (message.content.split("=")[0] in keys):
-                                    return True
                             elif (message.content == "field-"):
                                 return True
 
@@ -251,44 +252,59 @@ class General(commands.Cog, name="general"):
                     if (message_.content == "field-"):
                         if (len(current.fields) != 0):
                             current.remove_field(len(current.fields) - 1)
-                            message.edit(embed=current)
+                            await message.edit(embed=current)
                     else:
-                        key, value = message_.content.split("=")
+                        key, value = message_.content.split("=", 1)
 
                         if ((len(value) + len(current)) > 6000):
                             await message_.delete()
                             await message.remove_reaction(str(reaction.emoji), ctx.author)
                             continue
 
+                        current_ = current.copy()
+
                         try:
                             if (key == "title"):
                                 if (len(value) <= 256):
                                     previous.append(current.copy())
+                                    current_.title = value
                                     next.clear()
-                                    current.title = value
                             elif (key == "description"):
                                 previous.append(current.copy())
+                                current_.description = value
                                 next.clear()
-                                current.description = value
-                            elif (key == "color"):
-                                pass
+                            elif ((key == "color") or (key == "colour")):
+                                if (len(value) == 3):
+                                    value = "".join(i * 2 for i in value)
+
+                                if (len(value) == 6):
+                                    try:
+                                        color = int(value, 16)
+                                    except (ValueError) as e:
+                                        pass
+                                    else:
+                                        previous.append(current.copy())
+                                        current_.color = color
+                                        next.clear()
                             elif (key == "thumbnail"):
                                 previous.append(current.copy())
+                                current_.set_thumbnail(url=value)
                                 next.clear()
-                                current.set_thumbnail(url=value)
                             elif (key == "author"):
                                 if (len(value) <= 256):
                                     previous.append(current.copy())
+                                    current_.set_author(name=value, url=current.author.url, icon_url=current.author.icon_url)
                                     next.clear()
-                                    current.set_author(name=value, url=current.author.url, icon_url=current.author.icon_url)
                             elif (key == "author_url"):
-                                previous.append(current.copy())
-                                next.clear()
-                                current.set_author(name=current.author.name, url=value, icon_url=current.author.icon_url)
+                                if (current.author.name != discord.Embed.Empty):
+                                    previous.append(current.copy())
+                                    current_.set_author(name=current.author.name, url=value, icon_url=current.author.icon_url)
+                                    next.clear()
                             elif (key == "author_icon_url"):
-                                previous.append(current.copy())
-                                next.clear()
-                                current.set_author(name=current.author.name, url=current.author.url, icon_url=value)
+                                if (current.author.name != discord.Embed.Empty):
+                                    previous.append(current.copy())
+                                    current_.set_author(name=current.author.name, url=current.author.url, icon_url=value)
+                                    next.clear()
                             elif (key == "field"):
                                 if (len(current.fields) < 25):
                                     if (value.count("|") == 1):
@@ -296,35 +312,62 @@ class General(commands.Cog, name="general"):
                                 
                                         if (len(name) <= 256):
                                             previous.append(current.copy())
+                                            current_.add_field(name=name, value=value)
                                             next.clear()
-                                            current.add_field(name=name, value=value)
                                     else:
                                         name, value, inline = value.split("|")
 
                                         if (len(name) <= 256):
                                             previous.append(current.copy())
+                                            current_.add_field(name=name, value=value, inline=bool(int(inline)))
                                             next.clear()
-                                            current.add_field(name=name, value=value, inline=bool(int(inline)))
                             elif (key == "image"):
                                 previous.append(current.copy())
+                                current_.set_image(url=value)
                                 next.clear()
-                                current.set_image(url=value)
                             elif (key == "footer"):
                                 previous.append(current.copy())
+                                current_.set_footer(text=value, icon_url=current.footer.icon_url)
                                 next.clear()
-                                current.set_footer(text=value, icon_url=current.footer.icon_url)
                             elif (key == "footer_icon_url"):
-                                previous.append(current.copy())
-                                next.clear()
-                                current.set_footer(text=current.footer.text, icon_url=value)
+                                if (current.footer.text != discord.Embed.Empty):
+                                    previous.append(current.copy())
+                                    current_.set_footer(text=current.footer.text, icon_url=value)
+                                    next.clear()
 
-                            await message.edit(embed=current)
+                            await message.edit(embed=current_)
                         except (discord.HTTPException) as e:
                             pass
+                        else:
+                            current = current_.copy()
                         
                 await message_.delete()
             elif (str(reaction.emoji) == reactions[1]):
-                pass
+                def check(message: discord.Message):
+                    if (message.author == ctx.author):
+                        if (message.channel == ctx.channel):
+                            try:
+                                json.loads(message.content, encoding="utf-8")
+                                return True
+                            except (json.JSONDecodeError) as e:
+                                pass
+                try:
+                    message_ = await ctx.bot.wait_for("message", check=check, timeout=60)
+                except (asyncio.TimeoutError) as e:
+                    await message.remove_reaction(str(reaction.emoji), ctx.author)
+                    continue
+                else:
+                    json_ = json.loads(message_.content, encoding="utf-8")
+                    dict_ = current.to_dict()
+                    dict_.update(json_)
+
+                    previous.append(current.copy())
+                    current = discord.Embed.from_dict(dict_)
+                    next.clear()
+
+                    await message.edit(embed=current)
+
+                await message_.delete()
             elif (str(reaction.emoji) == reactions[2]):
                 if (previous):
                     next.appendleft(current.copy())
@@ -334,7 +377,7 @@ class General(commands.Cog, name="general"):
             elif (str(reaction.emoji) == reactions[3]):
                 if (next):
                     previous.append(current.copy())
-                    current = next.pop()
+                    current = next.popleft()
                     
                     await message.edit(embed=current)
             elif (str(reaction.emoji) == reactions[4]):
