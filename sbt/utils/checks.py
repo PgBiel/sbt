@@ -181,7 +181,7 @@ def _permissions(ctx: commands.Context, **required) -> bool:
     if (is_supervisor_check(ctx)):
         return True
 
-    if (not ctx.gulid):
+    if (not ctx.guild):
         return True
 
     if (required):
