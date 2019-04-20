@@ -281,7 +281,7 @@ class Owner(commands.Cog, name="owner"):
 
         message = await ctx.send("restarting...")
         ctx.bot._settings.set_restart_message(message.id, message.channel.id)
-
+        await ctx.bot.logout()
         sys.exit(587)
 
     @checks.is_owner()
@@ -310,7 +310,7 @@ class Owner(commands.Cog, name="owner"):
 
     @checks.is_owner()
     @commands.command(name="shutdown")
-    async def _shutdown(self, ctx: commands.Context, code : typing.Optional[int]):
+    async def _shutdown(self, ctx: commands.Context, code: typing.Optional[int]):
         """
         send sbt back to the launcher
         """
@@ -319,6 +319,7 @@ class Owner(commands.Cog, name="owner"):
             code = 50
 
         await ctx.send("shutting down...")
+        await ctx.bot.logout()
         sys.exit(code)
 
     @checks.is_owner()

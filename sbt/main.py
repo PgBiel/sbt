@@ -190,7 +190,7 @@ def init() -> commands.Bot:
             owner.hide_commands(bot)
 
     @bot.event
-    async def on_message(message : discord.Message):
+    async def on_message(message: discord.Message):
         """
         Called when a Message is created and sent.
         """
@@ -199,7 +199,7 @@ def init() -> commands.Bot:
             await bot.process_commands(message)
 
     @bot.event
-    async def on_command_error(ctx : commands.Context, exception : discord.errors.DiscordException):
+    async def on_command_error(ctx: commands.Context, exception: discord.errors.DiscordException):
         """
         An error handler that is called when an error is raised inside a command either through user input error, check failure, or an error in your own code.
 
@@ -331,7 +331,7 @@ def init() -> commands.Bot:
     return bot
 
 
-def load_extensions(bot : commands.Bot):
+def load_extensions(bot: commands.Bot):
     for (extension) in EXTENSIONS:
         try:
             bot.load_extension("modules.{0}".format(extension))
@@ -342,7 +342,7 @@ def load_extensions(bot : commands.Bot):
 
     print()
 
-def main(bot : commands.Bot):
+def main(bot: commands.Bot):
     load_extensions(bot)
 
     print("Logging into Discord...")

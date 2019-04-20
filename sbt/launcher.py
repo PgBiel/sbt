@@ -62,7 +62,7 @@ class SBT():
             elif (choice == "2"):
                 self.run()
 
-    def run(self, auto_restart : bool = False):
+    def run(self, auto_restart: bool = False):
         arguments = [sys.executable, "main.py"]
 
         while (True):
@@ -70,7 +70,7 @@ class SBT():
                 code = subprocess.call(arguments)
             except (KeyboardInterrupt) as e:
                 pass
-            else:
+            except (SystemExit, RuntimeError) as e:
                 if (code == 587):
                     # owner._restart
                     pass
@@ -80,6 +80,9 @@ class SBT():
                         break
                     elif (not auto_restart):
                         break
+            except (Exception) as e:
+                if (not auto_restart):
+                    break
 
 if (__name__ == "__main__"):
     sbt = SBT()
