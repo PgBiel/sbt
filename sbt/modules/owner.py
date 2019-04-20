@@ -282,7 +282,6 @@ class Owner(commands.Cog, name="owner"):
         message = await ctx.send("restarting...")
         ctx.bot._settings.set_restart_message(message.id, message.channel.id)
 
-        await ctx.bot.logout()
         sys.exit(587)
 
     @checks.is_owner()
@@ -320,7 +319,6 @@ class Owner(commands.Cog, name="owner"):
             code = 50
 
         await ctx.send("shutting down...")
-        await ctx.bot.logout()
         sys.exit(code)
 
     @checks.is_owner()
@@ -415,13 +413,13 @@ class Owner(commands.Cog, name="owner"):
                 await ctx.send("```\n{0}```".format(page))
 
     @checks.is_owner()
-    @commands.command(name="whisper")
-    async def _whisper(self, ctx: commands.Context, member: discord.Member, *, message: str):
+    @commands.command(name="send")
+    async def _send(self, ctx: commands.Context, messageable: typing.Union[discord.Member, discord.User, discord.TextChannel], *, message: str):
         """
-        send a message to a member
+        send a message to a messageable
         """
 
-        await member.send(message)
+        await messageable.send(message)
         await ctx.send("done.")
 
     @checks.is_owner()
