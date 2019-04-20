@@ -235,11 +235,7 @@ class Owner(commands.Cog, name="owner"):
         display my owner's id
         """
 
-        owner = ctx.bot.get_user(ctx.bot._settings.owner)
-        if (not owner):
-            owner = ctx.bot.fetch_user(ctx.bot._settings.owner)
-
-        await ctx.send(owner.id)
+        await ctx.send(ctx.bot._settings.owner)
         
     @checks.is_supervisor()
     @commands.command(name="reload")
