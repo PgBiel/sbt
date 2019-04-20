@@ -125,7 +125,7 @@ class Owner(commands.Cog, name="owner"):
         if (index in range(len(self._results))):
             self._results[index] = result
         else:
-            self._results.append(result)
+            self._results.appendleft(result)
 
         result = str(result)
         result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
