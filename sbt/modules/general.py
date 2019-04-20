@@ -207,18 +207,6 @@ class General(commands.Cog, name="general"):
 
                 return False
 
-            print()
-            if (previous):
-                print("previous:")
-                for (embed) in previous:
-                    print(embed.to_dict())
-            print("current:")
-            print(current.to_dict())
-            if (next):
-                print("next:")
-                for (embed) in next:
-                    print(embed.to_dict())
-
             tasks = {
                 asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
                 asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
@@ -303,7 +291,7 @@ class General(commands.Cog, name="general"):
                                 current.set_author(name=current.author.name, url=current.author.url, icon_url=value)
                             elif (key == "field"):
                                 if (len(current.fields) < 25):
-                                    if (value.count("|") == 2):
+                                    if (value.count("|") == 1):
                                         name, value = value.split("|")
                                 
                                         if (len(name) <= 256):
