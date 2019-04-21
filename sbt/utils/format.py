@@ -24,12 +24,21 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 
 
 import datetime
+import re
 
 import discord
 
 
 def bold(text: str) -> str:
     return "**{0}**".format(text)
+
+def camelify(text: str) -> str:
+    result = list()
+
+    for (word) in text.split("_"):
+        result.append(word.title())
+
+    return "".join(result)
 
 def code(text: str, language: str = "") -> str:
     return "```{0}\n{1}\n```".format(language, text)
@@ -309,6 +318,9 @@ def pagify(text: str, *, delims: list = ["\n"], shorten_by: int = 0, page_length
         in_text = in_text[closest_delim:]
 
     yield in_text
+
+def snakify(text: str) -> str:
+    return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", re.sub(r"(.)([A-Z][a-z]+)", r"\1_\2", text)).lower()
 
 def strikethrough(text: str) -> str:
     return "~~{0}~~".format(text)
