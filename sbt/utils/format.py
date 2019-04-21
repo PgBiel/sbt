@@ -133,10 +133,14 @@ def embed(title: str = None, description: str = None,
 
 def escape(text: str,
            *,
+           backslash: bool = False,
            mentions: bool = True,
            emoji: bool = False,
            urls: bool = False, invites: bool = False,
            asterisk: bool = True, backticks: bool = True, tilde: bool = True, underscores: bool = True) -> str:
+
+    if (backslash):
+        text = text.replace("\\", r"\\\\")
 
     if (mentions):
         text = text.replace("@", "@\u200b")
@@ -146,20 +150,21 @@ def escape(text: str,
 
     if (urls):
         text = text.replace("https://", "https:/\u200b/")
-    elif (invites):
+
+    if (invites):
         text = text.replace("discord.gg/", "discord.gg/\u200b")
-    else:
-        if (asterisk):
-            text = text.replace("*", "\\*")
 
-        if (backticks):
-            text = text.replace("`", "\\`")
+    if (asterisk):
+        text = text.replace("*", r"\\*")
 
-        if (tilde):
-            text = text.replace("~", "\\~")
+    if (backticks):
+        text = text.replace("`", r"\\`")
 
-        if (underscores):
-            text = text.replace("_", "\\_")
+    if (tilde):
+        text = text.replace("~", r"\\~")
+
+    if (underscores):
+        text = text.replace("_", r"\\_")
 
     return text
 
