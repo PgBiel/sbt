@@ -41,6 +41,7 @@ is_owner
       +-- permissions
 
 is_guild
+is_debugging
 """
 
 
@@ -122,6 +123,16 @@ def is_guild_check(ctx: commands.Context) -> bool:
     if (ctx.guild):
         return True
     return False
+
+
+def is_debugging() -> commands.check:
+    return commands.check(is_debugging_check)
+
+def is_debugging_check(ctx: commands.Context) -> bool:
+    if (not ctx.guild):
+        return False
+
+    return ctx.guild.id == ctx.bot._settings.debugging_guild
 
 
 def has_permissions(**required) -> bool:

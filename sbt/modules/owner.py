@@ -47,8 +47,10 @@ from utils import (
     dataio,
     enumerators,
     extensions,
+    extensions_,
     format,
     parse,
+    parse_,
     regex,
     settings,
 )
@@ -99,11 +101,12 @@ class Owner(commands.Cog, name="owner"):
             message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             await ctx.message.add_reaction("\U0000274e")
             self._exception = e
-
-            await asyncio.sleep(3)
             
-            await message.delete()
-            await ctx.message.delete()
+            if (not checks.is_debugging_check(ctx)):
+                await asyncio.sleep(5)
+                await message.delete()
+                await ctx.message.delete()
+
             return
 
         try:
@@ -114,10 +117,11 @@ class Owner(commands.Cog, name="owner"):
             await ctx.message.add_reaction("\U0000274e")
             self._exception = e
 
-            await asyncio.sleep(3)
-            
-            await message.delete()
-            await ctx.message.delete()
+            if (not checks.is_debugging_check(ctx)):
+                await asyncio.sleep(5)
+                await message.delete()
+                await ctx.message.delete()
+
             return
         else:
             await ctx.message.add_reaction("\U00002705")
