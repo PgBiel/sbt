@@ -25,6 +25,7 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 
 import datetime
 import re
+import typing
 
 import discord
 
@@ -320,7 +321,7 @@ def humanize_seconds(seconds: float, *, long: bool = True) -> str:
 
     return " ".join(result)
 
-def humanize_time(time: datetime.datetime = datetime.datetime.utcnow):
+def humanize_time(time: typing.Union[datetime.datetime, datetime.date] = datetime.datetime.utcnow):
     if (callable(time)):
         time = time()
 
@@ -337,7 +338,10 @@ def humanize_time(time: datetime.datetime = datetime.datetime.utcnow):
     if (day.startswith("0")):
         day = day[1:]
 
-    return time.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
+    if (isinstance(time, datetime.datetime)):
+        return time.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
+    else:
+        return time.strftime("%A {0}{1} %B, %Y".format(day, suffix))
 
 def indent(text: str, *, amount: int) -> str:
     lines = text.split("\n")
