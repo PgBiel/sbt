@@ -42,6 +42,7 @@ from discord.ext import commands
 from utils import (
     checks,
     format,
+    parse,
 )
 
 
@@ -62,7 +63,7 @@ class Information(commands.Cog, name="information"):
         del self.bot._extensions.extensions[self.qualified_name]
 
     @commands.command(name="color", aliases=["colour"])
-    async def _color(self, ctx: commands.Context, *, code: typing.Optional[str]):
+    async def _color(self, ctx: commands.Context, *, code: typing.Optional[parse.Color]):
         """
         parse and display a color
 
@@ -77,53 +78,16 @@ class Information(commands.Cog, name="information"):
         """
 
         if (not code):
-            code = "".join([random.choice("0123456789ABCDEF") for _ in range(6)])
+            code = "".join([random.choice("0123456789ABCDEF") for (_) in range(6)])
+            code = parse.Color(code)
 
-        code = code.upper()
+        int_, hex, rgb, cmyk = code.result
 
-        if (code.startswith("0X")):
-            code = code[2:]
-        elif (code.startswith("#")):
-            code = code[1:]
+        rgb = "({0}, {1}, {2})".format(*rgb)
+        cmyk = "({0}, {1}, {2}, {3})".format(*cmyk)
 
-        pattern = re.compile("^(([A-F0-9]{6}))|(([A-F0-9]{3}))$")
-        match = re.match(pattern, code)
-        if (match):
-            hexadecimal = match.group(0)
-            
-            if (len(hexadecimal) == 3):
-                hexadecimal = "".join(i * 2 for i in hexadecimal)
-
-            r, g, b = struct.unpack("BBB", bytes.fromhex(hexadecimal))
-        else:
-            pattern = re.compile("^\(?([0-9]{1,3}, ?){2},? ?[0-9]{1,3}\)?$")
-            match = re.match(pattern, code)
-            if (match):
-                rgb = match.group(0)
-                rgb = (rgb.replace("(", "")
-                          .replace(")", "")
-                          .replace(" ", ""))
-
-                r, g, b = [int(i) for i in rgb.split(",")]
-
-                if ((r < 0) or (g < 0) or (b < 0)):
-                    await ctx.bot.send_help(ctx)
-                    return
-
-                if ((r > 255) or (g > 255) or (b > 255)):
-                    await ctx.bot.send_help(ctx)
-                    return
-
-                hexadecimal = "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
-            else:
-                await ctx.bot.send_help(ctx)
-                return
-
-        rgb = "({0}, {1}, {2})".format(r, g, b)
-        cmyk = "({0}, {1}, {2}, {3})".format(*self.cmyk(r, g, b))
-
-        e = discord.Embed(title="Color", color=int(hexadecimal, 16))
-        e.add_field(name="Hexadecimal", value="0x{0}".format(hexadecimal))
+        e = discord.Embed(title="Color", color=int_)
+        e.add_field(name="Hexadecimal", value="0x{0}".format(hex))
         e.add_field(name="Red, Green, Blue", value=rgb)
         e.add_field(name="Cyan, Magenta, Yellow, Key", value=cmyk)
         e.set_footer(
@@ -673,27 +637,6 @@ class Information(commands.Cog, name="information"):
 
         pass
 
-    def cmyk(self, r : int, g : int, b : int) -> tuple:
-        if ((r == 0) and (g == 0) and (b == 0)):
-            return (0, 0, 0, 100)
-
-        c = 1 - r / 255.
-        m = 1 - g / 255.
-        y = 1 - b / 255.
-
-        min_cmy = min(c, m, y)
-
-        c = (c - min_cmy) / (1 - min_cmy)
-        m = (m - min_cmy) / (1 - min_cmy)
-        y = (y - min_cmy) / (1 - min_cmy)
-        k = min_cmy
-
-        c = round(c * 100, 0)
-        m = round(m * 100, 0)
-        y = round(y * 100, 0)
-        k = round(k * 100, 0)
-
-        return (c, m, y, k)
                 
 def setup(bot : commands.Bot):
     extension = Information(bot)

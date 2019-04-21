@@ -25,6 +25,7 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 
 import datetime
 import re
+import struct
 
 import discord
 from discord.ext import commands
@@ -33,6 +34,99 @@ from utils import (
     regex,
 )
 
+
+class Color():
+    def __init__(self, argument: str = None):
+        """
+        only command typehints should invoke here with arguments
+        since it will raise if it doesn't find anything.
+        """
+
+        if (argument):
+            self.result = self.parse(argument)
+            if (not self.result):
+                raise commands.BadArgument(argument)
+
+    @classmethod
+    def parse(self, argument: str) -> tuple:
+        """
+        parses hexadecimal or rgb/argb values and returns a
+        tuple of (int, hex, rgb, cmyk)
+        """
+
+        argument = argument.upper()
+        result = None
+
+        if (match := re.fullmatch(regex.Regex.HEXADECIMAL, argument)):
+            if (argument.startswith("0X")):
+                argument = code[2:]
+            elif (argument.startswith("#")):
+                argument = code[1:]
+
+            if (len(argument) in [3, 4]):
+                argument = "".join(i * 2 for i in argument)
+
+            if (len(argument) == 8):
+                argument = argument[2:]
+                
+            int_ = int(argument, 16)
+            rgb = self.hex_to_rgb(argument)
+            cmyk = self.rgb_to_cmyk(*rgb)
+
+            result = (int_, argument, rgb, cmyk)
+        elif (match := re.fullmatch(regex.Regex.RGB, argument)):
+            if (a := match.group("a")):
+                a = int(a)
+
+            r = int(match.group("r"))
+            g = int(match.group("g"))
+            b = int(match.group("b"))
+            
+            if (a):
+                if (any([(i > 255) for (i) in [a, r, g, b]])):
+                    raise commands.BadArgument(argument)
+            else:
+                if (any([(i > 255) for (i) in [r, g, b]])):
+                    raise commands.BadArgument(argument)
+
+            hex = self.rgb_to_hex(r, g, b)
+            int_ = int(hex, 16)
+            cmyk = self.rgb_to_cmyk(r, g, b)
+
+            result = (int_, hex, (r, g, b), cmyk)
+
+        return result
+
+    @classmethod
+    def hex_to_rgb(self, hexadecimal: str) -> tuple:
+        return struct.unpack("BBB", bytes.fromhex(argument))
+
+    @classmethod
+    def rgb_to_cmyk(self, r: int, g: int, b: int) -> tuple:
+        if ((r == 0) and (g == 0) and (b == 0)):
+            return (0, 0, 0, 100)
+
+        c = 1 - r / 255.
+        m = 1 - g / 255.
+        y = 1 - b / 255.
+
+        min_cmy = min(c, m, y)
+
+        c = (c - min_cmy) / (1 - min_cmy)
+        m = (m - min_cmy) / (1 - min_cmy)
+        y = (y - min_cmy) / (1 - min_cmy)
+        k = min_cmy
+
+        c = round(c * 100, 0)
+        m = round(m * 100, 0)
+        y = round(y * 100, 0)
+        k = round(k * 100, 0)
+
+        return (c, m, y, k)
+
+    @classmethod
+    def rgb_to_hex(self, r: int, g: int, b: int) -> str:
+        return "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
 
 class Date():
     def __init__(self, argument: str = None):
@@ -47,11 +141,13 @@ class Date():
                 raise commands.BadArgument(argument)
             
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         parses humanized datetime and returns a timezone naive
         datetime.date object or None
         """
+        
+        argument = argument.lower()
 
         self.now = datetime.datetime.utcnow()
         result = None
@@ -124,7 +220,7 @@ class FutureDate(Date):
         super().__init__(argument)
         
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         calls super().parse() but raises if the date is not in the
         future
@@ -154,11 +250,13 @@ class Time():
                 raise commands.BadArgument(argument)
             
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         parses humanized datetime and returns a timezone naive
         datetime.time object or None
         """
+        
+        argument = argument.lower()
 
         self.now = datetime.datetime.utcnow()
         result = None
@@ -282,7 +380,7 @@ class FutureTime(Time):
         super().__init__(argument)
 
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         calls super().parse() but raises if the time is not in the
         future
@@ -312,11 +410,13 @@ class DateTime():
                 raise commands.BadArgument(argument)
             
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         parses humanized datetime and returns a timezone naive
         datetime.datetime object or None
         """
+        
+        argument = argument.lower()
 
         self.now = datetime.datetime.utcnow()
         result = None
@@ -449,7 +549,7 @@ class FutureDateTime(DateTime):
         super().__init__(argument)
         
     @classmethod
-    def parse(self, argument: str = None):
+    def parse(self, argument: str):
         """
         calls super().parse() but raises if the datetime is not in the
         future
