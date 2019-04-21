@@ -25,12 +25,14 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 __level__             = 3
 
 
+import aiohttp
 import asyncio
 import collections
 import datetime
 import json
 import random
 import re
+import urllib
 
 import discord
 from discord.ext import commands
@@ -742,6 +744,7 @@ class General(commands.Cog, name="general"):
             await ctx.send("stopwatch stopped")
             await ctx.send(format.humanize_seconds(seconds))
 
+    @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
     @commands.command(name="urban")
     async def _urban(self, ctx: commands.Context, *, search: str):
         """
@@ -753,7 +756,145 @@ class General(commands.Cog, name="general"):
             `>urban thing` :: search urban dictionary for "thing"
         """
 
-        pass
+        if (not ctx.channel.is_nsfw()):
+            await ctx.send("this command should be used in an nsfw-marked channel")
+            ctx.command.reset_cooldown(ctx)
+            return
+
+        search = urllib.parse.quote_plus(search, encoding="utf-8", errors="replace")
+        url = "http://api.urbandictionary.com/v0/define?term={0}".format(search)
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if (response.status != 200):
+                    await ctx.send(response.status)
+                    ctx.command.reset_cooldown(ctx)
+                    return
+
+                json_ = await response.json()
+
+        results = json_["list"]
+
+        if (not results):
+            await ctx.send("no results")
+            ctx.command.reset_cooldown(ctx)
+            return
+
+        color = ctx.guild.me.color if ctx.guild else None
+        embeds = list()
+        for (i, result) in enumerate(results, 1):
+            title = "{0} {1}/{2}".format(result["word"], i, len(results))
+            if (len(title) > 256):
+                title = "{0}...".format(title[:253])
+
+            description = re.sub(r"\[([a-zA-Z0-9\']+)\]",
+                                 r"[\1](https://www.urbandictionary.com/define.php?term=\1)",
+                                 result["definition"])
+            if (len(description) > 2048):
+                description = "{0}...".format(description[:2045])
+
+            example = re.sub(r"\[([a-zA-Z0-9\']+)\]",
+                             r"[\1](https://www.urbandictionary.com/define.php?term=\1)",
+                             result["example"])
+            if (len(example) > 1024):
+                example = "{0}...".format(example[1021])
+
+            e = format.embed(description=description,
+                             color=color,
+                             author=title,
+                             author_url=result["permalink"],
+                             fields=[
+                                 ("Example", example)
+                             ],
+                             footer="{0} | {1}".format(
+                                 ctx.author.name,
+                                 format.humanize_time()
+                             ),
+                             footer_icon_url=ctx.author.avatar_url)
+
+            embeds.append(e)
+
+        message = await ctx.send(embed=embeds[0])
+
+        if (len(embeds) == 1):
+            ctx.command.reset_cooldown(ctx)
+            return
+
+        current = 0
+
+        reactions = [
+            "\U000023ea",
+            "\U00000023\U000020e3",
+            "\U000023e9",
+            "\U0001f5d1",
+        ]
+
+        for (reaction) in reactions:
+            await message.add_reaction(reaction)
+
+        while (True):
+            def check(reaction: discord.Reaction, member: discord.Member):
+                if (member == ctx.author):
+                    if (reaction.message.id == message.id):
+                        if (str(reaction.emoji) in reactions):
+                            return True
+
+            tasks = {
+                asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
+                asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
+            }
+
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+
+            try:
+                reaction, _ = done.pop().result()
+            except (asyncio.TimeoutError) as e:
+                await message.clear_reactions()
+                return
+
+            for (task) in pending:
+                task.cancel()
+
+            if (str(reaction.emoji) == reactions[0]):
+                current -= 1
+                if (current < 0):
+                    current = len(embeds) - 1
+            elif (str(reaction.emoji) == reactions[1]):
+                def check(message: discord.Message):
+                    if (message.author == ctx.author):
+                        if (message.channel == ctx.channel):
+                            if (message.content.isdigit()):
+                                if (int(message.content) >= 1):
+                                    if (int(message.content) <= len(embeds)):
+                                        return True
+
+                message_ = await ctx.send("choose a page (1-{0})".format(len(embeds)))
+
+                try:
+                    page = await ctx.bot.wait_for("message", check=check, timeout=60)
+                except (asyncio.TimeoutError) as e:
+                    await message_.delete()
+                    await message.remove_reaction(str(reaction.emoji), ctx.author)
+                    continue
+
+                await message_.delete()
+                await page.delete()
+
+                if (current == (int(page.content) - 1)):
+                    continue
+            
+                current = int(page.content) - 1
+            elif (str(reaction.emoji) == reactions[2]):
+                current += 1
+                if (current > (len(embeds) - 1)):
+                    current = 0
+            elif (str(reaction.emoji) == reactions[3]):
+                await message.clear_reactions()
+                ctx.command.reset_cooldown(ctx)
+                return
+
+            await message.remove_reaction(str(reaction.emoji), ctx.author)
+            await message.edit(embed=embeds[current])
 
     @commands.group(name="regex", aliases=["re"])
     async def _regex(self, ctx: commands.Context):
