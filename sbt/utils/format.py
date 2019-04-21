@@ -34,7 +34,7 @@ def bold(text: str) -> str:
 def code(text: str, language: str = "") -> str:
     return "```{0}\n{1}\n```".format(language, text)
 
-def dedent(text: str, *, max: int = None):
+def dedent(text: str, *, max: int = None) -> str:
     lines = text.split("\n")
 
     levels = list()
@@ -64,7 +64,7 @@ def embed(title: str = None, description: str = None,
           fields: list = list(),
           image: str = None,
           footer: str = None, footer_icon_url: str = None,
-          to_dict: bool = False):
+          to_dict: bool = False) -> discord.Embed:
     e = discord.Embed()
 
     if (title):
@@ -278,7 +278,7 @@ def humanize_time(time: datetime.datetime = datetime.datetime.utcnow):
 
     return time.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
 
-def indent(text: str, *, amount: int):
+def indent(text: str, *, amount: int) -> str:
     lines = text.split("\n")
 
     result = ""
