@@ -170,7 +170,10 @@ def get_lines(text: str, start: int, end: int = None) -> str:
     if (end == -1):
         return text
     elif (not end):
-        return lines[start]
+        if (start in range(len(lines))):
+            return lines[start]
+        else:
+            return text
 
     end = min([end, len(lines)])
 
