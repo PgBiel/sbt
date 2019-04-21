@@ -26,6 +26,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="launcher.py" />
+    <Compile Include="modules\alpha.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="modules\general.py">
       <SubType>Code</SubType>
     </Compile>
