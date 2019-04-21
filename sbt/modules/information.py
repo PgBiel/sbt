@@ -255,7 +255,7 @@ class Information(commands.Cog, name="information"):
         """
 
         github = ctx.bot._settings.github
-        await ctx.send(github)
+        await ctx.send(format.wrap_url(github))
 
     @commands.command(name="invite")
     async def _invite(self, ctx: commands.Context):

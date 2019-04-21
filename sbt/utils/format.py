@@ -384,3 +384,6 @@ def strikethrough(text: str) -> str:
 
 def underline(text: str) -> str:
     return "__{0}__".format(text)
+
+def wrap_url(self, text: str):
+    return "<{0}>".format(text)
