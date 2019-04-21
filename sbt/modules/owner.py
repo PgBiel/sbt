@@ -164,8 +164,6 @@ class Owner(commands.Cog, name="owner"):
     async def _echo(self, ctx: commands.Context, *, message: str):
         """
         echo a message
-
-        there is no better explanation of what this command does
         """
 
         await ctx.message.delete()
@@ -176,6 +174,8 @@ class Owner(commands.Cog, name="owner"):
     async def _eval(self, ctx: commands.Context, *, shit: str):
         """
         eval shit
+
+        there is no better explanation of what this command does
         """
 
         shit = shit.strip("`").strip()
