@@ -341,6 +341,16 @@ class Owner(commands.Cog, name="owner"):
         await ctx.channel.send("a rift has been opened")
 
     @checks.is_owner()
+    @commands.command(name="send")
+    async def _send(self, ctx: commands.Context, messageable: typing.Union[discord.Member, discord.User, discord.TextChannel], *, message: str):
+        """
+        send a message to a messageable
+        """
+
+        await messageable.send(message)
+        await ctx.send("done.")
+
+    @checks.is_owner()
     @commands.command(name="shutdown")
     async def _shutdown(self, ctx: commands.Context, code: typing.Optional[int]):
         """
@@ -449,16 +459,6 @@ class Owner(commands.Cog, name="owner"):
         for (page) in format.pagify(message, shorten_by=8):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
-
-    @checks.is_owner()
-    @commands.command(name="send")
-    async def _send(self, ctx: commands.Context, messageable: typing.Union[discord.Member, discord.User, discord.TextChannel], *, message: str):
-        """
-        send a message to a messageable
-        """
-
-        await messageable.send(message)
-        await ctx.send("done.")
 
     @checks.is_owner()
     @commands.group(name="blacklist")
