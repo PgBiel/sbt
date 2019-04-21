@@ -321,6 +321,11 @@ def inline(text: str) -> str:
 def italic(text: str) -> str:
     return "*{0}*".format(text)
 
+def jump_url(message: discord.Message) -> str:
+    if (message.guild):
+        return "https://discordapp.com/channels/{0.guild.id}/{0.channel.id}/{0.id}/".format(message)
+    return "https://discordapp.com/channels/@me/{0.channel.id}/{0.id}/".format(message)
+
 def pagify(text: str, *, delims: list = ["\n"], shorten_by: int = 0, page_length: int = 2000) -> str:
     in_text = text
     page_length -= shorten_by
