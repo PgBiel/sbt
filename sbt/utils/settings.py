@@ -62,6 +62,10 @@ class Settings():
         return self.settings["djs"]
 
     @property
+    def github(self) -> str:
+        return self.settings["github"]
+
+    @property
     def moderator_role(self) -> str:
         return self.settings["moderator_role"]
 
