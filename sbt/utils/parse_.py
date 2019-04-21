@@ -57,11 +57,12 @@ class Color():
         argument = argument.upper()
         result = None
 
-        if (match := re.fullmatch(regex.Regex.HEXADECIMAL, argument)):
+        match = re.fullmatch(regex.Regex.HEXADECIMAL, argument)
+        if (match):
             if (argument.startswith("0X")):
-                argument = code[2:]
+                argument = argument[2:]
             elif (argument.startswith("#")):
-                argument = code[1:]
+                argument = argument[1:]
 
             if (len(argument) in [3, 4]):
                 argument = "".join(i * 2 for i in argument)
@@ -74,8 +75,10 @@ class Color():
             cmyk = self.rgb_to_cmyk(*rgb)
 
             result = (int_, argument, rgb, cmyk)
-        elif (match := re.fullmatch(regex.Regex.RGB, argument)):
-            if (a := match.group("a")):
+        match = re.fullmatch(regex.Regex.RGB, argument)
+        if (match):
+            a = match.group("a")
+            if (a):
                 a = int(a)
 
             r = int(match.group("r"))
@@ -98,8 +101,8 @@ class Color():
         return result
 
     @classmethod
-    def hex_to_rgb(self, hexadecimal: str) -> tuple:
-        return struct.unpack("BBB", bytes.fromhex(argument))
+    def hex_to_rgb(self, hex: str) -> tuple:
+        return struct.unpack("BBB", bytes.fromhex(hex))
 
     @classmethod
     def rgb_to_cmyk(self, r: int, g: int, b: int) -> tuple:
@@ -128,442 +131,265 @@ class Color():
     def rgb_to_hex(self, r: int, g: int, b: int) -> str:
         return "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
 
-class Date():
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
-
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
-            
-    @classmethod
-    def parse(self, argument: str):
-        """
-        parses humanized datetime and returns a timezone naive
-        datetime.date object or None
-        """
-        
-        argument = argument.lower()
-
-        self.now = datetime.datetime.utcnow()
-        result = None
-
-        if (match := re.fullmatch(regex.Regex.US_DATE, argument)):
-            # 12/31/00
-            # 12/31/0000
-            # 12-31-00
-            # 12-31-0000
-            month = int(match.group("month"))
-            day = int(match.group("day"))
-
-
-            if (len(year := match.group("year")) == 2):
-                year = str(self.now.year)[:2] + year
-
-            year = int(year)
-
-            try:
-                result = datetime.date(year, month, day)
-            except (ValueError) as e:
-                # year or day is out of range
-                raise commands.BadArgument(argument)
-        elif (match := re.fullmatch(regex.Regex.EU_DATE, argument)):
-            # 31/12/00
-            # 31/12/0000
-            # 31-12-00
-            # 31-12-0000
-            day = int(match.group("day"))
-            month = int(match.group("month"))
-
-            if (len(year := match.group("year")) == 2):
-                year = str(self.now.year)[:2] + year
-
-            year = int(year)
-
-            try:
-                result = datetime.date(year, month, day)
-            except (ValueError) as e:
-                # year or day is out of range
-                raise commands.BadArgument(argument)
-        elif (argument == "today"):
-            # today
-            result = datetime.date(self.now.year, self.now.month, self.now.day)
-        elif (argument == "tomorrow"):
-            # tomorrow
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.date(new.year, new.month, new.day)
-        elif (match := re.fullmatch(regex.Regex.DAYS, argument)):
-            # 1d
-            # in 1d
-            # 1 day
-            # in 1 day
-            # 2 days
-            # in 2 days
-            days = int(match.group(days))
-            if (days):
-                new = self.now + datetime.timedelta(days=days)
-                result = datetime.date(new.year, new.month, new.day)
-
-        return result
-
-class FutureDate(Date):
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
-
-        super().__init__(argument)
-        
-    @classmethod
-    def parse(self, argument: str):
-        """
-        calls super().parse() but raises if the date is not in the
-        future
-        """
-
-        result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        now = datetime.date(self.now.year, self.now.month, self.now.day)
-        if (result <= now):
-            raise commands.BadArgument("date is not in the future")
-
-        return result
-                
-class Time():
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
-
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
-            
-    @classmethod
-    def parse(self, argument: str):
-        """
-        parses humanized datetime and returns a timezone naive
-        datetime.time object or None
-        """
-        
-        argument = argument.lower()
-
-        self.now = datetime.datetime.utcnow()
-        result = None
-        
-        if (match := re.fullmatch(regex.Regex.DIGITS, argument)):
-            # 0+
-
-            minutes = int(match.group(digits))
-            if (minutes):
-                new = self.now + datetime.timedelta(minutes=minutes)
-                result = datetime.time(new.hour, new.minute, new.second)
-        elif (match := re.fullmatch(regex.Regex.HOUR, argument)):
-            # 0
-            # 0am
-            # 0 am
-            # 0pm
-            # 0 pm
-            # 00
-            # 00am
-            # 00 am
-            # 00pm
-            # 00 pm
-            hour = int(match.group("hour"))
-
-            if (meridies := match.group("meridies") == "pm"):
-                hour += 12
-
-            if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
-
-            result = datetime.time(hour, 0, 0)
-        elif (match := re.fullmatch(regex.Regex.TIME, argument)):
-            # 00:00
-            # 00:00:00
-
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-
-            result = datetime.time(hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.AT_HOUR, argument)):
-            # at 0
-            # at 0am
-            # at 0 am
-            # at 0pm
-            # at 0 pm
-            # at 00
-            # at 00am
-            # at 00 am
-            # at 00pm
-            # at 00 pm
-            hour = int(match.group("hour"))
-
-            if ((meridies := match.group("meridies")) == "pm"):
-                hour += 12
-
-            if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
-
-            result = datetime.time(hour, 0, 0)
-        elif (match := re.fullmatch(regex.Regex.AT_TIME, argument)):
-            # at 00:00
-            # at 00:00:00
-
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-
-            result = datetime.time(hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.TODAY_AT_HOUR, argument)):
-            # today at 0
-            # today at 0am
-            # today at 0 am
-            # today at 0pm
-            # today at 0 pm
-            # today at 00
-            # today at 00am
-            # today at 00 am
-            # today at 00pm
-            # today at 00 pm
-            hour = int(match.group("hour"))
-
-            if ((meridies := match.group("meridies")) == "pm"):
-                hour += 12
-
-            if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
-
-            result = datetime.time(hour, 0, 0)
-        elif (match := re.fullmatch(regex.Regex.TODAY_AT_TIME, argument)):
-            # today at 00:00
-            # today at 00:00:00
-
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-
-            result = datetime.time(hour, minute, second)
-
-        return result
-
-class FutureTime(Time):
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
-
-        super().__init__(argument)
-
-    @classmethod
-    def parse(self, argument: str):
-        """
-        calls super().parse() but raises if the time is not in the
-        future
-        """
-
-        result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        now = datetime.time(self.now.hour, self.now.minute, self.now.second)
-        if (result <= now):
-            raise commands.BadArgument("time is not in the future")
-
-        return result
-
 class DateTime():
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
+    """
+    parses humanized datetime and returns a datetime.datetime object
+    """
 
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
-            
-    @classmethod
-    def parse(self, argument: str):
-        """
-        parses humanized datetime and returns a timezone naive
-        datetime.datetime object or None
-        """
-        
+    def __init__(self, argument: str):
         argument = argument.lower()
-
         self.now = datetime.datetime.utcnow()
-        result = None
+
+        if (argument.isdigit()):
+            # default to minutes
+            minutes = int(argument)
+            if (minutes > 0):
+                minutes = datetime.timedelta(minutes=minutes)
+                self.timestamp = (self.now + minutes).timestamp()
+        elif ("/" in argument):
+            # 02/22/2020
+            # 02/22/2020 11:30:30
+            # 02/22/2020 11:30
+
+            match = re.fullmatch(regex.Regex.US_DATE, argument)
+            if (not match):
+                match = re.fullmatch(regex.Regex.EU_DATE, argument)
+                if (not match):
+                    match = re.fullmatch(regex.Regex.US_DATE_TIME, argument)
+                    if (not match):
+                        match = re.fullmatch(regex.Regex.EU_DATE_TIME, argument)
+
+            if (match):
+                month = int(match.group("month"))
+                day = int(match.group("day"))
+                year = match.group("year")
+
+                if (len(year) == 2):
+                    year = str(self.now.year)[:2] + year
+
+                year = int(year)
+
+                if (year == 0):
+                    raise commands.BadArgument()
+
+                if (len(match.groups()) == 3):
+                    try:
+                        self.timestamp = datetime.datetime(year, month, day).timestamp()
+                    except (ValueError) as e:
+                        # day was out of range
+                        raise commands.BadArgument()
+                else:
+                    hour = int(match.group("hour"))
+                    minute = int(match.group("minute"))
+
+                    if (match.group("second")):
+                        second = int(match.group("second"))
+                    else:
+                        second = 0
+
+                    if (hour not in range(0, 24)):
+                        raise commands.BadArgument()
+
+                    if (minute not in range(0, 61)):
+                        raise commands.BadArgument()
+
+                    if (second not in range(0, 61)):
+                        raise commands.BadArgument()
+
+                    self.timestamp = datetime.datetime(year, month, day, hour, minute, second).timestamp()
+        elif (argument.startswith("tomorrow")):
+            # tomorrow
+            # tomorrow at 11
+            # tomorrow at 11pm
+            # tomorrow at 11am
+            # tomorrow at 11:30:30
+            # tomorrow at 11:30
+
+            if (argument == "tomorrow"):
+                self.timestamp = (self.now + datetime.timedelta(days=1)).timestamp()
+            else:
+                match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
+                if (not match):
+                    match = re.fullmatch(regex.Regex.TOMORROW_AT_TIME, argument)
+
+                if (match):
+                    tomorrow = self.now + datetime.timedelta(days=1)
+
+                    if (len(match.groups()) == 2):
+                        hour = int(match.group("hour"))
+                        meridies = match.group("meridies")
+
+                        if (meridies == "pm"):
+                            hour += 12
+
+                        if (hour not in range(0, 24)):
+                            raise commands.BadArgument()
+
+                        self.timestamp = datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour).timestamp()
+                    else:
+                        hour = int(match.group("hour"))
+                        minute = int(match.group("minute"))
+
+                        if (match.group("second")):
+                            second = int(match.group("second"))
+                        else:
+                            second = 0
+
+                        if (hour not in range(0, 24)):
+                            raise commands.BadArgument()
+
+                        if (minute not in range(0, 61)):
+                            raise commands.BadArgument()
+
+                        if (second not in range(0, 61)):
+                            raise commands.BadArgument()
+
+                        self.timestamp = datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour, minute, second).timestamp()
+        elif (argument.startswith(("today at ", "at "))):
+            # today at 11
+            # today at 11am
+            # today at 11pm
+            # today at 11:30:30
+            # today at 11:30
+            # at 11
+            # at 11am
+            # at 11pm
+            # at 11:30:30
+            # at 11:30
+            
+            match = re.fullmatch(regex.Regex.TODAY_AT_HOUR, argument)
+            if (not match):
+                match = re.fullmatch(regex.Regex.TODAY_AT_TIME, argument)
+                if (not match):
+                    match = re.fullmatch(regex.Regex.AT_HOUR, argument)
+                    if (not match):
+                        match = re.fullmatch(regex.Regex.AT_TIME, argument)
+                        
+            if (match):
+                if (len(match.groups()) == 2):
+                    hour = int(match.group("hour"))
+                    meridies = match.group("meridies")
+
+                    if (meridies == "pm"):
+                        hour += 12
+
+                    if (hour not in range(0, 24)):
+                        raise commands.BadArgument()
+
+                    self.timestamp = datetime.datetime(self.now.year, self.now.month, self.now.day, hour).timestamp()
+                else:
+                    hour = int(match.group("hour"))
+                    minute = int(match.group("minute"))
+
+                    if (match.group("second")):
+                        second = int(match.group("second"))
+                    else:
+                        second = 0
+
+                    if (hour not in range(0, 24)):
+                        raise commands.BadArgument()
+
+                    if (minute not in range(0, 61)):
+                        raise commands.BadArgument()
+
+                    if (second not in range(0, 61)):
+                        raise commands.BadArgument()
+
+                    self.timestamp = datetime.datetime(self.now.year, self.now.month, self.now.day, hour, minute, second).timestamp()
+        elif (":" in argument):
+            # 11:30:30
+            # 11:30
+
+            match = re.fullmatch(regex.Regex.TIME, argument)
+
+            if (match):
+                hour = int(match.group("hour"))
+                minute = int(match.group("minute"))
+
+                if (match.group("second")):
+                    second = int(match.group("second"))
+                else:
+                    second = 0
+
+                if (hour not in range(0, 24)):
+                    raise commands.BadArgument()
+
+                if (minute not in range(0, 61)):
+                    raise commands.BadArgument()
+
+                if (second not in range(0, 61)):
+                    raise commands.BadArgument()
+
+                self.timestamp = datetime.datetime(self.now.year, self.now.month, self.now.day, hour, minute, second).timestamp()
+        elif (("am" in argument) or ("pm" in argument)):
+            # 11am
+            # 11pm
+            
+            match = re.fullmatch(regex.Regex.HOUR, argument)
+
+            if (match):
+                hour = int(match.group("hour"))
+                meridies = match.group("meridies")
+
+                if (meridies == "pm"):
+                    hour += 12
+
+                if (hour not in range(0, 24)):
+                    raise commands.BadArgument()
+
+                self.timestamp = datetime.datetime(self.now.year, self.now.month, self.now.day, hour).timestamp()
+        else:
+            # 1s
+            # 1 second
+            # 2 seconds
+            
+            match = re.fullmatch(regex.Regex.ANY_HUMANIZED_TIME, argument)
+            if (match):
+                new = datetime.timedelta()
+
+                seconds = match.group("seconds")
+                if (seconds):
+                    seconds = int(seconds)
+                    if (seconds > 0):
+                        seconds = datetime.timedelta(seconds=seconds)
+                        new += seconds
+
+                minutes = match.group("minutes")
+                if (minutes):
+                    minutes = int(minutes)
+                    if (minutes > 0):
+                        minutes = datetime.timedelta(minutes=minutes)
+                        new += minutes
+
+                hours = match.group("hours")
+                if (hours):
+                    hours = int(hours)
+                    if (hours > 0):
+                        hours = datetime.timedelta(hours=hours)
+                        new += hours
+
+                days = match.group("days")
+                if (days):
+                    days = int(days)
+                    if (days > 0):
+                        days = datetime.timedelta(days=days)
+                        new += days
+
+                weeks = match.group("weeks")
+                if (weeks):
+                    weeks = int(weeks)
+                    if (weeks > 0):
+                        weeks = datetime.timedelta(weeks=weeks)
+                        new += weeks
+
+                if (new > datetime.timedelta()):
+                    self.timestamp = (self.now + new).timestamp()
+
+        if (not hasattr(self, "timestamp")):
+            raise commands.BadArgument()
         
-        if (date := Date.parse(argument)):
-            result = datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
-        elif (time := Time.parse(argument)):
-            result = datetime.datetime(self.now.year, self.now.month, self.now.day, time.hour, time.minute, time.second)
-        elif (match := re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)):
-            # tomorrow at 0
-            # tomorrow at 0am
-            # tomorrow at 0 am
-            # tomorrow at 0pm
-            # tomorrow at 0 pm
-            # tomorrow at 00
-            # tomorrow at 00am
-            # tomorrow at 00 am
-            # tomorrow at 00pm
-            # tomorrow at 00 pm
-            hour = int(match.group("hour"))
-
-            if ((meridies := match.group("meridies")) == "pm"):
-                hour += 12
-
-            if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
-
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.datetime(new.year, new.month, new.day, hour, 0, 0)
-        elif (match := re.fullmatch(regex.Regex.TOMORROW_AT_TIME, argument)):
-            # tomorrow at 00:00
-            # tomorrow at 00:00:00
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-                
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.datetime(new.year, new.month, new.day, hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.US_DATE_TIME, argument)):
-            # 12/31/00 00:00
-            # 12/31/00 00:00:00
-            # 12/31/0000 00:00
-            # 12/31/0000 00:00:00
-            # 12-31-00 00:00
-            # 12-31-00 00:00:00
-            # 12-31-0000 00:00
-            # 12-31-0000 00:00:00
-            month = int(match.group("month"))
-            day = int(match.group("day"))
-
-            if (len(year := match.group("year")) == 2):
-                year = str(self.now.year)[:2] + year
-
-            year = int(year)
-
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-                
-            result = datetime.datetime(year, month, day, hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.EU_DATE_TIME, argument)):
-            # 31/12/00 00:00
-            # 31/12/00 00:00:00
-            # 31/12/0000 00:00
-            # 31/12/0000 00:00:00
-            # 31-12-00 00:00
-            # 31-12-00 00:00:00
-            # 31-12-0000 00:00
-            # 31-12-0000 00:00:00
-            day = int(match.group("day"))
-            month = int(match.group("month"))
-
-            if (len(year := match.group("year")) == 2):
-                year = str(self.now.year)[:2] + year
-
-            year = int(year)
-
-            hour = int(match.group("hour"))
-            minute = int(match.group("minute"))
-
-            if (second := match.group("second")):
-                second = int(second)
-            else:
-                second = 0
-                
-            result = datetime.datetime(year, month, day, hour, minute, second)
-        elif (match := re.fullmatch(regex.Regex.ANY_HUMANIZED_TIME, argument)):
-            new = datetime.timedelta()
-
-            if (seconds := match.group("seconds")):
-                if (seconds := int(seconds)):
-                    new += datetime.timedelta(seconds=seconds)
-
-            if (minutes := match.group("minutes")):
-                if (minutes := int(minutes)):
-                    new += datetime.timedelta(minutes=minutes)
-
-            if (hours := match.group("hours")):
-                if (hours := int(hours)):
-                    new += datetime.timedelta(hours=hours)
-
-            if (days := match.group("days")):
-                if (days := int(days)):
-                    new += datetime.timedelta(days=days)
-
-            if (weeks := match.group("weeks")):
-                if (weeks := int(weeks)):
-                    new += datetime.timedelta(weeks=weeks)
-
-            if (new > datetime.timedelta()):
-                result = self.now + new
-
-        return result
-
-class FutureDateTime(DateTime):
-    def __init__(self, argument: str = None):
-        """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
-        """
-
-        super().__init__(argument)
-        
-    @classmethod
-    def parse(self, argument: str):
-        """
-        calls super().parse() but raises if the datetime is not in the
-        future
-        """
-
-        result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        if (result <= self.now):
-            raise commands.BadArgument("datetime is not in the future")
-
-        return result
+        if (self.timestamp < self.now.timestamp()):
+            raise commands.BadArgument()
         
 class RPS():
     def __init__(self, argument: str):

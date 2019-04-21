@@ -499,7 +499,7 @@ class General(commands.Cog, name="general"):
 
     @checks.is_alpha()
     @commands.command(name="reminder", aliases=["remind", "remindme"])
-    async def _reminder(self, ctx: commands.Context, time: parse.DateTime, *, reminder: str):
+    async def _reminder(self, ctx: commands.Context, time: parse.FutureDateTime, *, reminder: str):
         """
         create a reminder
 
@@ -515,7 +515,7 @@ class General(commands.Cog, name="general"):
             `"at 10:30"`
             `10pm`
             `10:30`
-            `02/22/20`
+            `02-22-20`
             `"02/22/2020 10:30"`
 
         examples:
@@ -535,12 +535,12 @@ class General(commands.Cog, name="general"):
         e = format.embed("Reminder Added",
                          "{0}\n\nfor {1}".format(
                              reminder,
-                             format.humanize_time(datetime.datetime.fromtimestamp(time.timestamp))
+                             format.humanize_time(datetime.datetime.fromtimestamp(time.result.timestamp()))
                          ),
                          color=color,
                          footer="{0} | {1}".format(
                              ctx.author.name,
-                             format.humanize_time(time.now)
+                             format.humanize_time(time.result)
                          ),
                          footer_icon_url=ctx.author.avatar_url)
 
