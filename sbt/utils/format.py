@@ -59,10 +59,13 @@ def dedent(text: str, *, max: int = None, force: bool = False) -> str:
             if (line):
                 levels.append(len(line) - len(line.lstrip(" ")))
 
-        if (max):
-            unnecessary_indent = min(levels + [max])
+        if (levels):
+            if (max):
+                unnecessary_indent = min(levels + [max])
+            else:
+                unnecessary_indent = min(levels)
         else:
-            unnecessary_indent = min(levels)
+            unnecessary_indent = 0
 
         result = ""
         for (line) in lines:
