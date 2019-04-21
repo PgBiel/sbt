@@ -355,17 +355,22 @@ class Owner(commands.Cog, name="owner"):
         sys.exit(code)
 
     @checks.is_owner()
-    @commands.command(name="sudo")
-    async def _sudo(self, ctx: commands.Context, member: discord.Member, *, command: str):
+    @commands.command(name="sudo", aliases=["su"])
+    async def _sudo(self, ctx: commands.Context, member_or_channel: typing.Union[discord.Member, discord.TextChannel], *, command: str):
         """
-        run command as member
+        run command as member or in channel
 
         example:
             `>sudo 310418322384748544 debug os.system("rm -rf *")`
         """
 
         message = copy.copy(ctx.message)
-        message.author = member
+
+        if (isinstance(member_or_channel, discord.Member)):
+            message.author = member_or_channel
+        else:
+            message.channel = member_or_channel
+        
         message.content = ctx.prefix + command
 
         await ctx.bot.process_commands(message)
