@@ -248,6 +248,15 @@ class Information(commands.Cog, name="information"):
 
         await ctx.send(embed=e)
 
+    @commands.command(name="github", aliases=["gh"])
+    async def _github(self, ctx: commands.Context):
+        """
+        display github link
+        """
+
+        github = ctx.bot._settings.github
+        await ctx.send(github)
+
     @commands.command(name="invite")
     async def _invite(self, ctx: commands.Context):
         """
