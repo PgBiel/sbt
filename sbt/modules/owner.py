@@ -382,7 +382,6 @@ class Owner(commands.Cog, name="owner"):
             message.channel = member_or_channel
         
         message.content = ctx.prefix + command
-
         await ctx.bot.process_commands(message)
 
     @checks.is_owner()
@@ -493,9 +492,6 @@ class Owner(commands.Cog, name="owner"):
         add a user to the global blacklist
         """
 
-        user = copy.copy(user)
-        user.id = str(user.id)
-
         if (not user.id in ctx.bot._settings.blacklist):
             ctx.bot._settings.settings["blacklist"].append(user.id)
             ctx.bot._settings.save()
@@ -507,9 +503,6 @@ class Owner(commands.Cog, name="owner"):
         """
         remove a user from the global blacklist
         """
-
-        user = copy.copy(user)
-        user.id = str(user.id)
 
         if (user.id in ctx.bot._settings.blacklist):
             ctx.bot._settings.settings["blacklist"].remove(user.id)
@@ -900,7 +893,7 @@ class Owner(commands.Cog, name="owner"):
         message = ""
 
         for (id) in ctx.bot._settings.whitelist:
-            user = await ctx.bot.fetch_user(int(id))
+            user = await ctx.bot.get_user(id)
             if (user):
                 message += "{0}  |  {1}\n".format(id, user.name)
             else:
@@ -916,9 +909,6 @@ class Owner(commands.Cog, name="owner"):
         add a user to the global whitelist
         """
 
-        user = copy.copy(user)
-        user.id = str(user.id)
-
         if (user.id not in ctx.bot._settings.whitelist):
             ctx.bot._settings.settings["whitelist"].append(user.id)
             ctx.bot._settings.save()
@@ -930,9 +920,6 @@ class Owner(commands.Cog, name="owner"):
         """
         remove a user from the global whitelist
         """
-
-        user = copy.copy(user)
-        user.id = str(user.id)
 
         if (user.id in ctx.bot._settings.whitelist):
             ctx.bot._settings.settings["whitelist"].remove(user.id)
