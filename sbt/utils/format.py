@@ -74,6 +74,7 @@ def embed(title: str = None, description: str = None,
           image: str = None,
           footer: str = None, footer_icon_url: str = None,
           to_dict: bool = False) -> discord.Embed:
+
     e = discord.Embed()
 
     if (title):
@@ -119,21 +120,35 @@ def embed(title: str = None, description: str = None,
         return e.to_dict()
     return e
 
-def escape(text: str, *, mentions: bool = True, asterisk: bool = True, backticks: bool = True, tilde: bool = True, underscores: bool = True) -> str:
+def escape(text: str,
+           *,
+           mentions: bool = True,
+           emoji: bool = False,
+           urls: bool = False, invites: bool = False,
+           asterisk: bool = True, backticks: bool = True, tilde: bool = True, underscores: bool = True) -> str:
+
     if (mentions):
         text = text.replace("@", "@\u200b")
 
-    if (asterisk):
-        text = text.replace("*", "\\*")
+    if (emoji):
+        text = re.sub(r"<(a)?:([a-zA-Z0-9_]+):([0-9]+)>", "<\u200b\\1:\\2:\\3>", text)
 
-    if (backticks):
-        text = text.replace("`", "\\`")
+    if (urls):
+        text = text.replace("https://", "https:/\u200b/")
+    elif (invites):
+        text = text.replace("discord.gg/", "discord.gg/\u200b")
+    else:
+        if (asterisk):
+            text = text.replace("*", "\\*")
 
-    if (tilde):
-        text = text.replace("~", "\\~")
+        if (backticks):
+            text = text.replace("`", "\\`")
 
-    if (underscores):
-        text = text.replace("_", "\\_")
+        if (tilde):
+            text = text.replace("~", "\\~")
+
+        if (underscores):
+            text = text.replace("_", "\\_")
 
     return text
 
