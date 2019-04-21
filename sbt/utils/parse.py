@@ -59,9 +59,9 @@ class Color():
 
         if (match := re.fullmatch(regex.Regex.HEXADECIMAL, argument)):
             if (argument.startswith("0X")):
-                argument = code[2:]
+                argument = argument[2:]
             elif (argument.startswith("#")):
-                argument = code[1:]
+                argument = argument[1:]
 
             if (len(argument) in [3, 4]):
                 argument = "".join(i * 2 for i in argument)
@@ -98,8 +98,8 @@ class Color():
         return result
 
     @classmethod
-    def hex_to_rgb(self, hexadecimal: str) -> tuple:
-        return struct.unpack("BBB", bytes.fromhex(argument))
+    def hex_to_rgb(self, hex: str) -> tuple:
+        return struct.unpack("BBB", bytes.fromhex(hex))
 
     @classmethod
     def rgb_to_cmyk(self, r: int, g: int, b: int) -> tuple:
