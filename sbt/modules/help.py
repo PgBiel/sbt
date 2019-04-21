@@ -347,8 +347,6 @@ class Help(commands.Cog, name="help"):
                         if (str(reaction.emoji) in reactions):
                             return True
 
-                return False
-
             tasks = {
                 asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check, timeout=120)),
                 asyncio.create_task(ctx.bot.wait_for("reaction_remove", check=check, timeout=120)),
@@ -383,8 +381,6 @@ class Help(commands.Cog, name="help"):
                                 if (int(message.content) >= 1):
                                     if (int(message.content) <= len(input_)):
                                         return True
-
-                    return False
 
                 message = await ctx.send("choose a page (1-{0})".format(len(input_)))
 
