@@ -75,7 +75,7 @@ class Owner(commands.Cog, name="owner"):
         del self.bot._extensions.extensions[self.qualified_name]
         
     @checks.is_owner()
-    @commands.command(name="debug", aliases=["eval"])
+    @commands.command(name="debug")
     async def _debug(self, ctx: commands.Context, index: typing.Optional[int], *, shit: str):
         """
         debug shit
@@ -83,7 +83,7 @@ class Owner(commands.Cog, name="owner"):
         there is no better explanation of what this command does
         """
 
-        shit = shit.strip("` ")
+        shit = shit.strip("`").strip()
 
         globals_ = globals().copy()
         globals_["self"] = self
@@ -93,7 +93,7 @@ class Owner(commands.Cog, name="owner"):
             globals_[f"_{i}"] = result
     
         if (hasattr(self, "_exception")):
-            globals_["x"] = self._exception
+            globals_["_x"] = self._exception
 
         try:
             result = eval(shit, globals_, locals())
@@ -131,38 +131,14 @@ class Owner(commands.Cog, name="owner"):
         else:
             self._results.appendleft(result)
 
-        result = str(result)
-        result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
-        result = result.replace(ctx.bot._settings.token, "[REDACTED]")
+        if (result != None):
+            result = str(result)
+            result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
+            result = result.replace(ctx.bot._settings.token, "[REDACTED]")
 
-        pages = list()
-
-        for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
-            if (page):
-                page = await ctx.send("```\n{0}```".format(page))
-                pages.append(page)
-
-        await ctx.message.add_reaction("\U0001f5d1")
-
-        def check(reaction: discord.Reaction, member: discord.Member):
-            if (member == ctx.author):
-                if (reaction.message.id == ctx.message.id):
-                    if (str(reaction.emoji) == "\U0001f5d1"):
-                        return True
-
-            return False
-
-        try:
-            task = asyncio.create_task(ctx.bot.wait_for("reaction_add", check=check))
-            reaction, _ = await asyncio.wait_for(task, 10)
-        except (asyncio.TimeoutError) as e:
-            await ctx.message.remove_reaction("\U0001f5d1", ctx.guild.me)
-            return
-
-        await ctx.message.delete()
-        
-        for (page) in pages:
-            await page.delete()
+            for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
+                if (page):
+                    page = await ctx.send("```\n{0}```".format(page))
 
     @checks.is_owner()
     @commands.command(name="do")
@@ -188,10 +164,61 @@ class Owner(commands.Cog, name="owner"):
     async def _echo(self, ctx: commands.Context, *, message: str):
         """
         echo a message
+
+        there is no better explanation of what this command does
         """
 
         await ctx.message.delete()
         await ctx.send(message)
+
+    @checks.is_owner()
+    @commands.command(name="eval")
+    async def _eval(self, ctx: commands.Context, *, shit: str):
+        """
+        eval shit
+        """
+
+        shit = shit.strip("`").strip()
+
+        globals_ = globals().copy()
+        globals_["self"] = self
+        globals_["ctx"] = ctx
+
+        for (i, result) in enumerate(self._results):
+            globals_[f"_{i}"] = result
+    
+        if (hasattr(self, "_exception")):
+            globals_["_x"] = self._exception
+
+        function = "async def _evaluate(self):\n{0}".format(
+            format.indent(shit, amount=4)
+        )
+
+        try:
+            exec(function, globals_, locals())
+            result = await locals()["_evaluate"](self)
+        except (Exception) as e:
+            message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            await ctx.message.add_reaction("\U0000274e")
+            self._exception = e
+            
+            if (not checks.is_debugging_check(ctx)):
+                await asyncio.sleep(5)
+                await message.delete()
+                await ctx.message.delete()
+
+            return
+        else:
+            await ctx.message.add_reaction("\U00002705")
+
+        if (result != None):
+            result = str(result)
+            result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
+            result = result.replace(ctx.bot._settings.token, "[REDACTED]")
+
+            for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
+                if (page):
+                    page = await ctx.send("```\n{0}```".format(page))
         
     @checks.is_guild()
     @checks.is_owner()
