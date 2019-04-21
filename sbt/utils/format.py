@@ -43,25 +43,33 @@ def camelify(text: str) -> str:
 def code(text: str, language: str = "") -> str:
     return "```{0}\n{1}\n```".format(language, text)
 
-def dedent(text: str, *, max: int = None) -> str:
+def dedent(text: str, *, max: int = None, force: bool = False) -> str:
     lines = text.split("\n")
 
-    levels = list()
-    for (line) in lines:
-        if (line):
-            levels.append(len(line) - len(line.lstrip(" ")))
+    if (force):
+        result = ""
+        for (line) in lines:
+            if (line):
+                result += line.lstrip()
 
-    if (max):
-        unnecessary_indent = min(levels + [max])
+            result += "\n"
     else:
-        unnecessary_indent = min(levels)
+        levels = list()
+        for (line) in lines:
+            if (line):
+                levels.append(len(line) - len(line.lstrip(" ")))
 
-    result = ""
-    for (line) in lines:
-        if (line):
-            result += line[unnecessary_indent:]
+        if (max):
+            unnecessary_indent = min(levels + [max])
+        else:
+            unnecessary_indent = min(levels)
 
-        result += "\n"
+        result = ""
+        for (line) in lines:
+            if (line):
+                result += line[unnecessary_indent:]
+
+            result += "\n"
 
     return result
 

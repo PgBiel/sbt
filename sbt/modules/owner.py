@@ -178,7 +178,8 @@ class Owner(commands.Cog, name="owner"):
         there is no better explanation of what this command does
         """
 
-        shit = shit.strip("`").strip()
+        shit = shit.strip("`")
+        shit = format.dedent(shit, force=True)
 
         globals_ = globals().copy()
         globals_["self"] = self
