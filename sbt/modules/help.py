@@ -418,7 +418,7 @@ class Help(commands.Cog, name="help"):
                 return
 
             await help.remove_reaction(str(reaction.emoji), ctx.author)
-            await help.edit(embed = input_[current])
+            await help.edit(embed=input_[current])
 
     async def send_old_help(ctx: commands.Context, thing: str = None):
         if (thing):
