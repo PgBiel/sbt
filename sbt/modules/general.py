@@ -507,6 +507,24 @@ class General(commands.Cog, name="general"):
 
         await ctx.send("```\n{0}```".format(text))
 
+    @commands.command(name="pigeonify", aliases=["piglatin", "latin"])
+    async def _pigeonify(self, ctx: commands.Context, *words: str):
+        """
+        pig latin
+        """
+
+        if (not words):
+            await ctx.bot.send_help(ctx)
+            return
+
+        message = ""
+
+        for (word) in words:
+            message += word[1:] + word[0] + "ay"
+            message += " "
+
+        await ctx.send(message)
+
     @checks.is_alpha()
     @commands.command(name="reminder", aliases=["remind", "remindme"])
     async def _reminder(self, ctx: commands.Context, time: parse.FutureDateTime, *, reminder: str):
