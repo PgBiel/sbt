@@ -179,7 +179,7 @@ class Owner(commands.Cog, name="owner"):
         """
 
         shit = shit.strip("`")
-        shit = format.dedent(shit, force=True)
+        shit = format.dedent(shit)
 
         globals_ = globals().copy()
         globals_["self"] = self
