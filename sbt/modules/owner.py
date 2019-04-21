@@ -253,7 +253,7 @@ class Owner(commands.Cog, name="owner"):
         except (commands.ExtensionFailed) as e:
             await message.edit(content="modules.{0}'s setup broke".format(module))
             return
-        except (commands.ExtensionError) as e:
+        except (Exception) as e:
             traceback.print_exc()
 
             await message.edit(content="modules.{0} broke".format(module))
@@ -296,7 +296,7 @@ class Owner(commands.Cog, name="owner"):
         except (commands.ExtensionFailed) as e:
             await message.edit(content="modules.{0}'s setup broke".format(module))
             return
-        except (commands.ExtensionError) as e:
+        except (Exception) as e:
             traceback.print_exc()
 
             await message.edit(content="modules.{0} broke".format(module))
