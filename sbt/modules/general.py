@@ -909,7 +909,7 @@ class General(commands.Cog, name="general"):
 
     @_regex.command(name="findall")
     async def _regex_findall(self, ctx: commands.Context, pattern: str, *, string: str):
-        """
+        r"""
         re.findall
 
         example:
@@ -931,11 +931,11 @@ class General(commands.Cog, name="general"):
         
     @_regex.command(name="fullmatch")
     async def _regex_fullmatch(self, ctx: commands.Context, pattern: str, *, string: str):
-        """
+        r"""
         re.fullmatch
 
         example:
-            `regex fullmatch r"https?:\/\/(?:.+)\.dev\/?" https://shiney.dev/`
+            `regex fullmatch r"https?://(?:.+)\.dev/?" https://shiney.dev/`
         """
 
         try:
