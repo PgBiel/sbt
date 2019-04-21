@@ -424,7 +424,7 @@ class Information(commands.Cog, name="information"):
             name = unicodedata.name(character, "unknown name")
 
             # fix weird bug with the enclosing keycap
-            if (name == "COMBINING ENCLOSING KEYCAP"):
+            if (name in ["COMBINING ENCLOSING KEYCAP", "ZERO WIDTH SPACE"]):
                 i = " "
             else:
                 i = ""
