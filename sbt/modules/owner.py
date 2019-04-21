@@ -75,7 +75,7 @@ class Owner(commands.Cog, name="owner"):
         del self.bot._extensions.extensions[self.qualified_name]
         
     @checks.is_owner()
-    @commands.command(name="debug", aliases=[">"])
+    @commands.command(name="debug", aliases=["?"])
     async def _debug(self, ctx: commands.Context, index: typing.Optional[int], *, shit: str):
         """
         debug shit
@@ -170,10 +170,10 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send(message)
 
     @checks.is_owner()
-    @commands.command(name="eval")
-    async def _eval(self, ctx: commands.Context, *, shit: str):
+    @commands.command(name="evaluate", aliases=["eval", ">"])
+    async def _evaluate(self, ctx: commands.Context, *, shit: str):
         """
-        eval shit
+        evaluate shit
 
         there is no better explanation of what this command does
         """
@@ -191,13 +191,13 @@ class Owner(commands.Cog, name="owner"):
         if (hasattr(self, "_exception")):
             globals_["_x"] = self._exception
 
-        function = "async def _evaluate(self):\n{0}".format(
+        function = "async def _eval(self):\n{0}".format(
             format.indent(shit, amount=4)
         )
 
         try:
             exec(function, globals_, locals())
-            result = await locals()["_evaluate"](self)
+            result = await locals()["_eval"](self)
         except (Exception) as e:
             message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             await ctx.message.add_reaction("\U0000274e")
