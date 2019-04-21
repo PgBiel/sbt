@@ -141,7 +141,7 @@ class Owner(commands.Cog, name="owner"):
                     page = await ctx.send("```\n{0}```".format(page))
 
     @checks.is_owner()
-    @commands.command(name="do")
+    @commands.command(name="do", aliases=["repeat"])
     async def _do(self, ctx: commands.Context, times: int, member: typing.Optional[discord.Member], *, command: str):
         """
         do command, times, or something
