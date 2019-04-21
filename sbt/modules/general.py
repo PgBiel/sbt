@@ -32,6 +32,7 @@ import datetime
 import json
 import random
 import re
+import typing
 import urllib
 
 import discord
@@ -460,6 +461,13 @@ class General(commands.Cog, name="general"):
         """
 
         pass
+
+    @commands.command(name="hoi", hidden=True)
+    async def _hoi(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
+        if (not member):
+            member = ctx.author
+
+        await ctx.send("`(>'')> {0}`".format(member.display_name))
     
     @commands.command(name="intellect", aliases=["intellectify"])
     async def _intellect(self, ctx: commands.Context, *, text: str):
