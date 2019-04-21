@@ -29,6 +29,9 @@
     <Compile Include="modules\alpha.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="modules\beta.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="modules\general.py">
       <SubType>Code</SubType>
     </Compile>
