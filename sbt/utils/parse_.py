@@ -59,6 +59,8 @@ class Date():
         if (match := re.fullmatch(regex.Regex.US_DATE, argument)):
             # 12/31/00
             # 12/31/0000
+            # 12-31-00
+            # 12-31-0000
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -76,6 +78,8 @@ class Date():
         elif (match := re.fullmatch(regex.Regex.EU_DATE, argument)):
             # 31/12/00
             # 31/12/0000
+            # 31-12-00
+            # 31-12-0000
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -360,6 +364,10 @@ class DateTime():
             # 12/31/00 00:00:00
             # 12/31/0000 00:00
             # 12/31/0000 00:00:00
+            # 12-31-00 00:00
+            # 12-31-00 00:00:00
+            # 12-31-0000 00:00
+            # 12-31-0000 00:00:00
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -382,6 +390,10 @@ class DateTime():
             # 31/12/00 00:00:00
             # 31/12/0000 00:00
             # 31/12/0000 00:00:00
+            # 31-12-00 00:00
+            # 31-12-00 00:00:00
+            # 31-12-0000 00:00
+            # 31-12-0000 00:00:00
             day = int(match.group("day"))
             month = int(match.group("month"))
 
