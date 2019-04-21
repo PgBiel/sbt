@@ -160,6 +160,24 @@ def escape(text: str,
 
     return text
 
+def get_lines(text: str, start: int, end: int = None) -> str:
+    lines = text.split("\n")
+    start -= 1
+
+    if (end == -1):
+        return text
+    elif (not end):
+        return lines[start]
+
+    end = min([end, len(lines)])
+
+    result = ""
+    for (i) in range(start, end):
+        result += lines[i]
+        result += "\n"
+
+    return result
+
 def humanize_seconds(seconds: float, *, long: bool = True) -> str:
     seconds, microseconds = divmod(seconds, 1)  # exact
     minutes, seconds = divmod(seconds, 60)      # exact

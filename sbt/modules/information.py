@@ -319,12 +319,14 @@ class Information(commands.Cog, name="information"):
         pass
         
     @commands.command(name="source", aliases=["src"])
-    async def _source(self, ctx: commands.Context, *, command: str):
+    async def _source(self, ctx: commands.Context, command: str, start: typing.Optional[int], end: typing.Optional[int]):
         """
         display the source of a command
 
         examples:
-            `>source owner` :: show the source of `owner`
+            `>source owner` :: show the full source of `owner`
+            `>source owner 2` :: show line `2` of `owner`
+            `>source owner 3 5` :: show lines 3-5 of `owner`
         """
 
         command = ctx.bot.get_command(command)
@@ -336,7 +338,15 @@ class Information(commands.Cog, name="information"):
             await ctx.bot.send_help(ctx)
             return
 
+        if (start):
+            if ((end) and ((start < 1) or (start > end))):
+                raise commands.BadArgument()
+        else:
+            # show all
+            start, end = 1, -1
+
         source = inspect.getsource(command.callback)
+        source = format.get_lines(source, start, end)
         
         message = format.dedent(source)
         message = message.replace("```", "``")
