@@ -224,12 +224,24 @@ class Owner(commands.Cog, name="owner"):
     @checks.is_guild()
     @checks.is_owner()
     @commands.command(name="leave")
-    async def _leave(self, ctx: commands.Context):
+    async def _leave(self, ctx: commands.Context, guild_id: typing.Optional[int]):
         """
         fine, bye!
         """
 
-        await ctx.guild.leave()
+        if (not guild_id):
+            guild = ctx.guild
+            await ctx.send("\U0001f44b\U0001f3fd")
+        else:
+            guild = ctx.bot.get_guild(guild_id)
+            if (not guild):
+                await ctx.send("\U00002049")
+                return
+
+        await guild.leave()
+
+        if ((guild_id) and (guild_id != ctx.guild.id)):
+            await ctx.send("done.")
 
     @checks.is_owner()
     @commands.command(name="load")
