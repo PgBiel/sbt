@@ -563,7 +563,7 @@ class General(commands.Cog, name="general"):
         e = format.embed("Reminder Added",
                          "{0}\n\nfor {1}".format(
                              reminder,
-                             format.humanize_time(datetime.datetime.fromtimestamp(time.result.timestamp()))
+                             format.humanize_time(time.result)
                          ),
                          color=color,
                          footer="{0} | {1}".format(
