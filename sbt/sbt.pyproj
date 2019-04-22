@@ -78,6 +78,9 @@
     <Compile Include="utils\regex.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\search.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="utils\settings.py">
       <SubType>Code</SubType>
     </Compile>
