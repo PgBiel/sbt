@@ -770,6 +770,24 @@ class General(commands.Cog, name="general"):
             await ctx.send("stopwatch stopped")
             await ctx.send(format.humanize_seconds(seconds))
 
+    @checks.is_guild()
+    @commands.command(name="topic")
+    async def _topic(self, ctx: commands.Context, channel: typing.Optional[discord.TextChannel]):
+        """
+        display the topic of a channel
+
+        defaults to the current channel
+        """
+
+        if (not channel):
+            channel = ctx.channel
+
+        if (not channel.topic):
+            await ctx.send("this channel has no topic")
+            return
+
+        await ctx.send(channel.topic)
+
     @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
     @commands.command(name="urban")
     async def _urban(self, ctx: commands.Context, *, search: str):
