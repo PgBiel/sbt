@@ -166,8 +166,11 @@ class Help(commands.Cog, name="help"):
 
                 for (command) in chunk:
                     signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-                    help = command.short_doc
-                    e.add_field(name = signature, value = help, inline = False)
+
+                    if (not (help := command.short_doc)):
+                        help = "no description"
+
+                    e.add_field(name=signature, value=help, inline=False)
 
                 e.set_footer(
                     text = "{0} | {1}".format(
@@ -213,8 +216,11 @@ class Help(commands.Cog, name="help"):
 
             for (command) in chunk:
                 signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-                help = command.short_doc
-                e.add_field(name = signature, value = help, inline = False)
+
+                if (not (help := command.short_doc)):
+                    help = "no description"
+
+                e.add_field(name=signature, value=help, inline=False)
 
             e.set_footer(
                 text = "{0} | {1}".format(
@@ -267,12 +273,16 @@ class Help(commands.Cog, name="help"):
                     )
                 )
 
-                e.description = command.short_doc
+                if (command.short_doc):
+                    e.description = command.short_doc
 
                 for (command) in chunk:
                     signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-                    help = command.short_doc
-                    e.add_field(name = signature, value = help, inline = False)
+
+                    if (not (help := command.short_doc)):
+                        help = "no description"
+
+                    e.add_field(name=signature, value=help, inline=False)
 
                 e.set_footer(
                     text = "{0} | {1}".format(
@@ -295,8 +305,9 @@ class Help(commands.Cog, name="help"):
             e = discord.Embed(color = color)
 
             e.set_author(name = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature))
-            e.description = command.help
-            #e.description = "```\n{0}```".format(command.help)
+
+            if (command.help):
+                e.description = command.help
 
             e.set_footer(
                 text = "{0} | {1}".format(
