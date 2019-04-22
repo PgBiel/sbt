@@ -735,7 +735,7 @@ class Owner(commands.Cog, name="owner"):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
     
-    @checks.administrator_or_permissions(manage_server=True)
+    @checks.administrator_or_permissions(manage_guild=True)
     @commands.group(name="settings")
     async def _settings(self, ctx: commands.Context):
         """
@@ -803,7 +803,6 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
         
     @checks.is_guild()
-    @checks.administrator_or_permissions(manage_server=True)
     @commands.cooldown(1, 120, commands.cooldowns.BucketType.guild)
     @_settings.command(name="prefix", aliases=["guildprefix"])
     async def _settings_prefix(self, ctx: commands.Context, prefix: str = None):
