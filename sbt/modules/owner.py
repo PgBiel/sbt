@@ -240,7 +240,7 @@ class Owner(commands.Cog, name="owner"):
 
         await guild.leave()
 
-        if ((guild_id) and (guild_id != ctx.guild.id)):
+        if ((guild_id) and (guild != ctx.guild)):
             await ctx.send("done.")
 
     @checks.is_owner()
