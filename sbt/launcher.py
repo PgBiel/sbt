@@ -69,6 +69,9 @@ class SBT():
             try:
                 code = subprocess.call(arguments)
             except (Exception) as e:
+                if (not auto_restart):
+                    break
+            else:
                 if (code == 587):
                     # owner._restart
                     pass

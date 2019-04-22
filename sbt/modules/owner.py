@@ -325,7 +325,6 @@ class Owner(commands.Cog, name="owner"):
 
         message = await ctx.send("restarting...")
         ctx.bot._settings.set_restart_message(message.id, message.channel.id)
-        await ctx.bot.logout()
         sys.exit(587)
 
     @checks.is_owner()
@@ -373,7 +372,6 @@ class Owner(commands.Cog, name="owner"):
             code = 50
 
         await ctx.send("shutting down...")
-        await ctx.bot.logout()
         sys.exit(code)
 
     @checks.is_owner()

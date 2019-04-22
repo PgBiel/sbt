@@ -64,6 +64,9 @@ class Bot(commands.Bot):
         
         super().__init__(*args, command_prefix=prefix_manager, **kwargs)
 
+    def run(self):
+        super().run(self._settings.token)
+
     async def send_help(self, ctx: commands.Context):
         help = self.get_cog("help")
         if (help):
@@ -346,12 +349,16 @@ def main(bot: commands.Bot):
     load_extensions(bot)
 
     print("Logging into Discord...")
-    bot.run(bot._settings.token)
+    bot.run()
 
 
 if (__name__ == "__main__"):
     bot = init()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(bot))
-    loop.close()
+    try:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main(bot))
+    except (Exception) as e:
+        loop.run_until_complete(bot.logout())
+    finally:
+        loop.close()
