@@ -68,20 +68,14 @@ class SBT():
         while (True):
             try:
                 code = subprocess.call(arguments)
-            except (KeyboardInterrupt) as e:
-                pass
-            except (SystemExit, RuntimeError) as e:
+            except (Exception) as e:
                 if (code == 587):
                     # owner._restart
                     pass
-                else:
-                    if (code == 50):
-                        # owner._shutdown
-                        break
-                    elif (not auto_restart):
-                        break
-            except (Exception) as e:
-                if (not auto_restart):
+                elif (code == 50):
+                    # owner._shutdown
+                    break
+                elif (not auto_restart):
                     break
 
 if (__name__ == "__main__"):
