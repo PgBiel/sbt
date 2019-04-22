@@ -33,6 +33,7 @@ from discord.ext import commands
 
 from utils import (
     checks,
+    parse,
 )
 
 
@@ -78,10 +79,18 @@ class Moderation(commands.Cog, name="moderation"):
             if (ctx.author != ctx.guild.owner):
                 if (member.top_role >= ctx.author.top_role):
                     raise commands.errors.MissingPermissions([])
+            elif (member == ctx.guild.owner):
+                raise commands.errors.MissingPermissions([])
+
+            if (not reason):
+                reason = "{0} was banned by {1}".format(member.id, ctx.author.id)
 
             await member.ban(reason=reason, delete_message_days=days)
         else:
-            await ctx.guild.ban(user, reason=reason, delete_message_days=days)
+            if (not reason):
+                reason = "{0} was hackbanned by {1}".format(member.id, ctx.author.id)
+
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)
 
         await ctx.send("done.")
     
@@ -109,6 +118,9 @@ class Moderation(commands.Cog, name="moderation"):
         else:
             days = 0
 
+        if (not reason):
+            reason = "{0} was hackbanned by {1}".format(user.id, ctx.author.id)
+
         await ctx.guild.ban(user, reason=reason, delete_message_days=days)
         await ctx.send("done.")
     
@@ -127,6 +139,11 @@ class Moderation(commands.Cog, name="moderation"):
         if (ctx.author != ctx.guild.owner):
             if (member.top_role >= ctx.author.top_role):
                 raise commands.errors.MissingPermissions([])
+        elif (member == ctx.guild.owner):
+            raise commands.errors.MissingPermissions([])
+
+        if (not reason):
+            reason = "{0} was kicked by {1}".format(member.id, ctx.author.id)
 
         await member.kick(reason=reason)
         await ctx.send("done.")
@@ -134,7 +151,7 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_messages=True)
     @commands.command(name="mute")
-    async def _mute(self, ctx: commands.Context, member: discord.Member, seconds: typing.Optional[int], *, reason: typing.Optional[str]):
+    async def _mute(self, ctx: commands.Context, member: discord.Member, future: parse.FutureDateTime, *, reason: typing.Optional[str]):
         """
         mute a member
 
@@ -147,6 +164,11 @@ class Moderation(commands.Cog, name="moderation"):
         if (ctx.author != ctx.guild.owner):
             if (member.top_role >= ctx.author.top_role):
                 raise commands.errors.MissingPermissions([])
+        elif (member == ctx.guild.owner):
+            raise commands.errors.MissingPermissions([])
+
+        if (not reason):
+            reason = "{0} was muted by {1}".format(member.id, ctx.author.id)
 
         pass
     
@@ -202,8 +224,11 @@ class Moderation(commands.Cog, name="moderation"):
             elif (member == ctx.author):
                 if (not ctx.author.guild_permissions.change_nickname):
                     raise commands.errors.MissingPermissions([])
+        elif (member == ctx.guild.owner):
+            raise commands.errors.MissingPermissions([])
 
-        await member.edit(nick=name, reason="edited by {0}".format(ctx.author.name))
+        reason = "{0} was renamed by {1}".format(member.id, ctx.author.id)
+        await member.edit(nick=name, reason=reason)
         await ctx.send("done.")
         
     @checks.is_guild()
@@ -220,8 +245,14 @@ class Moderation(commands.Cog, name="moderation"):
             `>softban 310418322384748544 spam`
         """
 
-        if (member.top_role >= ctx.author.top_role):
+        if (ctx.author != ctx.guild.owner):
+            if (member.top_role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
+        elif (member == ctx.guild.owner):
             raise commands.errors.MissingPermissions([])
+
+        if (not reason):
+            reason = "{0} was softbanned by {1}".format(member.id, ctx.author.id)
 
         await member.ban(reason=reason)
         await ctx.guild.unban(member, reason=reason)
@@ -238,6 +269,9 @@ class Moderation(commands.Cog, name="moderation"):
             `>unban 310418322384748544`
             `>unban 310418322384748544 no more spam :)`
         """
+
+        if (not reason):
+            reason = "{0} was unbanned by {1}".format(user.id, ctx.author.id)
         
         try:
             await ctx.guild.unban(user, reason=reason)
@@ -263,7 +297,51 @@ class Moderation(commands.Cog, name="moderation"):
             if (member.top_role >= ctx.author.top_role):
                 raise commands.errors.MissingPermissions([])
 
+        if (not reason):
+            reason = "{0} was unmuted by {1}".format(member.id, ctx.author.id)
+
         pass
+
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
+    @commands.group(name="role")
+    async def _role(self, ctx: commands.Context):
+        """
+        role group
+        """
+
+        if (ctx.invoked_subcommand):
+            return
+
+        await ctx.bot.send_help(ctx)
+
+    @_role.command(name="add")
+    async def _role_add(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
+        """
+        add roles to a member
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            for (role) in roles:
+                if (role >= ctx.author.top_role):
+                    raise commands.errors.MissingPermissions([])
+
+        reason = "{0} added roles {1} to {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
+        await member.add_roles(*roles, reason=reason)
+
+    @_role.command(name="remove")
+    async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
+        """
+        remove roles from a member
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            for (role) in roles:
+                if (role >= ctx.author.top_role):
+                    raise commands.errors.MissingPermissions([])
+
+        reason = "{0} removed roles {1} from {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
+        await member.remove_roles(*roles, reason=reason)
 
 
 def setup(bot : commands.Bot):
