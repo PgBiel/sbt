@@ -767,7 +767,7 @@ class Owner(commands.Cog, name="owner"):
 
     @checks.is_owner()
     @_settings.command(name="load")
-    async def _load(self, ctx: commands.Context):
+    async def _settings_load(self, ctx: commands.Context):
         """
         load settings
         """
