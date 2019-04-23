@@ -425,7 +425,7 @@ class Moderation(commands.Cog, name="moderation"):
         await role.edit(name=name, reason="{0} changed this role's name")
         await ctx.send("done.")
 
-    @_role_edit.group(name="permissions", aliases=["permission"], invoke_without_command=True)
+    @_role_edit.group(name="permissions", aliases=["perms", "permission", "perm"], invoke_without_command=True)
     async def _role_edit_permissions(self, ctx: commands.Context):
         """
         edit a role's permissions
@@ -476,7 +476,7 @@ class Moderation(commands.Cog, name="moderation"):
     @_role.command(name="members")
     async def _role_members(self, ctx: commands.Context, role: discord.Role):
         """
-        list members with the role
+        display a role's members
         """
 
         if (not role.members):
@@ -497,6 +497,21 @@ class Moderation(commands.Cog, name="moderation"):
         )
 
         await ctx.send(embed=e)
+
+    @_role.command(name="permissions", aliases=["perms"])
+    async def _role_permissions(self, ctx: commands.Context, role: discord.Role):
+        """
+        display a role's permissions
+        """
+
+        message = ""
+        for (permission, value) in sorted(role.permissions):
+            if (value):
+                message += "+ {0}\n".format(permission)
+            else:
+                message += "- {0}\n".format(permission)
+
+        await ctx.send("```diff\n{0}```".format(message))
 
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
