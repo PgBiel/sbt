@@ -325,6 +325,7 @@ class Moderation(commands.Cog, name="moderation"):
 
         reason = "{0} added roles {1} to {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
         await member.add_roles(*roles, reason=reason)
+        await ctx.send("done.")
 
     @_role.group(name="edit", invoke_without_command=True)
     async def _role_edit(self, ctx: commands.Context):
@@ -361,6 +362,7 @@ class Moderation(commands.Cog, name="moderation"):
 
         reason = "{0} removed roles {1} from {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
         await member.remove_roles(*roles, reason=reason)
+        await ctx.send("done.")
 
 
 def setup(bot : commands.Bot):
