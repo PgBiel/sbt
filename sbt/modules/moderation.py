@@ -346,7 +346,35 @@ class Moderation(commands.Cog, name="moderation"):
                 raise commands.errors.MissingPermissions([])
 
         color = discord.Color.from_rgb(*color.result[2])
-        await role.edit(color=color)
+        await role.edit(color=color, reason="{0} changed this role's color")
+        await ctx.send("done.")
+        
+    @_role_edit.command(name="hoist")
+    async def _role_edit_hoist(self, ctx: commands.Context, role: discord.Role):
+        """
+        toggle this role's hoist property
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
+
+        hoist = not role.hoist
+        await role.edit(hoist=hoist, reason="{0} changed this role's hoist property")
+        await ctx.send("done.")
+        
+    @_role_edit.command(name="mentionable")
+    async def _role_edit_mentionable(self, ctx: commands.Context, role: discord.Role):
+        """
+        toggle this role's mentionable property
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
+
+        mentionable = not role.mentionable
+        await role.edit(mentionable=mentionable, reason="{0} changed this role's mentionable property")
         await ctx.send("done.")
         
     @_role_edit.command(name="name")
@@ -359,7 +387,7 @@ class Moderation(commands.Cog, name="moderation"):
             if (role >= ctx.author.top_role):
                 raise commands.errors.MissingPermissions([])
 
-        await role.edit(name=name)
+        await role.edit(name=name, reason="{0} changed this role's name")
         await ctx.send("done.")
 
     @_role.command(name="remove")
