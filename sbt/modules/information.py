@@ -87,6 +87,7 @@ class Information(commands.Cog, name="information"):
 
         color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
+        e.set_author(name="Code")
         e.add_field(name="Files", value=str(files))
         e.add_field(name="Lines", value=str(lines))
         e.add_field(name="Characters", value=str(characters))
