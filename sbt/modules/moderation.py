@@ -348,6 +348,19 @@ class Moderation(commands.Cog, name="moderation"):
         color = discord.Color.from_rgb(*color.result[2])
         await role.edit(color=color)
         await ctx.send("done.")
+        
+    @_role_edit.command(name="name")
+    async def _role_edit_name(self, ctx: commands.Context, role: discord.Role, *, name: str):
+        """
+        edit a role's name
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
+
+        await role.edit(name=name)
+        await ctx.send("done.")
 
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
