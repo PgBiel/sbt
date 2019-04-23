@@ -47,14 +47,14 @@ class Result():
         self.time = time
         self.results = results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Result url='{0}'>".format(self.url, self.time)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "<Result url='{0}'>".format(self.url, self.time)
 
     @classmethod
-    def from_raw(self, data: dict):
+    def from_raw(self, data: dict) -> list:
         results = list()
 
         for (result) in data["items"]:
@@ -74,14 +74,14 @@ class Search():
         self._engine = engine
         self._session = session
 
-    def __repr__(self):
-        return "<Search engine='{0}'>".format(self.engine)
+    def __repr__(self) -> str:
+        return self.__str__
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "<Search engine='{0}'>".format(self.engine)
 
     @property
-    def key(self):
+    def key(self) -> str:
         return self._key
 
     @key.setter
@@ -89,7 +89,7 @@ class Search():
         self._key = key
 
     @property
-    def engine(self):
+    def engine(self) -> str:
         return self._engine
 
     @engine.setter
@@ -97,14 +97,14 @@ class Search():
         self._engine = engine
 
     @property
-    def session(self):
+    def session(self) -> aiohttp.ClientSession:
         return self._session
 
     @session.setter
-    def key(self, session: str):
+    def key(self, session: aiohttp.ClientSession):
         self._session = session
 
-    async def search(self, query: str, *, safe: bool = True):
+    async def search(self, query: str, *, safe: bool = True) -> list:
         if (not self._session):
             session = aiohttp.ClientSession()
         else:
