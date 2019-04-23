@@ -495,12 +495,12 @@ class General(commands.Cog, name="general"):
 
             e.add_field(name=title, value=description, inline=False)
 
-        e.set_footer(text="{0} | {1} | safe={2} results={3} time={4}".format(
-            ctx.author.display_name,
-            format.humanize_time(),
-            "on" if safe else "off",
-            results[0].results,
-            results[0].time))
+        e.set_footer(text="{0} | safe={1} results={2} time={3}".format(
+                     ctx.author.name,
+                     "on" if safe else "off",
+                     results[0].results,
+                     results[0].time),
+                     icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=e)
 

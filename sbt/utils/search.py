@@ -57,12 +57,12 @@ class Result():
     def from_raw(self, data: dict):
         results = list()
 
-        for (result) in data[items]:
-            url = item["link"]
+        for (result) in data["items"]:
+            url = result["link"]
             title = result["title"]
             description = result["snippet"]
-            time = result["searchInformation"]["searchTime"]
-            results_ = int(result["searchInformation"]["totalResults"])
+            time = data["searchInformation"]["searchTime"]
+            results_ = int(data["searchInformation"]["totalResults"])
 
             results.append(self(url, title, description, time, results_))
 
@@ -106,23 +106,28 @@ class Search():
 
     async def search(self, query: str, *, safe: bool = True):
         if (not self._session):
-            self._session = aiohttp.ClientSession()
+            session = aiohttp.ClientSession()
+        else:
+            session = self._session
 
         safe = "active" if safe else "off"
 
-        url = "https://www.googleapis.com/customsearch/v1&q={}?key={}&cx={}&safe={}".format(
-            urllib.parse.quote_plus(query), self._key, self._engine, safe
+        url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}&safe={3}".format(
+            self._key, self._engine, urllib.parse.quote_plus(query), safe
         )
 
-        async with self._session.get(url) as response:
+        async with session.get(url) as response:
             json_ = await response.json()
 
-            if (error, json_.get("error")):
+            if (error := json_.get("error")):
                 if error["errors"][0]["domain"] == "usageLimits":
                     raise NoMoreRequests()
                 raise APIError(error["code"])
 
-            if (not json.get("items")):
+            if (not json_.get("items")):
                 raise NoResults()
+
+        if (not self._session):
+            await session.close()
 
         return Result.from_raw(json_)
