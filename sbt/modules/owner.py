@@ -75,7 +75,7 @@ class Owner(commands.Cog, name="owner"):
         del self.bot._extensions.extensions[self.qualified_name]
         
     @checks.is_owner()
-    @commands.command(name="debug", aliases=["?"])
+    @commands.command(name="debug", aliases=["?", ">?"])
     async def _debug(self, ctx: commands.Context, index: typing.Optional[int], *, shit: str):
         """
         debug shit
