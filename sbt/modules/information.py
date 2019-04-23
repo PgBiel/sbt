@@ -362,9 +362,30 @@ class Information(commands.Cog, name="information"):
         display permissions for an object
 
         defaults to you
-        """
 
-        pass
+        can be a role, a member, or a permissions integer
+        """
+        
+        if (not object):
+            object = ctx.author
+
+        if (isinstance(object, discord.Role)):
+            permissions = object.permissions
+            message = "{0} ({1})\n\n".format(object.name, object.id)
+        elif (isinstance(object, discord.Member)):
+            permissions = object.guild_permissions
+            message = "{0} ({1})\n\n".format(object.name, object.id)
+        else:
+            permissions = discord.Permissions(object)
+            message = "{0}\n\n".format(object)
+
+        for (permission, value) in sorted(permissions):
+            if (value):
+                message += "+ {0}\n".format(permission)
+            else:
+                message += "- {0}\n".format(permission)
+
+        await ctx.send(format.code(message, "diff"))
         
     @commands.command(name="source", aliases=["src"])
     async def _source(self, ctx: commands.Context, command: str, start: typing.Optional[int], end: typing.Optional[int]):
