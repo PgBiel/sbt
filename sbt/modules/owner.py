@@ -133,8 +133,10 @@ class Owner(commands.Cog, name="owner"):
 
         if (result != None):
             result = str(result)
-            result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
-            result = result.replace(ctx.bot._settings.token, "[REDACTED]")
+            result = (result.replace(ctx.bot._settings.secret, "[REDACTED]")
+                            .replace(ctx.bot._settings.token, "[REDACTED]")
+                            .replace(ctx.bot._setting.google_api_key, "[REDACTED]")
+                            .replace(ctx.bot._setting.google_engine_id, "[REDACTED]"))
 
             for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
                 if (page):
@@ -214,8 +216,10 @@ class Owner(commands.Cog, name="owner"):
 
         if (result != None):
             result = str(result)
-            result = result.replace(ctx.bot._settings.secret, "[REDACTED]")
-            result = result.replace(ctx.bot._settings.token, "[REDACTED]")
+            result = (result.replace(ctx.bot._settings.secret, "[REDACTED]")
+                            .replace(ctx.bot._settings.token, "[REDACTED]")
+                            .replace(ctx.bot._setting.google_api_key, "[REDACTED]")
+                            .replace(ctx.bot._setting.google_engine_id, "[REDACTED]"))
 
             for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
                 if (page):
