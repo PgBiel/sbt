@@ -390,6 +390,30 @@ class Moderation(commands.Cog, name="moderation"):
         await role.edit(name=name, reason="{0} changed this role's name")
         await ctx.send("done.")
 
+    @_role_edit.group(name="permissions", aliases=["permission"], invoke_without_command=True)
+    async def _role_edit_permissions(self, ctx: commands.Context):
+        """
+        edit a role's permissions
+        """
+
+        await ctx.bot.send_help(ctx)
+
+    @_role_edit_permissions.command(name="add")
+    async def _role_edit_permissions_add(self, ctx: commands.Context, permissions: str):
+        """
+        add permissions
+        """
+
+        pass
+
+    @_role_edit_permissions.command(name="remove")
+    async def _role_edit_permissions_remove(self, ctx: commands.Context, permissions: str):
+        """
+        remove permissions
+        """
+
+        pass
+
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
         """
