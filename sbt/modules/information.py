@@ -714,6 +714,7 @@ class Information(commands.Cog, name="information"):
 
         pass
 
+    @checks.is_owner()
     @_information.command(name="system")
     async def _information_system(self, ctx: commands.Context):
         """
