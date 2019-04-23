@@ -44,6 +44,7 @@ from utils import (
     checks,
     format,
     parse,
+    search,
 )
 
 
@@ -449,8 +450,9 @@ class General(commands.Cog, name="general"):
         choice = random.choice(choices)
         await ctx.send(choice)
 
+    @commands.cooldown(1, 10, commands.cooldowns.BucketType.user)
     @commands.command(name="google", aliases=["g"])
-    async def _google(self, ctx: commands.Context, *, search: str):
+    async def _google(self, ctx: commands.Context, *, query: str):
         """
         search google
 
@@ -460,7 +462,47 @@ class General(commands.Cog, name="general"):
             `>google weather in michigan` :: search google for "weather in michigan"
         """
 
-        pass
+        url = "https://www.google.com/search?q={}".format(urllib.parse.quote_plus(query))
+
+        safe = False
+        if (ctx.guild):
+            if (not ctx.channel.is_nsfw()):
+                safe = True
+
+        try:
+            search_ = search.Search(ctx.bot._settings.google_api_key, ctx.bot._settings.google_engine_id)
+            results = await search_.search(query, safe=safe)
+        except (search.NoResults) as e:
+            await ctx.send("no results")
+            return
+        except (search.NoMoreRequests) as e:
+            await ctx.send(format.wrap_url(url))
+            return
+        except (search.APIError) as e:
+            await ctx.send("api error ;(")
+            return
+        
+        color = random.choice([0xDB4437, 0x0F9D58, 0x4285F4, 0xF4B400])
+        e = discord.Embed(color=color)
+        e.set_author(name="Google", url=url, icon_url="https://image.flaticon.com/teams/slug/google.jpg")
+
+        for (result) in results[:3]:
+            if (len(title := result.title) > 256):
+                title = "{0}...".format(title[:253])
+
+            if (len(description := result.description) > 1024):
+                description = "{0}...".format(description[:1021])
+
+            e.add_field(name=title, value=description, inline=False)
+
+        e.set_footer(text="{0} | {1} | safe={2} results={3} time={4}".format(
+            ctx.author.display_name,
+            format.humanize_time(),
+            "on" if safe else "off",
+            results[0].results,
+            results[0].time))
+
+        await ctx.send(embed=e)
 
     @commands.command(name="hoi", hidden=True)
     async def _hoi(self, ctx: commands.Context, member: typing.Optional[discord.Member]):

@@ -66,6 +66,14 @@ class Settings():
         return self.settings["github"]
 
     @property
+    def google_api_key(self) -> str:
+        return self.settings["google_api_key"]
+
+    @property
+    def google_engine_id(self) -> str:
+        return self.settings["google_engine_id"]
+
+    @property
     def moderator_role(self) -> str:
         return self.settings["moderator_role"]
 
