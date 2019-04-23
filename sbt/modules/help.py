@@ -255,7 +255,7 @@ class Help(commands.Cog, name="help"):
 
                 if (command.aliases):
                     if (len(command.qualified_name.split(" ")) != 1):
-                        command_ = " {0}".format(" ".join(command.qualified_name.split(" ")[:-1]))
+                        command_ = "{0} ".format(" ".join(command.qualified_name.split(" ")[:-1]))
                     else:
                         command_ = ""
 
