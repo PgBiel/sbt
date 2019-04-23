@@ -66,7 +66,7 @@ class Information(commands.Cog, name="information"):
     @commands.command(name="code", aliases=["lines"])
     async def _code(self, ctx: commands.Context):
         """
-        :)
+        files, lines, characters
         """
 
         files_ = [
