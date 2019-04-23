@@ -304,14 +304,11 @@ class Moderation(commands.Cog, name="moderation"):
 
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_roles=True)
-    @commands.group(name="role")
+    @commands.group(name="role", invoke_without_command=True)
     async def _role(self, ctx: commands.Context):
         """
         role group
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         await ctx.bot.send_help(ctx)
 
@@ -328,6 +325,28 @@ class Moderation(commands.Cog, name="moderation"):
 
         reason = "{0} added roles {1} to {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
         await member.add_roles(*roles, reason=reason)
+
+    @_role.group(name="edit", invoke_without_command=True)
+    async def _role_edit(self, ctx: commands.Context):
+        """
+        edit a role
+        """
+
+        await ctx.bot.send_help(ctx)
+
+    @_role_edit.command(name="color", aliases=["colour"])
+    async def _role_edit_color(self, ctx: commands.Context, role: discord.Role, color: parse.Color):
+        """
+        edit a role's color
+        """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
+
+        color = discord.Color.from_rgb(*color.result[2])
+        await role.edit(color=color)
+        await ctx.send("done.")
 
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
