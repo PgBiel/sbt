@@ -52,6 +52,7 @@ from utils import (
     parse,
     parse_,
     regex,
+    search,
     settings,
 )
 
