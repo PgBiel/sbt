@@ -38,6 +38,40 @@ from utils import (
 )
 
 
+VALID_PERMISSIONS = [
+    "add_reactions",
+    "administrator",
+    "attach_files",
+    "ban_members",
+    "change_nickname",
+    "connect",
+    "create_instant_invite",
+    "deafen_members",
+    "embed_links",
+    "external_emojis",
+    "kick_members",
+    "manage_channels",
+    "manage_emojis",
+    "manage_guild",
+    "manage_messages",
+    "manage_nicknames",
+    "manage_roles",
+    "manage_webhooks",
+    "mention_everyone",
+    "move_members",
+    "mute_members",
+    "priority_speaker",
+    "read_message_history",
+    "read_messages",
+    "send_messages",
+    "send_tts_messages",
+    "speak",
+    "stream",
+    "use_voice_activation",
+    "view_audit_log",
+]
+
+
 class Moderation(commands.Cog, name="moderation"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -400,20 +434,44 @@ class Moderation(commands.Cog, name="moderation"):
         await ctx.bot.send_help(ctx)
 
     @_role_edit_permissions.command(name="add")
-    async def _role_edit_permissions_add(self, ctx: commands.Context, permissions: str):
+    async def _role_edit_permissions_add(self, ctx: commands.Context, *permissions: str):
         """
         add permissions
         """
 
-        pass
+        dict_ = dict()
+
+        for (permission) in permissions:
+            if (permission not in VALID_PERMISSIONS):
+                await ctx.send("invalid permission '{0}'".format(permission))
+                return
+
+            dict_[permission] = True
+
+        permissions = role.permissions
+        permissions.update(**dict_)
+
+        await role.update(permissions=permissions)
 
     @_role_edit_permissions.command(name="remove")
-    async def _role_edit_permissions_remove(self, ctx: commands.Context, permissions: str):
+    async def _role_edit_permissions_remove(self, ctx: commands.Context, *permissions: str):
         """
         remove permissions
         """
 
-        pass
+        dict_ = dict()
+
+        for (permission) in permissions:
+            if (permission not in VALID_PERMISSIONS):
+                await ctx.send("invalid permission '{0}'".format(permission))
+                return
+
+            dict_[permission] = False
+
+        permissions = role.permissions
+        permissions.update(**dict_)
+
+        await role.update(permissions=permissions)
 
     @_role.command(name="members")
     async def _role_members(self, ctx: commands.Context, role: discord.Role):
