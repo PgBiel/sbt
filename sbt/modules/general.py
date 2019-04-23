@@ -982,14 +982,11 @@ class General(commands.Cog, name="general"):
             await message.remove_reaction(str(reaction.emoji), ctx.author)
             await message.edit(embed=embeds[current])
 
-    @commands.group(name="regex", aliases=["re"])
+    @commands.group(name="regex", aliases=["re"], invoke_without_command=True)
     async def _regex(self, ctx: commands.Context):
         """
         do regex things
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         await ctx.bot.send_help(ctx)
 

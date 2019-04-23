@@ -475,14 +475,11 @@ class Owner(commands.Cog, name="owner"):
                 await ctx.send("```\n{0}```".format(page))
 
     @checks.is_owner()
-    @commands.group(name="blacklist")
+    @commands.group(name="blacklist", invoke_without_command=True)
     async def _blacklist(self, ctx: commands.Context):
         """
         show the current blacklist
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         if (not ctx.bot._settings.blacklist):
             await ctx.bot.send_help(ctx)
@@ -526,27 +523,19 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
 
     @checks.is_owner()
-    @commands.group(name="command")
+    @commands.group(name="command", invoke_without_command=True)
     async def _command(self, ctx: commands.Context):
         """
         command group
         """
 
-        if (ctx.invoked_subcommand):
-            return
-
         await ctx.bot.send_help(ctx)
 
-    @_command.group(name="disable")
+    @_command.group(name="disable", invoke_without_command=True)
     async def _command_disable(self, ctx: commands.Context, *, command: str):
         """
         disable a command
         """
-
-        if (command == "all"):
-            command = ctx.bot.get_command("command disable all")
-            await ctx.invoke(command)
-            return
 
         command_ = ctx.bot.get_command(command)
         if (not command_):
@@ -570,16 +559,11 @@ class Owner(commands.Cog, name="owner"):
         self.disable_commands_all(ctx, ctx.bot.commands)
         await ctx.send("done.")
 
-    @_command.group(name="enable")
+    @_command.group(name="enable", invoke_without_command=True)
     async def _command_enable(self, ctx: commands.Context, *, command: str):
         """
         enable a command
         """
-
-        if (command == "all"):
-            command = ctx.bot.get_command("command enable all")
-            await ctx.invoke(command)
-            return
 
         command_ = ctx.bot.get_command(command)
         if (not command_):
@@ -642,37 +626,14 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
         
     @checks.is_guild()
-    @commands.group(name="contact", aliases=["c"])
-    async def _contact(self, ctx: commands.Context):
-        """
-        contact group
-        """
-
-        if (ctx.invoked_subcommand):
-            return
-
-        await ctx.bot.send_help(ctx)
-
-    @checks.is_support()
-    @_contact.command(name="close")
-    async def _contact_close(self, ctx: commands.Context, contact_id: int):
-        """
-        close a support message
-
-        example:
-            `>contact close 0`
-        """
-
-        await ctx.send("a")
-
     @commands.cooldown(1, 30, commands.cooldowns.BucketType.user)
-    @_contact.command(name="help")
-    async def _contact_help(self, ctx: commands.Context, *, message: str):
+    @commands.group(name="contact", aliases=["c"], invoke_without_command=True)
+    async def _contact(self, ctx: commands.Context, *, message: str):
         """
         contact sbt's support team
 
         example:
-            `>contact help there was an error when i used <command> :(`
+            `>contact there was an error when i used <command> :(`
         """
 
         channel = ctx.bot.get_channel(ctx.bot._channels.contact)
@@ -687,6 +648,19 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
 
     @checks.is_support()
+    @_contact.command(name="close")
+    async def _contact_close(self, ctx: commands.Context, contact_id: int):
+        """
+        close a support message
+
+        example:
+            `>contact close 0`
+        """
+
+        ctx.command.reset_cooldown(ctx)
+        await ctx.send("a")
+
+    @checks.is_support()
     @_contact.command(name="respond")
     async def _contact_respond(self, ctx: commands.Context, contact_id: int, *, message: str):
         """
@@ -695,18 +669,16 @@ class Owner(commands.Cog, name="owner"):
         example:
             `>contact respond 0 this is what you can do to fix that`
         """
-
-        await ctx.send("c")
+        
+        ctx.command.reset_cooldown(ctx)
+        await ctx.send("b")
 
     @checks.is_owner()
-    @commands.group(name="loaded")
+    @commands.group(name="loaded", invoke_without_command=True)
     async def _loaded(self, ctx: commands.Context):
         """
         loaded group
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         await ctx.bot.send_help(ctx)
 
@@ -741,14 +713,11 @@ class Owner(commands.Cog, name="owner"):
                 await ctx.send("```\n{0}```".format(page))
     
     @checks.administrator_or_permissions(manage_guild=True)
-    @commands.group(name="settings")
+    @commands.group(name="settings", invoke_without_command=True)
     async def _settings(self, ctx: commands.Context):
         """
         settings group
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         await ctx.bot.send_help(ctx)
 
@@ -891,14 +860,11 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
 
     @checks.is_owner()
-    @commands.group(name="whitelist")
+    @commands.group(name="whitelist", invoke_without_command=True)
     async def _whitelist(self, ctx: commands.Context):
         """
         show the current whitelist
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         if (not ctx.bot._settings.whitelist):
             await ctx.bot.send_help(ctx)

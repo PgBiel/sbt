@@ -570,14 +570,11 @@ class Information(commands.Cog, name="information"):
 
         await ctx.send(embed=e)
 
-    @commands.group(name="information", aliases=["info"])
+    @commands.group(name="information", aliases=["info"], invoke_without_command=True)
     async def _information(self, ctx: commands.Context):
         """
         information group
         """
-
-        if (ctx.invoked_subcommand):
-            return
 
         await ctx.bot.send_help(ctx)
 
