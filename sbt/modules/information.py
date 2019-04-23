@@ -28,8 +28,8 @@ __level__             = 3
 import copy
 import datetime
 import dis
+import glob
 import inspect
-import io
 import random
 import re
 import struct
@@ -61,6 +61,37 @@ class Information(commands.Cog, name="information"):
 
     def cog_unload(self):
         del self.bot._extensions.extensions[self.qualified_name]
+
+    @commands.cooldown(1, 60, commands.cooldowns.BucketType.user)
+    @commands.command(name="code", aliases=["lines"])
+    async def _code(self, ctx: commands.Context):
+        """
+        :)
+        """
+
+        files_ = [
+            *glob.glob("*.py"),
+            *glob.glob("utils\\*.py"),
+            *glob.glob("modules\\*.py"),
+        ]
+
+        files = 0
+        lines = 0
+        characters = 0
+
+        for (file) in files_:
+            files += 1
+            for (line) in open(file):
+                lines += 1
+                characters += len(line)
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.add_field(name="Files", value=str(files))
+        e.add_field(name="Lines", value=str(lines))
+        e.add_field(name="Characters", value=str(characters))
+
+        await ctx.send(embed=e)
 
     @commands.command(name="color", aliases=["colour"])
     async def _color(self, ctx: commands.Context, *, code: typing.Optional[parse.Color]):
