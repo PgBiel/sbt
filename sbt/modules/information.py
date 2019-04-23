@@ -369,21 +369,30 @@ class Information(commands.Cog, name="information"):
 
     @checks.is_guild()
     @commands.command(name="permissions", aliases=["perms"])
-    async def _permissions(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Role, discord.Member, int]]):
+    async def _permissions(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Role, discord.Member, int]], member_or_role: typing.Optional[typing.Union[discord.Role, discord.Member]]):
         """
         display permissions for an object
 
         defaults to you
 
         can be a channel, a role, a member, or a permissions integer
+
+        member_or_role is ignored unless the object is a channel, in which case we find the channel permissions for that member or role
         """
         
         if (not object):
             object = ctx.author
 
         if (isinstance(object, (discord.TextChannel, discord.VoiceChannel))):
-            permissions = object.overwrites_for(ctx.guild.default_role)
-            message = "{0} ({1})\n\n".format(object.name, object.id)
+            if (not member_or_role):
+                permissions = object.overwrites_for(ctx.guild.default_role)
+                message = "{0} ({1}) overwrites for @everyone ({2})\n\n".format(
+                    object.name, object.id, ctx.guild.id)
+            else:
+                permissions = object.overwrites_for(member_or_role)
+                message = "{0} ({1}) overwrites for {2} ({3})\n\n".format(
+                    object.name, object.id, member_or_role.name, member_or_role.id)
+
         elif (isinstance(object, discord.Role)):
             permissions = object.permissions
             message = "{0} ({1})\n\n".format(object.name, object.id)
