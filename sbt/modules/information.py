@@ -91,6 +91,13 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Files", value=str(files))
         e.add_field(name="Lines", value=str(lines))
         e.add_field(name="Characters", value=str(characters))
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
 
         await ctx.send(embed=e)
 
