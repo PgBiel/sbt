@@ -414,6 +414,31 @@ class Moderation(commands.Cog, name="moderation"):
 
         pass
 
+    @_role.command(name="members")
+    async def _role_members(self, ctx: commands.Context, role: discord.Role):
+        """
+        list members with the role
+        """
+
+        if (not role.members):
+            await ctx.send("none.")
+            return
+        
+        members = [m.mention for m in role.members]
+
+        e = discord.Embed(color=role.color)
+        e.set_author(name=role.name)
+        e.add_field(name="Members", value="\n".join(members))
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author.name,
+                format.humanize_time()
+            ),
+            icon_url=ctx.author.avatar_url
+        )
+
+        await ctx.send(embed=e)
+
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
         """
