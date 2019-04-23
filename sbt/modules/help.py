@@ -67,69 +67,93 @@ class Help(commands.Cog, name="help"):
 
         del self.bot._extensions.extensions[self.qualified_name]
 
-    @commands.cooldown(1, 300, commands.BucketType.user)
-    @commands.command(name="help", aliases=["h"], hidden=True)
-    async def _help(self, ctx: commands.Context, *, command: str = None):
+    @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
+    @commands.group(name="help", aliases=["h"], hidden=True, invoke_without_command=True)
+    async def _help(self, ctx: commands.Context, *, thing: str = None):
         """
-        show help dialog
+        show paginated help
 
         examples:
-          `>help`              :: display help for all commands
-          `>help general`      :: display help for the `general` cog (implicit)
-          `>help cog general`  :: display help for the `general` cog (explicit)
-          `>help roll`         :: display help for the `roll` command (implicit)
-          `>help command roll` :: display help for the `roll` command (implicit)
-          `>help old`          :: display help in the old format
-          `>help old general`  :: display help for the `general` cog in the old format
-          `>help old roll`     :: display help for the `roll` command in the old format
+            `>help`
+            `>help roll`
+            `>help general`
         """
 
-        if (not command):
-            # no command was given, don't waste time searching for
-            # nothing
+        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+            # we don't have permission to send embeds,
+            # send old help instead of raising exceptions
+            await self.send_old_help(ctx, thing)
+            return
+
+        if (not thing):
             await self.paginate(ctx, await self.all_help(ctx))
             return
 
-        # backwards compatibility
-        if (command.startswith("old")):
-            # calling old help shouldn't result in the extensive
-            # cooldown :)
-            ctx.command.reset_cooldown(ctx)
-
-            await self.send_old_help(ctx, command[3:].lstrip())
-            return
-
-        # explicit searching
-        # if we fall out of this we should continue and call a normal
-        # search of both cogs and commands
-        if (command.startswith("cog ")):
-            command = command[3:].lstrip()
-
-            cog = ctx.bot.get_cog(command)
-            if (cog):
-                await self.paginate(ctx, await self.cog_help(ctx, cog))
-                return
-        elif (command.startswith("command ")):
-            command = command[7:].lstrip()
-
-            command_ = ctx.bot.get_command(command)
-            if (command_):
-                await self.paginate(ctx, await self.command_help(ctx, command_))
-                return
-        
-        # normal searching
-        cog = ctx.bot.get_cog(command)
-        if (cog):
+        if (cog := ctx.bot.get_cog(thing)):
             await self.paginate(ctx, await self.cog_help(ctx, cog))
             return
-        
-        command = ctx.bot.get_command(command)
-        if (command):
+
+        if (command := ctx.bot.get_command(thing)):
             await self.paginate(ctx, await self.command_help(ctx, command))
             return
 
-        # we found nothing, call all_help :)
         await self.paginate(ctx, await self.all_help(ctx))
+
+    @_help.command(name="cog", aliases=["extension", "module"])
+    async def _help_cog(self, ctx: commands.Context, *, cog: str):
+        """
+        show paginated help for a cog
+
+        example:
+            `>help cog general`
+        """
+
+        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+            # we don't have permission to send embeds,
+            # send old help instead of raising exceptions
+            await self.send_old_help(ctx, cog)
+            return
+
+        if (cog := ctx.bot.get_cog(cog)):
+            await self.paginate(ctx, await self.cog_help(ctx, cog))
+            return
+
+        await self.paginate(ctx, await self.all_help(ctx))
+
+    @_help.command(name="command")
+    async def _help_command(self, ctx: commands.Context, *, command: str):
+        """
+        show paginated help for a command
+
+        example:
+            `>help command roll`
+        """
+
+        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+            # we don't have permission to send embeds,
+            # send old help instead of raising exceptions
+            await self.send_old_help(ctx, command)
+            return
+
+        if (command := ctx.bot.get_command(command)):
+            await self.paginate(ctx, await self.command_help(ctx, command))
+            return
+
+        await self.paginate(ctx, await self.all_help(ctx))
+
+    @_help.command(name="old")
+    async def _help_old(self, ctx: commands.Context, *, thing: str):
+        """
+        show help in the old format
+
+        examples:
+            `>help old`
+            `>help old general`
+            `>help old roll`
+        """
+
+        await self.send_old_help(ctx, thing)
+        ctx.command.reset_cooldown(ctx)
 
     async def all_help(self, ctx: commands.Context) -> list:
         embeds = list()
@@ -427,7 +451,7 @@ class Help(commands.Cog, name="help"):
             await help.remove_reaction(str(reaction.emoji), ctx.author)
             await help.edit(embed=input_[current])
 
-    async def send_old_help(ctx: commands.Context, thing: str = None):
+    async def send_old_help(self, ctx: commands.Context, thing: str = None):
         if (thing):
             command = ctx.bot.get_command(thing)
             if (command):
