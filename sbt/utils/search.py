@@ -48,10 +48,10 @@ class Result():
         self.results = results
 
     def __repr__(self):
-        return "<Result url='{0}' time='{1}'>".format(self.url, self.time)
+        return "<Result url='{0}'>".format(self.url, self.time)
 
     def __str__(self):
-        return "<Result url='{0}' time='{1}'>".format(self.url, self.time)
+        return "<Result url='{0}'>".format(self.url, self.time)
 
     @classmethod
     def from_raw(self, data: dict):
