@@ -434,10 +434,14 @@ class Moderation(commands.Cog, name="moderation"):
         await ctx.bot.send_help(ctx)
 
     @_role_edit_permissions.command(name="add")
-    async def _role_edit_permissions_add(self, ctx: commands.Context, *permissions: str):
+    async def _role_edit_permissions_add(self, ctx: commands.Context, role: discord.Role, *permissions: str):
         """
         add permissions
         """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
 
         dict_ = dict()
 
@@ -451,13 +455,18 @@ class Moderation(commands.Cog, name="moderation"):
         permissions = role.permissions
         permissions.update(**dict_)
 
-        await role.update(permissions=permissions)
+        await role.edit(permissions=permissions)
+        await ctx.send("done")
 
     @_role_edit_permissions.command(name="remove")
-    async def _role_edit_permissions_remove(self, ctx: commands.Context, *permissions: str):
+    async def _role_edit_permissions_remove(self, ctx: commands.Context, role: discord.Role, *permissions: str):
         """
         remove permissions
         """
+
+        if (ctx.author != ctx.guild.owner):
+            if (role >= ctx.author.top_role):
+                raise commands.errors.MissingPermissions([])
 
         dict_ = dict()
 
@@ -471,7 +480,8 @@ class Moderation(commands.Cog, name="moderation"):
         permissions = role.permissions
         permissions.update(**dict_)
 
-        await role.update(permissions=permissions)
+        await role.edit(permissions=permissions)
+        await ctx.send("done")
 
     @_role.command(name="members")
     async def _role_members(self, ctx: commands.Context, role: discord.Role):
@@ -504,14 +514,14 @@ class Moderation(commands.Cog, name="moderation"):
         display a role's permissions
         """
 
-        message = ""
+        message = "{0} ({1})\n\n".format(role.name, role.id)
         for (permission, value) in sorted(role.permissions):
             if (value):
                 message += "+ {0}\n".format(permission)
             else:
                 message += "- {0}\n".format(permission)
 
-        await ctx.send("```diff\n{0}```".format(message))
+        await ctx.send(format.code(message, "diff"))
 
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
