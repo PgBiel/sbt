@@ -48,7 +48,7 @@ class Result():
         self.results = results
 
     def __repr__(self) -> str:
-        return "<Result url='{0}'>".format(self.url, self.time)
+        return str(self)
 
     def __str__(self) -> str:
         return "<Result url='{0}'>".format(self.url, self.time)
@@ -75,7 +75,7 @@ class Search():
         self._session = session
 
     def __repr__(self) -> str:
-        return self.__str__
+        return str(self)
 
     def __str__(self) -> str:
         return "<Search engine='{0}'>".format(self.engine)
