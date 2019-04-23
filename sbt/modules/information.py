@@ -337,6 +337,7 @@ class Information(commands.Cog, name="information"):
             latency = format.humanize_seconds(ctx.bot.latency)
             await ctx.send(latency)
 
+    @checks.is_guild()
     @commands.command(name="messagecount", aliases=["messages"])
     async def _messagecount(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         """
@@ -345,7 +346,17 @@ class Information(commands.Cog, name="information"):
         defaults to your own
         """
 
-        pass
+        if (not member):
+            member = ctx.author
+
+        messages = 0
+        yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+        async for (message) in ctx.channel.history(limit=1000, after=yesterday):
+            if (message.author == member):
+                messages += 1
+
+        s = "" if (messages == 1) else "s"
+        await ctx.send("{0} sent {1} message{2} to this channel in the past 24 hours".format(member.mention, messages, s))
 
     @commands.command(name="now", aliases=["time"])
     async def _now(self, ctx: commands.Context):
