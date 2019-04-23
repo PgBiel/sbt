@@ -367,20 +367,24 @@ class Information(commands.Cog, name="information"):
         time = format.humanize_time()
         await ctx.send(time)
 
+    @checks.is_guild()
     @commands.command(name="permissions", aliases=["perms"])
-    async def _permissions(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.Role, discord.Member, int]]):
+    async def _permissions(self, ctx: commands.Context, object: typing.Optional[typing.Union[discord.TextChannel, discord.VoiceChannel, discord.Role, discord.Member, int]]):
         """
         display permissions for an object
 
         defaults to you
 
-        can be a role, a member, or a permissions integer
+        can be a channel, a role, a member, or a permissions integer
         """
         
         if (not object):
             object = ctx.author
 
-        if (isinstance(object, discord.Role)):
+        if (isinstance(object, (discord.TextChannel, discord.VoiceChannel))):
+            permissions = object.overwrites_for(ctx.guild.default_role)
+            message = "{0} ({1})\n\n".format(object.name, object.id)
+        elif (isinstance(object, discord.Role)):
             permissions = object.permissions
             message = "{0} ({1})\n\n".format(object.name, object.id)
         elif (isinstance(object, discord.Member)):
@@ -393,6 +397,8 @@ class Information(commands.Cog, name="information"):
         for (permission, value) in sorted(permissions):
             if (value):
                 message += "+ {0}\n".format(permission)
+            elif (value == None):
+                message += "  {0}\n".format(permission)
             else:
                 message += "- {0}\n".format(permission)
 
