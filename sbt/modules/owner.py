@@ -172,7 +172,7 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send(message)
 
     @checks.is_owner()
-    @commands.command(name="evaluate", aliases=["eval", ">"])
+    @commands.command(name="evaluate", aliases=["eval", ">", ">>"])
     async def _evaluate(self, ctx: commands.Context, *, shit: str):
         """
         evaluate shit
