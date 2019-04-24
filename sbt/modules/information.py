@@ -118,9 +118,9 @@ class Information(commands.Cog, name="information"):
 
         if (not code):
             code = "".join([random.choice("0123456789ABCDEF") for (_) in range(6)])
-            code = parse.Color(code)
+            code = parse.Color.parse(code)
 
-        int_, hex, rgb, cmyk = code.result
+        int_, hex, rgb, cmyk = code
 
         rgb = "({0}, {1}, {2})".format(*rgb)
         cmyk = "({0}, {1}, {2}, {3})".format(*cmyk)

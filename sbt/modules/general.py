@@ -599,18 +599,18 @@ class General(commands.Cog, name="general"):
             await ctx.send(r"¯\_(ツ)_/¯")
             return
 
-        reminder_.add_reminder(ctx, reminder)
+        reminder_.add_reminder(ctx, time, reminder)
 
         color = ctx.guild.me.color if ctx.guild else None
         e = format.embed("Reminder Added",
                          "{0}\n\nfor {1}".format(
                              reminder,
-                             format.humanize_time(time.result)
+                             format.humanize_time(time)
                          ),
                          color=color,
                          footer="{0} | {1}".format(
                              ctx.author.name,
-                             format.humanize_time(time.result)
+                             format.humanize_time(time)
                          ),
                          footer_icon_url=ctx.author.avatar_url)
 
