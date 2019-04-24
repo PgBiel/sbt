@@ -65,64 +65,137 @@ class Color(commands.Converter):
             if (len(argument) == 8):
                 argument = argument[2:]
                 
-            int_ = int(argument, 16)
-            rgb = self.hex_to_rgb(argument)
+            int_ = self.hexadecimal_to_int(argument)
+            rgb = self.hexadecimal_to_rgb(argument)
             cmyk = self.rgb_to_cmyk(*rgb)
 
             result = (int_, argument, rgb, cmyk)
         elif (match := re.fullmatch(regex.Regex.RGB, argument)):
-            if (a := match.group("a")):
-                a = int(a)
-
             r = int(match.group("r"))
             g = int(match.group("g"))
             b = int(match.group("b"))
             
-            if (a):
-                if (any([(i > 255) for (i) in [a, r, g, b]])):
-                    raise commands.BadArgument(argument)
-            else:
-                if (any([(i > 255) for (i) in [r, g, b]])):
-                    raise commands.BadArgument(argument)
+            if (any([(i > 255) for (i) in [r, g, b]])):
+                raise commands.BadArgument(argument)
 
-            hex = self.rgb_to_hex(r, g, b)
-            int_ = int(hex, 16)
+            hexadecimal = self.rgb_to_hexadecimal(r, g, b)
+            int_ = self.hexadecimal_to_int(hexadecimal)
             cmyk = self.rgb_to_cmyk(r, g, b)
 
-            result = (int_, hex, (r, g, b), cmyk)
+            result = (int_, hexadecimal, (r, g, b), cmyk)
+        elif (match := re.fullmatch(regex.Regex.CMYK, argument)):
+            c = int(match.group("c"))
+            m = int(match.group("m"))
+            y = int(match.group("y"))
+            k = int(match.group("k"))
+
+            if (any([(i > 100) for (i) in [c, m, y, k]])):
+                raise commands.BadArgument(argument)
+
+            rgb = self.cmyk_to_rgb(c, m, y, k)
+            hexadecimal = self.rgb_to_hexadecimal(*rgb)
+            int_ = self.hexadecimal_to_int(hexadecimal)
+
+            result = (int_, hexadecimal, rgb, (c, m, y, k))
+        elif (metch := re.fullmatch(regex.Regex.DIGITS, argument)):
+            int_ = match.group("digits")
+
+            try:
+                hexadecimal = self.int_to_hexadecimal(int_)
+            except (ValueError) as e:
+                # integer was too large
+                raise commands.BadArgument(argument)
+
+            rgb = self.hexadecimal_to_rgb(hexadecimal)
+            cmyk = self.rgb_to_cmyk(*rgb)
+
+            result = (int_, hexadecimal, rgb, cmyk)
+
+        if (not result):
+            raise commands.BadArgument(argument)
 
         return result
 
     @classmethod
-    def hex_to_rgb(self, hex: str) -> tuple:
-        return struct.unpack("BBB", bytes.fromhex(hex))
+    def cmyk_to_hexadecimal(self, c: int, m: int, y: int, k: int) -> str:
+        r, g, b = self.cmyk_to_rgb(c, m, y, k)
+        return self.rgb_to_hexadecimal(r, g, b)
+
+    @classmethod
+    def cmyk_to_rgb(self, c: int, m: int, y: int, k: int) -> tuple:
+        r = int(round(255 * (1 - c / 100) * (1 - k / 100)))
+        g = int(round(255 * (1 - m / 100) * (1 - k / 100)))
+        b = int(round(255 * (1 - y / 100) * (1 - k / 100)))
+
+        return (r, g, b)
+
+    @classmethod
+    def cmyk_to_int(self, c: int, m: int, y: int, k: int):
+        hexadecimal = self.cmyk_to_hexadecimal(c, m, y, k)
+        return self.hexadecimal_to_int(hexadecimal)
+
+    @classmethod
+    def hexadecimal_to_cmyk(self, hexadecimal: str) -> tuple:
+        r, g, b = self.hexadecimal_to_rgb(hexadecimal)
+        return self.rgb_to_cmyk(r, g, b)
+    
+    @classmethod
+    def hexadecimal_to_int(self, hexadecimal: str) -> int:
+        return int(hexadecimal, 16)
+
+    @classmethod
+    def hexadecimal_to_rgb(self, hexadecimal: str) -> tuple:
+        return struct.unpack("BBB", bytes.fromhex(hexadecimal))
+
+    @classmethod
+    def int_to_cmyk(self, int_: int) -> tuple:
+        hexadecimal = self.int_to_hexadecimal(int_)
+        return self.hexadecimal_to_cmyk(hexadecimal)
+    
+    @classmethod
+    def int_to_hexadecimal(self, int_: int) -> str:
+        hexadecimal = "{0:06X}".format(100)
+        
+        if (len(hexadecimal) != 6):
+            raise ValueError("too big")
+
+        return hexadecimal
+
+    @classmethod
+    def int_to_rgb(self, int_: int) -> tuple:
+        hexadecimal = self.int_to_hexadecimal(int_)
+        return self.hexadecimal_to_rgb(hexadecimal)
 
     @classmethod
     def rgb_to_cmyk(self, r: int, g: int, b: int) -> tuple:
         if ((r == 0) and (g == 0) and (b == 0)):
             return (0, 0, 0, 100)
 
-        c = 1 - r / 255.
-        m = 1 - g / 255.
-        y = 1 - b / 255.
+        r = r / 255
+        g = g / 255
+        b = b / 255
 
-        min_cmy = min(c, m, y)
+        k = 1 - max(r, g, b)
 
-        c = (c - min_cmy) / (1 - min_cmy)
-        m = (m - min_cmy) / (1 - min_cmy)
-        y = (y - min_cmy) / (1 - min_cmy)
-        k = min_cmy
+        c = (1 - r - k) / (1 - k)
+        m = (1 - g - k) / (1 - k)
+        y = (1 - b - k) / (1 - k)
 
-        c = round(c * 100, 0)
-        m = round(m * 100, 0)
-        y = round(y * 100, 0)
-        k = round(k * 100, 0)
+        c = int(round(c * 100))
+        m = int(round(m * 100))
+        y = int(round(y * 100))
+        k = int(round(k * 100))
 
         return (c, m, y, k)
 
     @classmethod
-    def rgb_to_hex(self, r: int, g: int, b: int) -> str:
-        return "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
+    def rgb_to_hexadecimal(self, r: int, g: int, b: int) -> str:
+        return "{0:02X}{1:02X}{2:02X}".format(r, g, b)
+
+    @classmethod
+    def rgb_to_int(self, r: int, g: int, b: int) -> int:
+        hexadecimal = self.rgb_to_hexadecimal(r, g, b)
+        return self.hexadecimal_to_int(hexadecimal)
 
 class Date(commands.Converter):
     async def convert(self, ctx, argument: str) -> datetime.date:
@@ -221,9 +294,6 @@ class FutureDate(Date, commands.Converter):
         """
 
         result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
 
         now = datetime.date(self.now.year, self.now.month, self.now.day)
         if (result <= now):
@@ -379,9 +449,6 @@ class FutureTime(Time, commands.Converter):
         """
 
         result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
 
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
         if (result <= now):
@@ -546,9 +613,6 @@ class FutureDateTime(DateTime, commands.Converter):
         """
 
         result = super().parse(argument)
-
-        if (not result):
-            raise commands.BadArgument(argument)
 
         if (result <= self.now):
             raise commands.BadArgument("datetime is not in the future")
