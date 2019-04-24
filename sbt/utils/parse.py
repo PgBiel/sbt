@@ -35,17 +35,13 @@ from utils import (
 )
 
 
-class Color():
-    def __init__(self, argument: str = None):
+class Color(commands.Converter):
+    async def convert(self, ctx, argument: str) -> tuple:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
+        return self.parse(argument)
 
     @classmethod
     def parse(self, argument: str) -> tuple:
@@ -128,20 +124,16 @@ class Color():
     def rgb_to_hex(self, r: int, g: int, b: int) -> str:
         return "{0:02x}{1:02x}{2:02x}".format(r, g, b).upper()
 
-class Date():
-    def __init__(self, argument: str = None):
+class Date(commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.date:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
+        return self.parse(argument)
             
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.date:
         """
         parses humanized datetime and returns a timezone naive
         datetime.date object or None
@@ -208,19 +200,21 @@ class Date():
                 new = self.now + datetime.timedelta(days=days)
                 result = datetime.date(new.year, new.month, new.day)
 
+        if (not result):
+            raise commands.BadArgument(argument)
+
         return result
 
-class FutureDate(Date):
-    def __init__(self, argument: str = None):
+class FutureDate(Date, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.date:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        super().__init__(argument)
+        return self.parse(argument)
         
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.date:
         """
         calls super().parse() but raises if the date is not in the
         future
@@ -237,20 +231,16 @@ class FutureDate(Date):
 
         return result
                 
-class Time():
-    def __init__(self, argument: str = None):
+class Time(commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.time:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
+        return self.parse(argument)
             
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.time:
         """
         parses humanized datetime and returns a timezone naive
         datetime.time object or None
@@ -368,19 +358,21 @@ class Time():
 
             result = datetime.time(hour, minute, second)
 
+        if (not result):
+            raise commands.BadArgument(argument)
+
         return result
 
-class FutureTime(Time):
-    def __init__(self, argument: str = None):
+class FutureTime(Time, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.time:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        super().__init__(argument)
+        return self.parse(argument)
 
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.time:
         """
         calls super().parse() but raises if the time is not in the
         future
@@ -397,20 +389,16 @@ class FutureTime(Time):
 
         return result
 
-class DateTime():
-    def __init__(self, argument: str = None):
+class DateTime(commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.datetime:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        if (argument):
-            self.result = self.parse(argument)
-            if (not self.result):
-                raise commands.BadArgument(argument)
+        return self.parse(argument)
             
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.datetime:
         """
         parses humanized datetime and returns a timezone naive
         datetime.datetime object or None
@@ -537,19 +525,21 @@ class DateTime():
             if (new > datetime.timedelta()):
                 result = self.now + new
 
+        if (not result):
+            raise commands.BadArgument(argument)
+
         return result
 
-class FutureDateTime(DateTime):
-    def __init__(self, argument: str = None):
+class FutureDateTime(DateTime, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.datetime:
         """
-        only command typehints should invoke here with arguments
-        since it will raise if it doesn't find anything.
+        used as a command converter by dpy
         """
 
-        super().__init__(argument)
+        return self.parse(argument)
         
     @classmethod
-    def parse(self, argument: str):
+    def parse(self, argument: str) -> datetime.datetime:
         """
         calls super().parse() but raises if the datetime is not in the
         future
