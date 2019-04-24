@@ -185,6 +185,9 @@ class Owner(commands.Cog, name="owner"):
         shit = shit.strip("`")
         shit = format.dedent(shit)
 
+        if (shit.startswith("py\n")):
+            shit = shit[3:]
+
         globals_ = globals().copy()
         globals_["self"] = self
         globals_["ctx"] = ctx
