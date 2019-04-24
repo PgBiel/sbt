@@ -56,7 +56,7 @@ def partial_ratio(a: str, b: str):
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long[start:end])
+        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
         scores.append(matcher.ratio())
 
     return int(round(max(scores) * 100))
@@ -72,7 +72,7 @@ def quick_partial_ratio(a: str, b: str):
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long[start:end])
+        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
         scores.append(matcher.quicl_ratio())
 
     return int(round(max(scores) * 100))
@@ -88,7 +88,7 @@ def real_quick_partial_ratio(a: str, b: str):
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long[start:end])
+        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
         scores.append(matcher.real_quick_ratio())
 
     return int(round(max(scores) * 100))
@@ -139,7 +139,7 @@ def _extractor(query: str, choices: typing.Union[dict, list], *, scorer: typing.
             if (score >= score_cutoff):
                 yield (score, key)
 
-def extract(query: str, choices: typing.Union[dict, list], *, scorer: typing.Callable = quick_ratio, score_cutoff: int = 0, limit: int = None):
+def extract(query: str, choices: typing.Union[dict, list], *, scorer: typing.Callable = ratio, score_cutoff: int = 0, limit: int = None):
     iterable = _extractor(query, choices, scorer=scorer, score_cutoff=score_cutoff)
     key = lambda t: t[0]
 
