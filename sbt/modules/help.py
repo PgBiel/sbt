@@ -436,7 +436,7 @@ class Help(commands.Cog, name="help"):
                         await help.remove_reaction(str(reaction.emoji), ctx.author)
                     except (discord.Forbidden) as e:
                         pass
-                    except (discord.Forbidden) as e:
+
                     continue
 
                 await message.delete()
