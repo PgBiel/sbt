@@ -141,13 +141,13 @@ def escape(text: str,
            asterisk: bool = True, backticks: bool = True, tilde: bool = True, underscores: bool = True) -> str:
 
     if (backslash):
-        text = text.replace("\\", r"\\\\")
+        text = text.replace("\\", "\\\\")
 
     if (mentions):
         text = text.replace("@", "@\u200b")
 
     if (emoji):
-        text = re.sub(r"<(a)?:([a-zA-Z0-9_]+):([0-9]+)>", "<\u200b\\1:\\2:\\3>", text)
+        text = re.sub("<(a)?:([a-zA-Z0-9_]+):([0-9]+)>", "<\u200b\\1:\\2:\\3>", text)
 
     if (urls):
         text = text.replace("https://", "https:/\u200b/")
@@ -156,16 +156,16 @@ def escape(text: str,
         text = text.replace("discord.gg/", "discord.gg/\u200b")
 
     if (asterisk):
-        text = text.replace("*", r"\\*")
+        text = text.replace("*", "\\*")
 
     if (backticks):
-        text = text.replace("`", r"\\`")
+        text = text.replace("`", "\\`")
 
     if (tilde):
-        text = text.replace("~", r"\\~")
+        text = text.replace("~", "\\~")
 
     if (underscores):
-        text = text.replace("_", r"\\_")
+        text = text.replace("_", "\\_")
 
     return text
 
@@ -388,6 +388,43 @@ def strikethrough(text: str) -> str:
 
 def underline(text: str) -> str:
     return "__{0}__".format(text)
+
+def unescape(text: str,
+             *,
+             backslash: bool = False,
+             mentions: bool = True,
+             emoji: bool = False,
+             urls: bool = False, invites: bool = False,
+             asterisk: bool = True, backticks: bool = True, tilde: bool = True, underscores: bool = True) -> str:
+
+    if (backslash):
+        text = text.replace("\\\\", "\\")
+
+    if (mentions):
+        text = text.replace("@\u200b", "@")
+
+    if (emoji):
+        text = re.sub("<\u200b(a)?:([a-zA-Z0-9_]+):([0-9]+)>", "<\\1:\\2:\\3>", text)
+
+    if (urls):
+        text = text.replace("https:/\u200b/", "https://")
+
+    if (invites):
+        text = text.replace("discord.gg/\u200b", "discord.gg/")
+
+    if (asterisk):
+        text = text.replace("\\*", "*")
+
+    if (backticks):
+        text = text.replace("\\`", "`")
+
+    if (tilde):
+        text = text.replace("\\~", "~")
+
+    if (underscores):
+        text = text.replace("\\_", "_")
+
+    return text
 
 def wrap_url(text: str):
     return "<{0}>".format(text)
