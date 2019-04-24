@@ -440,7 +440,11 @@ class Help(commands.Cog, name="help"):
                     continue
 
                 await message.delete()
-                await page.delete()
+
+                try:
+                    await page.delete()
+                except (discord.Forbidden) as e:
+                    pass
 
                 if (current == (int(page.content) - 1)):
                     continue
@@ -461,7 +465,11 @@ class Help(commands.Cog, name="help"):
 
                 current = len(input_) - 1
             elif (str(reaction.emoji) == reactions[5]):
-                await help.clear_reactions()
+                try:
+                    await help.clear_reactions()
+                except (discord.Forbidden) as e:
+                    pass
+
                 ctx.command.reset_cooldown(ctx)
                 return
 
