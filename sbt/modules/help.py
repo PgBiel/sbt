@@ -392,7 +392,11 @@ class Help(commands.Cog, name="help"):
             try:
                 reaction, _ = done.pop().result()
             except (asyncio.TimeoutError) as e:
-                await help.clear_reactions()
+                try:
+                    await help.clear_reactions()
+                except (discord.Forbidden) as e:
+                    pass
+
                 return
 
             for (task) in pending:
@@ -400,7 +404,11 @@ class Help(commands.Cog, name="help"):
 
             if (str(reaction.emoji) == reactions[0]):
                 if (current == 0):
-                    await help.remove_reaction(str(reaction.emoji), ctx.author)
+                    try:
+                        await help.remove_reaction(str(reaction.emoji), ctx.author)
+                    except (discord.Forbidden) as e:
+                        pass
+
                     continue
 
                 current = 0
@@ -423,7 +431,12 @@ class Help(commands.Cog, name="help"):
                     page = await ctx.bot.wait_for("message", check=check, timeout=60)
                 except (asyncio.TimeoutError) as e:
                     await message.delete()
-                    await help.remove_reaction(str(reaction.emoji), ctx.author)
+
+                    try:
+                        await help.remove_reaction(str(reaction.emoji), ctx.author)
+                    except (discord.Forbidden) as e:
+                        pass
+                    except (discord.Forbidden) as e:
                     continue
 
                 await message.delete()
@@ -439,7 +452,11 @@ class Help(commands.Cog, name="help"):
                     current = 0
             elif (str(reaction.emoji) == reactions[4]):
                 if (current == (len(input_) - 1)):
-                    await help.remove_reaction(str(reaction.emoji), ctx.author)
+                    try:
+                        await help.remove_reaction(str(reaction.emoji), ctx.author)
+                    except (discord.Forbidden) as e:
+                        pass
+
                     continue
 
                 current = len(input_) - 1
@@ -448,7 +465,11 @@ class Help(commands.Cog, name="help"):
                 ctx.command.reset_cooldown(ctx)
                 return
 
-            await help.remove_reaction(str(reaction.emoji), ctx.author)
+            try:
+                await help.remove_reaction(str(reaction.emoji), ctx.author)
+            except (discord.Forbidden) as e:
+                pass
+
             await help.edit(embed=input_[current])
 
     async def send_old_help(self, ctx: commands.Context, thing: str = None):
