@@ -143,12 +143,17 @@ def has_permissions(**required) -> bool:
 
 def administrator_or_permissions(**required) -> bool:
     def predicate(ctx: commands.Context):
+        if (not ctx.guild):
+            return True
         return _administrator(ctx) or _permissions(ctx, **required)
 
     return commands.check(predicate)
 
 def moderator_or_permissions(**required) -> bool:
     def predicate(ctx: commands.Context):
+        if (not ctx.guild):
+            return True
+
         return _moderator(ctx) or _permissions(ctx, **required)
 
     return commands.check(predicate)
