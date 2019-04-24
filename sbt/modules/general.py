@@ -470,7 +470,7 @@ class General(commands.Cog, name="general"):
                 safe = True
 
         try:
-            search_ = search.Search(ctx.bot._settings.google_api_key, ctx.bot._settings.google_engine_id)
+            search_ = search.Google(ctx.bot._settings.google_api_key, ctx.bot._settings.google_engine_id)
             results = await search_.search(query, safe=safe)
         except (search.NoResults) as e:
             await ctx.send("no results")

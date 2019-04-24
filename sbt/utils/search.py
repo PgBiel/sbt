@@ -68,7 +68,7 @@ class Result():
 
         return results
 
-class Search():
+class Google():
     def __init__(self, key: str, engine: str, *, session: aiohttp.ClientSession = None):
         self._key = key
         self._engine = engine
