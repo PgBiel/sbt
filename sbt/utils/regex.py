@@ -27,6 +27,14 @@ import re
 
 
 class Regex:
+    WORD = re.compile(r"""
+                       (?P<word>\W)
+                       """, re.IGNORECASE | re.VERBOSE)
+    
+    WORDS = re.compile(r"""
+                       (?P<word>\W+)
+                       """, re.IGNORECASE | re.VERBOSE)
+
     HEXADECIMAL = re.compile(r"""
                                  (?:0X|\#)?
                                  (?:[A-F0-9]{8}|[A-F0-9]{6}|[A-F0-9]{4}|[A-F0-9]{3})
