@@ -49,6 +49,7 @@ from utils import (
     extensions,
     extensions_,
     format,
+    fuzzywuzzy,
     parse,
     parse_,
     regex,
