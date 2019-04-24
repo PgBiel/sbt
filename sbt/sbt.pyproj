@@ -71,6 +71,9 @@
     <Compile Include="utils\format.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\fuzzywuzzy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="utils\parse_.py">
       <SubType>Code</SubType>
     </Compile>
