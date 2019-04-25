@@ -537,7 +537,7 @@ class Information(commands.Cog, name="information"):
             `>since 01/01/19`
         """
 
-        days = (date.result - datetime.date.today()).days
+        days = (date - datetime.date.today()).days
 
         if (days < 0):
             days = -days
@@ -548,7 +548,7 @@ class Information(commands.Cog, name="information"):
         message = "{0} {1} {2}".format(
             format.humanize_seconds(days * 86400),
             check,
-            format.humanize_datetime(date.result)
+            format.humanize_datetime(date)
         )
 
         await ctx.send(message)
