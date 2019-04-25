@@ -308,6 +308,29 @@ class FutureDate(Date, commands.Converter):
             raise commands.BadArgument("date is not in the future")
 
         return result
+
+class PastDate(Date, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.date:
+        """
+        used as a command converter by dpy
+        """
+
+        return self.parse(argument)
+        
+    @classmethod
+    def parse(self, argument: str) -> datetime.date:
+        """
+        calls super().parse() but raises if the date is not in the
+        past
+        """
+
+        result = super().parse(argument)
+
+        now = datetime.date(self.now.year, self.now.month, self.now.day)
+        if (result => now):
+            raise commands.BadArgument("date is not in the past")
+
+        return result
                 
 class Time(commands.Converter):
     async def convert(self, ctx, argument: str) -> datetime.time:
@@ -477,6 +500,29 @@ class FutureTime(Time, commands.Converter):
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
         if (result <= now):
             raise commands.BadArgument("time is not in the future")
+
+        return result
+
+class PastTime(Time, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.time:
+        """
+        used as a command converter by dpy
+        """
+
+        return self.parse(argument)
+
+    @classmethod
+    def parse(self, argument: str) -> datetime.time:
+        """
+        calls super().parse() but raises if the time is not in the
+        past
+        """
+
+        result = super().parse(argument)
+
+        now = datetime.time(self.now.hour, self.now.minute, self.now.second)
+        if (result => now):
+            raise commands.BadArgument("time is not in the past")
 
         return result
 
@@ -666,6 +712,28 @@ class FutureDateTime(DateTime, commands.Converter):
 
         if (result <= self.now):
             raise commands.BadArgument("datetime is not in the future")
+
+        return result
+
+class PastDateTime(DateTime, commands.Converter):
+    async def convert(self, ctx, argument: str) -> datetime.datetime:
+        """
+        used as a command converter by dpy
+        """
+
+        return self.parse(argument)
+        
+    @classmethod
+    def parse(self, argument: str) -> datetime.datetime:
+        """
+        calls super().parse() but raises if the datetime is not in the
+        past
+        """
+
+        result = super().parse(argument)
+
+        if (result => self.now):
+            raise commands.BadArgument("datetime is not in the past")
 
         return result
         
