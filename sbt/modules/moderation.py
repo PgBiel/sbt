@@ -501,7 +501,7 @@ class Moderation(commands.Cog, name="moderation"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )

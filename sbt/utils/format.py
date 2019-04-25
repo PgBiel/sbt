@@ -345,7 +345,7 @@ def humanize_seconds(seconds: float, *, long: bool = True) -> str:
 
     return " ".join(result)
 
-def humanize_time(time: typing.Union[datetime.datetime, datetime.date] = datetime.datetime.utcnow):
+def humanize_datetime(time: typing.Union[datetime.datetime, datetime.date] = datetime.datetime.utcnow):
     if (callable(time)):
         time = time()
 

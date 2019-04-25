@@ -204,7 +204,7 @@ class Help(commands.Cog, name="help"):
                 e.set_footer(
                     text = "{0} | {1}".format(
                         ctx.author.name,
-                        format.humanize_time()
+                        format.humanize_datetime()
                     ),
                     icon_url = ctx.author.avatar_url
                 )
@@ -255,7 +255,7 @@ class Help(commands.Cog, name="help"):
             e.set_footer(
                 text = "{0} | {1}".format(
                     ctx.author.name,
-                    format.humanize_time()
+                    format.humanize_datetime()
                 ),
                 icon_url = ctx.author.avatar_url
             )
@@ -318,7 +318,7 @@ class Help(commands.Cog, name="help"):
                 e.set_footer(
                     text = "{0} | {1}".format(
                         ctx.author.name,
-                        format.humanize_time()
+                        format.humanize_datetime()
                     ),
                     icon_url = ctx.author.avatar_url
                 )
@@ -343,7 +343,7 @@ class Help(commands.Cog, name="help"):
             e.set_footer(
                 text = "{0} | {1}".format(
                     ctx.author.name,
-                    format.humanize_time()
+                    format.humanize_datetime()
                 ),
                 icon_url = ctx.author.avatar_url
             )

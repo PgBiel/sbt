@@ -607,12 +607,12 @@ class General(commands.Cog, name="general"):
         e = format.embed("Reminder Added",
                          "{0}\n\nfor {1}".format(
                              reminder,
-                             format.humanize_time(time)
+                             format.humanize_datetime(time)
                          ),
                          color=color,
                          footer="{0} | {1}".format(
                              ctx.author.name,
-                             format.humanize_time(time)
+                             format.humanize_datetime(time)
                          ),
                          footer_icon_url=ctx.author.avatar_url)
 
@@ -896,7 +896,7 @@ class General(commands.Cog, name="general"):
                              ],
                              footer="{0} | {1}".format(
                                  ctx.author.name,
-                                 format.humanize_time()
+                                 format.humanize_datetime()
                              ),
                              footer_icon_url=ctx.author.avatar_url)
 

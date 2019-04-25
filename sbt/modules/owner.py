@@ -647,7 +647,7 @@ class Owner(commands.Cog, name="owner"):
         e.add_field(name="Guild", value=ctx.guild.id, inline=True)
         e.add_field(name="Channel", value=ctx.channel.id, inline=True)
         e.add_field(name="Author", value=ctx.author.id, inline=True)
-        e.set_footer(text="{0} | {1}".format(ctx.author.name, format.humanize_time()), icon_url=ctx.author.avatar_url)
+        e.set_footer(text="{0} | {1}".format(ctx.author.name, format.humanize_datetime()), icon_url=ctx.author.avatar_url)
         
         await channel.send(embed=e)
         await ctx.send("done.")

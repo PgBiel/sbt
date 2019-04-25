@@ -95,7 +95,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -133,7 +133,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -217,7 +217,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text="{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -281,7 +281,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=author.avatar_url
         )
@@ -314,7 +314,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -365,7 +365,7 @@ class Information(commands.Cog, name="information"):
         display the current time in utc
         """
 
-        time = format.humanize_time()
+        time = format.humanize_datetime()
         await ctx.send(time)
 
     @checks.is_guild()
@@ -486,7 +486,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -548,7 +548,7 @@ class Information(commands.Cog, name="information"):
         message = "{0} {1} {2}".format(
             format.humanize_seconds(days * 86400),
             check,
-            format.humanize_time(date.result)
+            format.humanize_datetime(date.result)
         )
 
         await ctx.send(message)
@@ -579,7 +579,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -617,7 +617,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
@@ -689,7 +689,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Content", value=message.content, inline=False)
         e.add_field(name="ID", value="{0.id}".format(message))
         e.add_field(name="Author", value="{0.name} ({0.id})".format(message.author))
-        e.add_field(name="Timestamp", value=format.humanize_time(message.created_at), inline=False)
+        e.add_field(name="Timestamp", value=format.humanize_datetime(message.created_at), inline=False)
         e.add_field(name="TTS", value=message.tts)
         e.add_field(name="Type", value=message.type)
 
@@ -699,7 +699,7 @@ class Information(commands.Cog, name="information"):
         e.set_footer(
             text = "{0} | {1}".format(
                 ctx.author.name,
-                format.humanize_time()
+                format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
         )
