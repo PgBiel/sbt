@@ -52,14 +52,14 @@ def partial_ratio(a: str, b: str):
     blocks = matcher.get_matching_blocks()
 
     scores = list()
-    for (i, j, k) in blocks:
+    for (i, j, n) in blocks:
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
-        scores.append(matcher.ratio())
+        score = ratio(short, long_[start:end])
+        scores.append(score)
 
-    return int(round(max(scores) * 100))
+    return max(scores)
 
 def quick_partial_ratio(a: str, b: str):
     short, long_ = (a, b) if len(a) <= len(b) else (b, a)
@@ -68,14 +68,14 @@ def quick_partial_ratio(a: str, b: str):
     blocks = matcher.get_matching_blocks()
 
     scores = list()
-    for (i, j, k) in blocks:
+    for (i, j, n) in blocks:
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
-        scores.append(matcher.quicl_ratio())
+        score = quick_ratio(short, long_[start:end])
+        scores.append(score)
 
-    return int(round(max(scores) * 100))
+    return max(scores)
 
 def real_quick_partial_ratio(a: str, b: str):
     short, long_ = (a, b) if len(a) <= len(b) else (b, a)
@@ -84,14 +84,14 @@ def real_quick_partial_ratio(a: str, b: str):
     blocks = matcher.get_matching_blocks()
 
     scores = list()
-    for (i, j, k) in blocks:
+    for (i, j, n) in blocks:
         start = max(j - i, 0)
         end = start + len(short)
 
-        matcher = difflib.SequenceMatcher(None, short, long_[start:end])
-        scores.append(matcher.real_quick_ratio())
+        score = real_quick_ratio(short, long_[start:end])
+        scores.append(score)
 
-    return int(round(max(scores) * 100))
+    return max(scores)
 
 def _sort_tokens(a: str):
     a = regex.Regex.WORD.sub(" ", a).lower().strip()
