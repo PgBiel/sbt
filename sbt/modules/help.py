@@ -89,11 +89,13 @@ class Help(commands.Cog, name="help"):
             await self.paginate(ctx, await self.all_help(ctx))
             return
 
-        if (cog := ctx.bot.get_cog(thing)):
+        cog = ctx.bot.get_cog(thing)
+        if (cog):
             await self.paginate(ctx, await self.cog_help(ctx, cog))
             return
 
-        if (command := ctx.bot.get_command(thing)):
+        command = ctx.bot.get_command(thing)
+        if (command):
             await self.paginate(ctx, await self.command_help(ctx, command))
             return
 
@@ -114,7 +116,8 @@ class Help(commands.Cog, name="help"):
             await self.send_old_help(ctx, cog)
             return
 
-        if (cog := ctx.bot.get_cog(cog)):
+        cog = ctx.bot.get_cog(cog)
+        if (cog):
             await self.paginate(ctx, await self.cog_help(ctx, cog))
             return
 
@@ -135,7 +138,8 @@ class Help(commands.Cog, name="help"):
             await self.send_old_help(ctx, command)
             return
 
-        if (command := ctx.bot.get_command(command)):
+        command = ctx.bot.get_command(command)
+        if (command):
             await self.paginate(ctx, await self.command_help(ctx, command))
             return
 
@@ -191,7 +195,8 @@ class Help(commands.Cog, name="help"):
                 for (command) in chunk:
                     signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
 
-                    if (not (help := command.short_doc)):
+                    help = command.short_doc
+                    if (not help):
                         help = "no description"
 
                     e.add_field(name=signature, value=help, inline=False)
@@ -241,7 +246,8 @@ class Help(commands.Cog, name="help"):
             for (command) in chunk:
                 signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
 
-                if (not (help := command.short_doc)):
+                help = command.short_doc
+                if (not help):
                     help = "no description"
 
                 e.add_field(name=signature, value=help, inline=False)
@@ -303,7 +309,8 @@ class Help(commands.Cog, name="help"):
                 for (command) in chunk:
                     signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
 
-                    if (not (help := command.short_doc)):
+                    help = command.short_doc
+                    if (not help):
                         help = "no description"
 
                     e.add_field(name=signature, value=help, inline=False)

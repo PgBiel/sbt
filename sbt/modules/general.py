@@ -487,10 +487,12 @@ class General(commands.Cog, name="general"):
         e.set_author(name="Google", url=url, icon_url="https://image.flaticon.com/teams/slug/google.jpg")
 
         for (result) in results[:3]:
-            if (len(title := result.title) > 256):
+            title = result.title
+            if (len(title) > 256):
                 title = "{0}...".format(title[:253])
 
-            if (len(description := result.description) > 1024):
+            description = result.description
+            if (len(description) > 1024):
                 description = "{0}...".format(description[:1021])
 
             e.add_field(name=title, value=description, inline=False)

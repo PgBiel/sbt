@@ -119,7 +119,8 @@ class Google():
         async with session.get(url) as response:
             json_ = await response.json()
 
-            if (error := json_.get("error")):
+            error = json_.get("error")
+            if (error):
                 if error["errors"][0]["domain"] == "usageLimits":
                     raise NoMoreRequests()
                 raise APIError(error["code"])
