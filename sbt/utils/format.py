@@ -199,8 +199,11 @@ def humanize_bytes(bytes: int) -> str:
 
     for (symbol) in reversed(symbols):
         if (bytes >= prefixes[symbol]):
-            value = float(bytes) / prefixes[symbol]
-            return "{0:.1f}{1}".format(value, symbol)
+            value = bytes / prefixes[symbol]
+
+            if (str(value).endswith(".0")):
+                return "{0:.0f}{1}".format(value, symbol)
+            return "{0:.2f}{1}".format(value, symbol)
 
     return "{0}B".format(bytes)
 
