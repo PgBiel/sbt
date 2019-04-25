@@ -525,29 +525,37 @@ class Information(commands.Cog, name="information"):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
         
-    @commands.command(name="until", aliases=["since"])
-    async def _until(self, ctx: commands.Context, date: parse.Date):
+    @commands.command(name="since")
+    async def _since(self, ctx: commands.Context, date: parse.PastDate):
         """
         display distance between today and a date
 
-        year defaults to current year
+        examples:
+            `>since 01/01/19`
+        """
+
+        days = -(date - datetime.date.today()).days
+
+        message = "{0} since {1}".format(
+            format.humanize_seconds(days * 86400),
+            format.humanize_datetime(date)
+        )
+
+        await ctx.send(message)
+        
+    @commands.command(name="until")
+    async def _until(self, ctx: commands.Context, date: parse.FutureDate):
+        """
+        display distance between today and a date
 
         examples:
             `>until 02-22-2050`
-            `>since 01/01/19`
         """
 
         days = (date - datetime.date.today()).days
 
-        if (days < 0):
-            days = -days
-            check = "since"
-        else:
-            check = "until"
-
-        message = "{0} {1} {2}".format(
+        message = "{0} until {1}".format(
             format.humanize_seconds(days * 86400),
-            check,
             format.humanize_datetime(date)
         )
 
