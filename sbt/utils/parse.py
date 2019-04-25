@@ -327,7 +327,7 @@ class PastDate(Date, commands.Converter):
         result = super().parse(argument)
 
         now = datetime.date(self.now.year, self.now.month, self.now.day)
-        if (result => now):
+        if (result >= now):
             raise commands.BadArgument("date is not in the past")
 
         return result
@@ -521,7 +521,7 @@ class PastTime(Time, commands.Converter):
         result = super().parse(argument)
 
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
-        if (result => now):
+        if (result >= now):
             raise commands.BadArgument("time is not in the past")
 
         return result
@@ -732,7 +732,7 @@ class PastDateTime(DateTime, commands.Converter):
 
         result = super().parse(argument)
 
-        if (result => self.now):
+        if (result >= self.now):
             raise commands.BadArgument("datetime is not in the past")
 
         return result
