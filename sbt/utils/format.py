@@ -205,7 +205,14 @@ def humanize_bytes(bytes: int) -> str:
                 return "{0:.0f}{1}".format(value, symbol)
             return "{0:.2f}{1}".format(value, symbol)
 
-    return "{0}B".format(bytes)
+    if (str(bytes).endswith(".0")):
+        return "{0:.0f}B".format(bytes)
+    return "{0:.2f}B".format(bytes)
+
+def humanize_percentage(percent: float):
+    if (str(percent).endswith(".0")):
+        return "{0:.0f}%".format(percent)
+    return "{0:.2f}%".format(percent)
 
 def humanize_seconds(seconds: float, *, long: bool = True) -> str:
     seconds, microseconds = divmod(seconds, 1)  # exact
