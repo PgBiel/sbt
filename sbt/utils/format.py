@@ -345,11 +345,11 @@ def humanize_seconds(seconds: float, *, long: bool = True) -> str:
 
     return " ".join(result)
 
-def humanize_datetime(time: typing.Union[datetime.datetime, datetime.date] = datetime.datetime.utcnow):
-    if (callable(time)):
-        time = time()
+def humanize_datetime(datetime_: typing.Union[datetime.date, datetime.datetime, datetime.time] = datetime.datetime.utcnow):
+    if (callable(datetime_)):
+        datetime_ = datetime_()
 
-    day = time.strftime("%d")
+    day = datetime_.strftime("%d")
     if (day in ["01", "21", "31"]):
         suffix = "st"
     elif (day in ["02", "22"]):
@@ -361,11 +361,13 @@ def humanize_datetime(time: typing.Union[datetime.datetime, datetime.date] = dat
 
     if (day.startswith("0")):
         day = day[1:]
-
-    if (isinstance(time, datetime.datetime)):
-        return time.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
-    else:
-        return time.strftime("%A {0}{1} %B, %Y".format(day, suffix))
+        
+    if (isinstance(datetime_, datetime.date)):
+        return datetime_.strftime("%A {0}{1} %B, %Y".format(day, suffix))
+    elif (isinstance(datetime_, datetime.datetime)):
+        return datetime_.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
+    elif (isinstance(datetime_, datetime.time)):
+        return datetime_.strftime("%H:%M:%S (UTC)")
 
 def indent(text: str, *, amount: int) -> str:
     lines = text.split("\n")
