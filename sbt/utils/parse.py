@@ -70,7 +70,7 @@ class Color(commands.Converter):
             rgb = self.hexadecimal_to_rgb(argument)
             cmyk = self.rgb_to_cmyk(*rgb)
 
-            result = (int_, argument, rgb, cmyk)
+            return (int_, argument, rgb, cmyk)
 
         match = re.fullmatch(regex.Regex.RGB, argument)
         if (match):
@@ -85,7 +85,7 @@ class Color(commands.Converter):
             int_ = self.hexadecimal_to_int(hexadecimal)
             cmyk = self.rgb_to_cmyk(r, g, b)
 
-            result = (int_, hexadecimal, (r, g, b), cmyk)
+            return (int_, hexadecimal, (r, g, b), cmyk)
 
         match = re.fullmatch(regex.Regex.CMYK, argument)
         if (match):
@@ -101,7 +101,7 @@ class Color(commands.Converter):
             hexadecimal = self.rgb_to_hexadecimal(*rgb)
             int_ = self.hexadecimal_to_int(hexadecimal)
 
-            result = (int_, hexadecimal, rgb, (c, m, y, k))
+            return (int_, hexadecimal, rgb, (c, m, y, k))
 
         match = re.fullmatch(regex.Regex.DIGITS, argument)
         if (metch):
@@ -116,12 +116,9 @@ class Color(commands.Converter):
             rgb = self.hexadecimal_to_rgb(hexadecimal)
             cmyk = self.rgb_to_cmyk(*rgb)
 
-            result = (int_, hexadecimal, rgb, cmyk)
+            return (int_, hexadecimal, rgb, cmyk)
 
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        return result
+        raise commands.BadArgument(argument)
 
     @classmethod
     def cmyk_to_hexadecimal(self, c: int, m: int, y: int, k: int) -> str:
@@ -240,7 +237,7 @@ class Date(commands.Converter):
             year = int(year)
 
             try:
-                result = datetime.date(year, month, day)
+                return datetime.date(year, month, day)
             except (ValueError) as e:
                 # year or day is out of range
                 raise commands.BadArgument(argument)
@@ -261,18 +258,18 @@ class Date(commands.Converter):
             year = int(year)
 
             try:
-                result = datetime.date(year, month, day)
+                return datetime.date(year, month, day)
             except (ValueError) as e:
                 # year or day is out of range
                 raise commands.BadArgument(argument)
 
         if (argument == "today"):
             # today
-            result = datetime.date(self.now.year, self.now.month, self.now.day)
+            return datetime.date(self.now.year, self.now.month, self.now.day)
         elif (argument == "tomorrow"):
             # tomorrow
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.date(new.year, new.month, new.day)
+            tomorrow = self.now + datetime.timedelta(days=1)
+            return datetime.date(tomorrow.year, tomorrow.month, tomorrow.day)
 
         match = re.fullmatch(regex.Regex.DAYS, argument)
         if (match):
@@ -285,12 +282,9 @@ class Date(commands.Converter):
             days = int(match.group(days))
             if (days):
                 new = self.now + datetime.timedelta(days=days)
-                result = datetime.date(new.year, new.month, new.day)
+                return datetime.date(new.year, new.month, new.day)
 
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        return result
+        raise commands.BadArgument(argument)
 
 class FutureDate(Date, commands.Converter):
     async def convert(self, ctx, argument: str) -> datetime.date:
@@ -342,7 +336,7 @@ class Time(commands.Converter):
             minutes = int(match.group(digits))
             if (minutes):
                 new = self.now + datetime.timedelta(minutes=minutes)
-                result = datetime.time(new.hour, new.minute, new.second)
+                return datetime.time(new.hour, new.minute, new.second)
 
         match = re.fullmatch(regex.Regex.HOUR, argument)
         if (match):
@@ -365,7 +359,7 @@ class Time(commands.Converter):
             if (hour not in range(0, 24)):
                 raise commands.BadArgument("invalid hour")
 
-            result = datetime.time(hour, 0, 0)
+            return datetime.time(hour, 0, 0)
 
         match = re.fullmatch(regex.Regex.TIME, argument)
         if (match):
@@ -381,7 +375,7 @@ class Time(commands.Converter):
             else:
                 second = 0
 
-            result = datetime.time(hour, minute, second)
+            return datetime.time(hour, minute, second)
 
         match = re.fullmatch(regex.Regex.AT_HOUR, argument)
         if (match):
@@ -404,7 +398,7 @@ class Time(commands.Converter):
             if (hour not in range(0, 24)):
                 raise commands.BadArgument("invalid hour")
 
-            result = datetime.time(hour, 0, 0)
+            return datetime.time(hour, 0, 0)
 
         match = re.fullmatch(regex.Regex.AT_TIME, argument)
         if (match):
@@ -420,7 +414,7 @@ class Time(commands.Converter):
             else:
                 second = 0
 
-            result = datetime.time(hour, minute, second)
+            return datetime.time(hour, minute, second)
 
         match = re.fullmatch(regex.Regex.TODAY_AT_HOUR, argument)
         if (match):
@@ -443,7 +437,7 @@ class Time(commands.Converter):
             if (hour not in range(0, 24)):
                 raise commands.BadArgument("invalid hour")
 
-            result = datetime.time(hour, 0, 0)
+            return datetime.time(hour, 0, 0)
 
         match = re.fullmatch(regex.Regex.TODAY_AT_TIME, argument)
         if (match):
@@ -459,12 +453,9 @@ class Time(commands.Converter):
             else:
                 second = 0
 
-            result = datetime.time(hour, minute, second)
+            return datetime.time(hour, minute, second)
 
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        return result
+        raise commands.BadArgument(argument)
 
 class FutureTime(Time, commands.Converter):
     async def convert(self, ctx, argument: str) -> datetime.time:
@@ -511,11 +502,11 @@ class DateTime(commands.Converter):
         
         date = Date.parse(argument)
         if (date):
-            result = datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
+            return datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
 
         time = Time.parse(argument)
         if (time):
-            result = datetime.datetime(self.now.year, self.now.month, self.now.day, time.hour, time.minute, time.second)
+            return datetime.datetime(self.now.year, self.now.month, self.now.day, time.hour, time.minute, time.second)
 
         match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
         if (match):
@@ -538,8 +529,8 @@ class DateTime(commands.Converter):
             if (hour not in range(0, 24)):
                 raise commands.BadArgument("invalid hour")
 
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.datetime(new.year, new.month, new.day, hour, 0, 0)
+            tomorrow = self.now + datetime.timedelta(days=1)
+            return datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour, 0, 0)
 
         match = re.fullmatch(regex.Regex.TOMORROW_AT_TIME, argument)
         if (match):
@@ -554,8 +545,8 @@ class DateTime(commands.Converter):
             else:
                 second = 0
                 
-            new = self.now + datetime.timedelta(days=1)
-            result = datetime.datetime(new.year, new.month, new.day, hour, minute, second)
+            tomorrow = self.now + datetime.timedelta(days=1)
+            return datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour, minute, second)
 
         match = re.fullmatch(regex.Regex.US_DATE_TIME, argument)
         if (match):
@@ -585,7 +576,7 @@ class DateTime(commands.Converter):
             else:
                 second = 0
                 
-            result = datetime.datetime(year, month, day, hour, minute, second)
+            return datetime.datetime(year, month, day, hour, minute, second)
 
         match = re.fullmatch(regex.Regex.EU_DATE_TIME, argument)
         if (match):
@@ -615,7 +606,7 @@ class DateTime(commands.Converter):
             else:
                 second = 0
                 
-            result = datetime.datetime(year, month, day, hour, minute, second)
+            return datetime.datetime(year, month, day, hour, minute, second)
 
         match = re.fullmatch(regex.Regex.ANY_HUMANIZED_TIME, argument)
         if (match):
@@ -652,12 +643,9 @@ class DateTime(commands.Converter):
                     new += datetime.timedelta(weeks=weeks)
 
             if (new > datetime.timedelta()):
-                result = self.now + new
+                return self.now + new
 
-        if (not result):
-            raise commands.BadArgument(argument)
-
-        return result
+        raise commands.BadArgument(argument)
 
 class FutureDateTime(DateTime, commands.Converter):
     async def convert(self, ctx, argument: str) -> datetime.datetime:
