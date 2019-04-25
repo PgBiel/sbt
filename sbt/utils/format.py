@@ -349,18 +349,19 @@ def humanize_datetime(datetime_: typing.Union[datetime.date, datetime.datetime, 
     if (callable(datetime_)):
         datetime_ = datetime_()
 
-    day = datetime_.strftime("%d")
-    if (day in ["01", "21", "31"]):
-        suffix = "st"
-    elif (day in ["02", "22"]):
-        suffix = "nd"
-    elif (day in ["03", "23"]):
-        suffix = "rd"
-    else:
-        suffix = "th"
+    if (isinstance(datetime_, (datetime.date, datetime.datetime))):
+        day = datetime_.strftime("%d")
+        if (day in ["01", "21", "31"]):
+            suffix = "st"
+        elif (day in ["02", "22"]):
+            suffix = "nd"
+        elif (day in ["03", "23"]):
+            suffix = "rd"
+        else:
+            suffix = "th"
 
-    if (day.startswith("0")):
-        day = day[1:]
+        if (day.startswith("0")):
+            day = day[1:]
         
     if (isinstance(datetime_, datetime.date)):
         return datetime_.strftime("%A {0}{1} %B, %Y".format(day, suffix))
