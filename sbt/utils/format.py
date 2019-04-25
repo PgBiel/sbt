@@ -190,6 +190,20 @@ def get_lines(text: str, start: int, end: int = None) -> str:
 
     return result
 
+def humanize_bytes(bytes: int) -> str:
+    symbols = ["kB", "mB", "gB", "tB", "pB", "eB", "zB", "yB"]
+
+    prefixes = dict()
+    for (i, symbol) in enumerate(symbols):
+        prefixes[symbol] = 1 << (i + 1) * 10
+
+    for (symbol) in reversed(symbols):
+        if (bytes >= prefixes[symbol]):
+            value = float(bytes) / prefixes[symbol]
+            return "{0:.1f}{1}".format(value, symbol)
+
+    return "{0}B".format(bytes)
+
 def humanize_seconds(seconds: float, *, long: bool = True) -> str:
     seconds, microseconds = divmod(seconds, 1)  # exact
     minutes, seconds = divmod(seconds, 60)      # exact
