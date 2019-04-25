@@ -33,6 +33,7 @@ import dis
 import importlib
 import os
 import pprint
+import psutil
 import re
 import sys
 import traceback
