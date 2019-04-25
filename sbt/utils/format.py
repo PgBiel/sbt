@@ -363,10 +363,10 @@ def humanize_datetime(datetime_: typing.Union[datetime.date, datetime.datetime, 
         if (day.startswith("0")):
             day = day[1:]
         
-    if (isinstance(datetime_, datetime.date)):
-        return datetime_.strftime("%A {0}{1} %B, %Y".format(day, suffix))
-    elif (isinstance(datetime_, datetime.datetime)):
+    if (isinstance(datetime_, datetime.datetime)):
         return datetime_.strftime("%A {0}{1} %B, %Y %H:%M:%S (UTC)".format(day, suffix))
+    elif (isinstance(datetime_, datetime.date)):
+        return datetime_.strftime("%A {0}{1} %B, %Y".format(day, suffix))
     elif (isinstance(datetime_, datetime.time)):
         return datetime_.strftime("%H:%M:%S (UTC)")
 
