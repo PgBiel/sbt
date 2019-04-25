@@ -30,6 +30,7 @@ import datetime
 import dis
 import glob
 import inspect
+import psutil
 import random
 import re
 import struct
@@ -721,7 +722,28 @@ class Information(commands.Cog, name="information"):
         display system information
         """
 
-        pass
+        process = psutil.Process()
+        threads = process.num_threads()
+        handles = process.num_handles()
+        connections = len(process.connections())
+        cpu = format.humanize_percentage(process.cpu_percent(interval=1) / psutil.cpu_count())
+        memory = format.humanize_bytes((psutil.virtual_memory().total / 100) * process.memory_percent("private"))
+
+
+        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.set_author(name="System")
+        e.add_field(name="Process Name", value=process.name())
+        e.add_field(name="Process ID", value=process.pid)
+        e.add_field(name="\u200b", value="\u200b")
+        e.add_field(name="Threads", value=threads)
+        e.add_field(name="Handles", value=handles)
+        e.add_field(name="Connections", value=connections)
+        e.add_field(name="CPU", value=cpu)
+        e.add_field(name="Memory", value=memory)
+        e.add_field(name="\u200b", value="\u200b")
+
+        await ctx.send(embed=e)
 
     @_information.command(name="user")
     async def _information_user(self, ctx: commands.Context, user: discord.User):
