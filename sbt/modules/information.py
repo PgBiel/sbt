@@ -534,7 +534,9 @@ class Information(commands.Cog, name="information"):
             `>since 01/01/19`
         """
 
-        days = -(date - datetime.date.today()).days
+        now = datetime.datetime.utcnow()
+        today = datetime.date(now.year, now.month, now.day)
+        days = -(date - today).days
 
         message = "{0} since {1}".format(
             format.humanize_seconds(days * 86400),
@@ -551,8 +553,10 @@ class Information(commands.Cog, name="information"):
         examples:
             `>until 02-22-2050`
         """
-
-        days = (date - datetime.date.today()).days
+        
+        now = datetime.datetime.utcnow()
+        today = datetime.date(now.year, now.month, now.day)
+        days = (date - today).days
 
         message = "{0} until {1}".format(
             format.humanize_seconds(days * 86400),
