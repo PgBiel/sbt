@@ -263,7 +263,7 @@ class Regex:
     # until 00 am
     # until 00pm
     # until 00 pm
-    UNITL_HOUR = re.compile(r"""
+    UNTIL_HOUR = re.compile(r"""
                                 (?:until\ )
                                 (?P<hour>[0-9]{1,2})\ ?
                                 (?P<meridies>am|pm)?
