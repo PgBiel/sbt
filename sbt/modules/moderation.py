@@ -227,6 +227,11 @@ class Moderation(commands.Cog, name="moderation"):
         """
         prune a number of messages
 
+        example:
+            `>prune 5`
+            `>prune 5 --embeds`
+            `>prune 5 --not --member=310418322384748544`
+
         flags:
             `--attachments`   :: delete messages containing attachments
             `--bots`          :: delete messages by bots
@@ -235,64 +240,48 @@ class Moderation(commands.Cog, name="moderation"):
             `--members`       :: delete messages by members
             `--mentions`      :: delete messages containing mentions
             `--not`           :: oppose these checks
-            `--or`            :: delete if ALL checks pass
-
-        example:
-            `>prune 5`
         """
 
-        flags = await flags.resolve(ctx, [
-            parse.Flag("attachments"),
-            parse.Flag("bots"),
-            parse.Flag("embeds"),
-            parse.Flag("member", value=True, converter=commands.converter.MemberConverter),
-            parse.Flag("members"),
-            parse.Flag("mentions"),
-            #parse.Flag("not"),
-            parse.Flag("and"),
-        ])
+        if (flags):
+            flags = await flags.resolve(ctx, [
+                parse.Flag("attachments"),
+                parse.Flag("bots"),
+                parse.Flag("embeds"),
+                parse.Flag("member", value=True, converter=commands.converter.MemberConverter),
+                parse.Flag("members"),
+                parse.Flag("mentions"),
+                parse.Flag("not"),
+            ])
 
         def check(message: discord.Message):
-            if (any([v for (k, v) in flags.items()])):
-                if (flags["attachments"] and message.attachments):
-                    if (not flags["and"]):
-                        return True
-                else:
-                    if (flags["and"]):
-                        return False
-                
-                if (flags["bots"] and message.author.bot):
-                    if (not flags["and"]):
-                        return True
-                else:
-                    if (flags["and"]):
-                        return False
-
-                if (flags["embeds"] and message.embeds):
-                    if (not flags["and"]):
-                        return True
-                else:
-                    if (flags["and"]):
-                        return False
-
-                if (flags["member"] and message.author == flags["member"]):
-                    if (not flags["and"]):
-                        return True
-                else:
-                    if (flags["and"]):
-                        return False
-
-                if (flags["members"] and not message.author.bot):
-                    if (not flags["and"]):
-                        return True
-                else:
-                    if (flags["and"]):
-                        return False
+            if (flags["attachments"] and message.attachments):
+                result = True
+            elif (flags["bots"] and message.author.bot):
+                result = True
+            elif (flags["embeds"] and message.embeds):
+                result = True
+            elif (flags["member"] and message.author == flags["member"]):
+                result = True
+            elif (flags["members"] and not message.author.bot):
+                result = True
+            elif (flags["mentions"] and (message.mentions or
+                                         message.mention_everyone or
+                                         message.channel_mentions or
+                                         message.role_mentions)):
+                result = True
             else:
-                return True
+                result = False
+
+            if (flags["not"]):
+                return not result
+            return result
         
         await ctx.message.delete()
-        await ctx.channel.purge(limit=limit, check=check)
+
+        if (flags):
+            await ctx.channel.purge(limit=limit, check=check)
+        else:
+            await ctx.channel.purge(limit=limit)
 
         message = await ctx.send("done.")
         await asyncio.sleep(1)
