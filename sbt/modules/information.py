@@ -330,8 +330,8 @@ class Information(commands.Cog, name="information"):
             await ctx.send(latency)
 
     @checks.is_guild()
-    @commands.command(name="messagecount", aliases=["messages"])
-    async def _messagecount(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
+    @commands.command(name="messages", aliases=["messagecount"])
+    async def _messages(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         """
         display how many messages a user has sent in the past 24 hours
 
@@ -341,14 +341,15 @@ class Information(commands.Cog, name="information"):
         if (not member):
             member = ctx.author
 
-        messages = 0
-        yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-        async for (message) in ctx.channel.history(limit=1000, after=yesterday):
-            if (message.author == member):
-                messages += 1
+        async with ctx.typing():
+            messages = 0
+            yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
+            async for (message) in ctx.channel.history(limit=1000, after=yesterday):
+                if (message.author == member):
+                    messages += 1
 
         s = "" if (messages == 1) else "s"
-        await ctx.send("{0} sent {1} message{2} to this channel in the past 24 hours".format(member.mention, messages, s))
+        await ctx.send("{0} sent {1} message{2} to this channel in the past 24 hours".format(member, messages, s))
 
     @commands.command(name="now", aliases=["time"])
     async def _now(self, ctx: commands.Context):
