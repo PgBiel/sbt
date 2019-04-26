@@ -56,9 +56,9 @@ class Regex:
     # --flag
     # --flag=value
     FLAG_TOKEN = re.compile(r"""
-                             (?:--)
-                             (?P<flag>[a-z]+)
-                             (?:=(?P<value>.+))?
+                                (?:--)
+                                (?P<flag>[a-z]+)
+                                (?:=(?P<value>.+))?
                              """, re.VERBOSE)
     
     # 000
