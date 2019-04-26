@@ -28,12 +28,12 @@ import re
 
 class Regex:
     WORD = re.compile(r"""
-                       (?P<word>\W)
+                          (?P<word>\W)
                        """, re.IGNORECASE | re.VERBOSE)
     
     WORDS = re.compile(r"""
-                       (?P<word>\W+)
-                       """, re.IGNORECASE | re.VERBOSE)
+                           (?P<word>\W+)
+                        """, re.IGNORECASE | re.VERBOSE)
 
     DIGIT = re.compile(r"""
                            (?P<digit>\d)
@@ -41,8 +41,13 @@ class Regex:
     
     DIGITS = re.compile(r"""
                            (?P<digits>\d+)
-                        """, re.VERBOSE)
+                         """, re.VERBOSE)
 
+    ISSUE = re.compile(r"""
+                           (?:\#\#)
+                           (?P<number>\d+)
+                        """, re.VERBOSE)
+    
     # --flag
     # --flag=value
     FLAG_TOKEN = re.compile(r"""

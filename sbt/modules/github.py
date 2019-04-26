@@ -30,6 +30,7 @@ from discord.ext import commands
 
 from utils import (
     format,
+    regex,
 )
 
 
@@ -59,9 +60,9 @@ class GitHub(commands.Cog, name="github"):
         await ctx.send(format.wrap_url(github))
 
     @_github.command(name="close")
-    async def _github_close(self, ctx: commands.Context, id: int):
+    async def _github_close(self, ctx: commands.Context, id: int, *labels: str):
         """
-        close a github issue
+        close a github issue with optional labels
         """
 
         pass
@@ -97,8 +98,17 @@ class GitHub(commands.Cog, name="github"):
         """
 
         pass
+
+    async def on_message(self, message: discord.Message):
+        if ((message.guild) and (message.guild.id == self.bot._settings.debugging_guild)):
+            match = regex.Regex.ISSUE.search(message.content)
+            if (match):
+                url = "https://github.com/ShineyDev/sbt/issues/{0}"
+                await message.channel.send(url.format(match.group("number")))
                 
 
 def setup(bot: commands.Bot):
     extension = GitHub(bot)
+
     bot.add_cog(extension)
+    bot.add_listener(extension.on_message, "on_message")
