@@ -771,7 +771,7 @@ class Flags(commands.Converter):
             value = match.group("value")
 
             if (flag in self.tokens.keys()):
-                raise commands.BadArgument(token)
+                raise commands.BadArgument("duplicate token '{0}'".format(token))
 
             if (value):
                 self.tokens[flag] = value
