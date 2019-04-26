@@ -70,7 +70,7 @@ class Owner(commands.Cog, name="owner"):
         self.__version__ = __version__
         self.__level__ = __level__
 
-        self._results = collections.deque(maxlen=9)
+        self._results = collections.deque(maxlen=10)
 
         super().__init__()
 
