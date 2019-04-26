@@ -223,19 +223,76 @@ class Moderation(commands.Cog, name="moderation"):
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_messages=True)
     @commands.command(name="prune", aliases=["clear", "delete", "purge"])
-    async def _prune(self, ctx: commands.Context, limit: int):
+    async def _prune(self, ctx: commands.Context, limit: int, *, flags: typing.Optional[parse.Flags]):
         """
         prune a number of messages
+
+        flags:
+            `--attachments`   :: delete messages containing attachments
+            `--bots`          :: delete messages by bots
+            `--embeds`        :: delete messages containing embeds
+            `--member=member` :: delete messages by member
+            `--members`       :: delete messages by members
+            `--mentions`      :: delete messages containing mentions
+            `--not`           :: oppose these checks
+            `--or`            :: delete if ALL checks pass
 
         example:
             `>prune 5`
         """
 
-        if (ctx.invoked_subcommand):
-            return
+        flags = await flags.resolve(ctx, [
+            parse.Flag("attachments"),
+            parse.Flag("bots"),
+            parse.Flag("embeds"),
+            parse.Flag("member", value=True, converter=commands.converter.MemberConverter),
+            parse.Flag("members"),
+            parse.Flag("mentions"),
+            #parse.Flag("not"),
+            parse.Flag("and"),
+        ])
+
+        def check(message: discord.Message):
+            if (any([v for (k, v) in flags.items()])):
+                if (flags["attachments"] and message.attachments):
+                    if (not flags["and"]):
+                        return True
+                else:
+                    if (flags["and"]):
+                        return False
+                
+                if (flags["bots"] and message.author.bot):
+                    if (not flags["and"]):
+                        return True
+                else:
+                    if (flags["and"]):
+                        return False
+
+                if (flags["embeds"] and message.embeds):
+                    if (not flags["and"]):
+                        return True
+                else:
+                    if (flags["and"]):
+                        return False
+
+                if (flags["member"] and message.author == flags["member"]):
+                    if (not flags["and"]):
+                        return True
+                else:
+                    if (flags["and"]):
+                        return False
+
+                if (flags["members"] and not message.author.bot):
+                    if (not flags["and"]):
+                        return True
+                else:
+                    if (flags["and"]):
+                        return False
+            else:
+                return True
         
         await ctx.message.delete()
-        await ctx.channel.purge(limit=limit)
+        await ctx.channel.purge(limit=limit, check=check)
 
         message = await ctx.send("done.")
         await asyncio.sleep(1)
