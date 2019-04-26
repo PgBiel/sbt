@@ -31,6 +31,7 @@ import discord
 from discord.ext import commands
 
 from utils import (
+    checks,
     format,
     regex,
 )
@@ -61,6 +62,7 @@ class GitHub(commands.Cog, name="github"):
         url = "{0}/".format(ctx.bot._settings.github)
         await ctx.send(format.wrap_url(url))
 
+    @checks.is_debugging()
     @_github.group(name="issue", aliases=["issues"], invoke_without_command=True)
     async def _github_issue(self, ctx: commands.Context, id: typing.Optional[int]):
         """
@@ -121,7 +123,8 @@ class GitHub(commands.Cog, name="github"):
             return
 
         pass
-
+    
+    @checks.is_debugging()
     @_github.command(name="pull", aliases=["pulls", "pr", "prs"])
     async def _github_pull(self, ctx: commands.Context, id: typing.Optional[int]):
         """
