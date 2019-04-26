@@ -103,8 +103,13 @@ class GitHub(commands.Cog, name="github"):
         if ((message.guild) and (message.guild.id == self.bot._settings.debugging_guild)):
             match = regex.Regex.ISSUE.search(message.content)
             if (match):
-                url = "https://github.com/ShineyDev/sbt/issues/{0}"
-                await message.channel.send(url.format(match.group("number")))
+                url = "https://github.com/ShineyDev/sbt/issues/{0}".format(match.group("number"))
+                await message.channel.send(format.wrap_url(url))
+
+            match = regex.Regex.PULL_REQUEST.search(message.content)
+            if (match):
+                url = "https://github.com/ShineyDev/sbt/pulls/{0}".format(match.group("number"))
+                await message.channel.send(format.wrap_url(url))
                 
 
 def setup(bot: commands.Bot):

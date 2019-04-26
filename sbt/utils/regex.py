@@ -44,9 +44,14 @@ class Regex:
                          """, re.VERBOSE)
 
     ISSUE = re.compile(r"""
-                           (?:\#\#)
+                           (?:i\#)
                            (?P<number>\d+)
                         """, re.VERBOSE)
+
+    PULL_REQUEST = re.compile(r"""
+                                  (?:pr\#)
+                                  (?P<number>\d+)
+                               """, re.VERBOSE)
     
     # --flag
     # --flag=value
