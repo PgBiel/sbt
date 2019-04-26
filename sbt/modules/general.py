@@ -513,7 +513,7 @@ class General(commands.Cog, name="general"):
 
         await ctx.send("`(>'')> {0}`".format(member.display_name))
     
-    @commands.command(name="intellect", aliases=["intellectify"])
+    @commands.command(name="intellect", aliases=["intellectify", "mock"])
     async def _intellect(self, ctx: commands.Context, *, text: str):
         """
         iNtELlEcTIfy text
