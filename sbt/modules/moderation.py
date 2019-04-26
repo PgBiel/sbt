@@ -399,6 +399,10 @@ class Moderation(commands.Cog, name="moderation"):
         add roles to a member
         """
 
+        if (not roles):
+            await ctx.bot.send_help(ctx)
+            return
+
         if (ctx.author != ctx.guild.owner):
             for (role) in roles:
                 if (role >= ctx.author.top_role):
@@ -484,6 +488,10 @@ class Moderation(commands.Cog, name="moderation"):
         """
         add permissions
         """
+
+        if (not permissions):
+            await ctx.bot.send_help(ctx)
+            return
 
         if (ctx.author != ctx.guild.owner):
             if (role >= ctx.author.top_role):
@@ -574,6 +582,10 @@ class Moderation(commands.Cog, name="moderation"):
         """
         remove roles from a member
         """
+
+        if (not roles):
+            await ctx.bot.send_help(ctx)
+            return
 
         if (ctx.author != ctx.guild.owner):
             for (role) in roles:
