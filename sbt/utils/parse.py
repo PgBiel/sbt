@@ -36,7 +36,7 @@ from utils import (
 
 
 class Color(commands.Converter):
-    async def convert(self, ctx, argument: str) -> tuple:
+    async def convert(self, ctx: commands.Context, argument: str) -> tuple:
         """
         used as a command converter by dpy
         """
@@ -202,7 +202,7 @@ class Color(commands.Converter):
         return self.hexadecimal_to_int(hexadecimal)
 
 class Date(commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.date:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
         """
@@ -287,7 +287,7 @@ class Date(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureDate(Date, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.date:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
         """
@@ -310,7 +310,7 @@ class FutureDate(Date, commands.Converter):
         return result
 
 class PastDate(Date, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.date:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
         """
@@ -333,7 +333,7 @@ class PastDate(Date, commands.Converter):
         return result
                 
 class Time(commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.time:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
         """
@@ -481,7 +481,7 @@ class Time(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureTime(Time, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.time:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
         """
@@ -504,7 +504,7 @@ class FutureTime(Time, commands.Converter):
         return result
 
 class PastTime(Time, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.time:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
         """
@@ -527,7 +527,7 @@ class PastTime(Time, commands.Converter):
         return result
 
 class DateTime(commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.datetime:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
         """
@@ -694,7 +694,7 @@ class DateTime(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureDateTime(DateTime, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.datetime:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
         """
@@ -716,7 +716,7 @@ class FutureDateTime(DateTime, commands.Converter):
         return result
 
 class PastDateTime(DateTime, commands.Converter):
-    async def convert(self, ctx, argument: str) -> datetime.datetime:
+    async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
         """
@@ -736,6 +736,30 @@ class PastDateTime(DateTime, commands.Converter):
             raise commands.BadArgument("datetime is not in the past")
 
         return result
+
+class Flags(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str) -> dict:
+        """
+        used as a command converter by dpy
+        """
+
+        return self.parse(argument)
+
+    @classmethod
+    def parse(self, argument: str) -> dict:
+        self.tokens = list()
+
+        for (token) in argument.split(" "):
+            match = re.fullmatch(regex.Regex.FLAG_TOKEN, token)
+            if (not match):
+                raise commands.BadArgument(token)
+
+            self.tokens.append(token)
+
+        return self
+
+    def resolve(self, flags: list) -> dict:
+        pass
         
 class RPS():
     def __init__(self, argument: str):
