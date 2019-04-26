@@ -746,7 +746,6 @@ class Flag():
         self.converter = converter
 
 class Flags(commands.Converter):
-    @classmethod
     async def convert(self, ctx: commands.Context, argument: str):
         """
         used as a command converter by dpy
@@ -787,7 +786,7 @@ class Flags(commands.Converter):
 
         for (flag) in flags:
             if (flag.required):
-                if (flag.name in self.tokens.keys()):
+                if (flag.name not in self.tokens.keys()):
                     raise commands.BadArgument("missing required flag '{0}'".format(flag.name))
 
             if (flag.value):
