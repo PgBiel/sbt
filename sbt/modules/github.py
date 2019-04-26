@@ -25,6 +25,8 @@ __version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else 
 __level__             = 3
 
 
+import typing
+
 import discord
 from discord.ext import commands
 
@@ -56,18 +58,31 @@ class GitHub(commands.Cog, name="github"):
         display github link
         """
 
-        github = ctx.bot._settings.github
-        await ctx.send(format.wrap_url(github))
+        url = "{0}/".format(ctx.bot._settings.github)
+        await ctx.send(format.wrap_url(url))
 
-    @_github.command(name="close")
-    async def _github_close(self, ctx: commands.Context, id: int, *labels: str):
+    @_github.group(name="issue", aliases=["issues"], invoke_without_command=True)
+    async def _github_issue(self, ctx: commands.Context, id: typing.Optional[int]):
         """
-        close a github issue with optional labels
+        show a github issue
+        """
+
+        if (not id):
+            url = "{0}/issues/".format(ctx.bot._settings.github)
+        else:
+            url = "{0}/issues/{1}".format(ctx.bot._settings.github, id)
+
+        await ctx.send(format.wrap_url(url))
+
+    @_github_issue.command(name="close")
+    async def _github_close(self, ctx: commands.Context, id: int):
+        """
+        close a github issue
         """
 
         pass
 
-    @_github.command(name="open")
+    @_github_issue.command(name="open")
     async def _github_open(self, ctx: commands.Context, id: int):
         """
         open a github issue
@@ -75,7 +90,7 @@ class GitHub(commands.Cog, name="github"):
 
         pass
 
-    @_github.group(name="labels", aliases=["label"], invoke_without_command=True)
+    @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
     async def _github_labels(self, ctx: commands.Context, id: int):
         """
         show labels for a github issue
@@ -89,6 +104,10 @@ class GitHub(commands.Cog, name="github"):
         add labels to a github issue
         """
 
+        if (not labels):
+            await ctx.send("no labels were given")
+            return
+
         pass
 
     @_github_labels.command(name="remove")
@@ -97,18 +116,35 @@ class GitHub(commands.Cog, name="github"):
         remove labels from a github issue
         """
 
+        if (not labels):
+            await ctx.send("no labels were given")
+            return
+
         pass
+
+    @_github.command(name="pull", aliases=["pulls", "pr", "prs"])
+    async def _github_pull(self, ctx: commands.Context, id: typing.Optional[int]):
+        """
+        show a github pull request
+        """
+
+        if (not id):
+            url = "{0}/pulls/".format(ctx.bot._settings.github)
+        else:
+            url = "{0}/pulls/{1}".format(ctx.bot._settings.github, id)
+
+        await ctx.send(format.wrap_url(url))
 
     async def on_message(self, message: discord.Message):
         if ((message.guild) and (message.guild.id == self.bot._settings.debugging_guild)):
             match = regex.Regex.ISSUE.search(message.content)
             if (match):
-                url = "https://github.com/ShineyDev/sbt/issues/{0}".format(match.group("number"))
+                url = "{0}/issues/{1}".format(self.bot._settings.github, match.group("number"))
                 await message.channel.send(format.wrap_url(url))
 
             match = regex.Regex.PULL_REQUEST.search(message.content)
             if (match):
-                url = "https://github.com/ShineyDev/sbt/pulls/{0}".format(match.group("number"))
+                url = "{0}/pulls/{1}".format(self.bot._settings.github, match.group("number"))
                 await message.channel.send(format.wrap_url(url))
                 
 
