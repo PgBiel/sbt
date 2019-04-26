@@ -33,7 +33,7 @@ from utils import (
 )
 
 
-class Reminder(commands.Cog):
+class Reminder(commands.Cog, name="reminder"):
     """
     helper class for General._reminder
     """
