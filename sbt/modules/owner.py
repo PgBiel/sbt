@@ -452,16 +452,6 @@ class Owner(commands.Cog, name="owner"):
                 continue
 
             callbacks.append(command.callback.__name__)
-
-            if (isinstance(command, commands.core.Group)):
-                if (command_):
-                    if (not isinstance(command_, commands.core.Group)):
-                        message += "\n"
-            else:
-                if (command_ and command_.parent):
-                    if (command_.parent.name != command_.full_parent_name):
-                        message += "\n"
-
             command_ = command
             
             width = len(command.qualified_name.split(" ")) - 1
