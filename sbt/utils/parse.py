@@ -737,8 +737,17 @@ class PastDateTime(DateTime, commands.Converter):
 
         return result
 
+class Flag():
+    def __init__(self, name: str, *, required: bool = False, value: bool = False, value_type: type = None, converter: commands.Converter = None):
+        self.name = name
+        self.required = required
+        self.value = value
+        self.value_type = value_type
+        self.converter = converter
+
 class Flags(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str) -> dict:
+    @classmethod
+    async def convert(self, ctx: commands.Context, argument: str):
         """
         used as a command converter by dpy
         """
@@ -746,20 +755,71 @@ class Flags(commands.Converter):
         return self.parse(argument)
 
     @classmethod
-    def parse(self, argument: str) -> dict:
-        self.tokens = list()
+    def parse(self, argument: str):
+        """
+        this method simply splits up the tokens and returns self for
+        the `resolve` method to resolve
+        """
+
+        self.tokens = dict()
 
         for (token) in argument.split(" "):
             match = re.fullmatch(regex.Regex.FLAG_TOKEN, token)
             if (not match):
                 raise commands.BadArgument(token)
 
-            self.tokens.append(token)
+            flag = match.group("flag")
+            value = match.group("value")
+
+            if (flag in self.tokens.keys()):
+                raise commands.BadArgument(token)
+
+            if (value):
+                self.tokens[flag] = value
+            else:
+                self.tokens[flag] = None
 
         return self
 
-    def resolve(self, flags: list) -> dict:
-        pass
+    @classmethod
+    async def resolve(self, ctx: commands.Context, flags: list) -> dict:
+        dict_ = dict()
+
+        for (flag) in flags:
+            if (flag.required):
+                if (flag.name in self.tokens.keys()):
+                    raise commands.BadArgument("missing required flag '{0}'".format(flag.name))
+
+            if (flag.value):
+                if (flag.name in self.tokens.keys()):
+                    if (not self.tokens[flag.name]):
+                        raise commands.BadArgument("missing value for flag '{0}'".format(flag.name))
+            else:
+                if (flag.name in self.tokens.keys()):
+                    if (self.tokens[flag.name]):
+                        raise commands.BadArgument("was given an extraneous value for flag '{0}'".format(flag.name))
+
+            if (flag.name in self.tokens.keys()):
+                value = self.tokens[flag.name]
+
+                if (flag.value_type):
+                    try:
+                        value = flag.value_type(value)
+                    except (Exception) as e:
+                        raise commands.BadArgument("failed to convert value '{0}' to {1}".format(value, flag.value_type))
+                elif (flag.converter):
+                    try:
+                        value = await flag.converter().convert(ctx, value)
+                    except (Exception) as e:
+                        raise commands.BadArgument("failed to convert value '{0}' to {1}".format(value, flag.converter))
+                else:
+                    value = True
+
+                dict_[flag.name] = value
+            else:
+                dict_[flag.name] = None
+                
+        return dict_
         
 class RPS():
     def __init__(self, argument: str):
