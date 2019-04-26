@@ -416,7 +416,7 @@ class Regex:
     # 2 years
     # in 2 years
     YEARS = re.compile(r"""
-                           (?:in\ )?
+                           (?:in\ |for\ )?
                            (?P<years>[0-9]+)
                            (?:y|\ years?)
                         """, re.VERBOSE)
@@ -428,7 +428,7 @@ class Regex:
     # 2 months
     # in 2 months
     MONTHS = re.compile(r"""
-                            (?:in\ )?
+                            (?:in\ |for\ )?
                             (?P<months>[0-9]+)
                             (?:mo|\ months?)
                          """, re.VERBOSE)
@@ -440,7 +440,7 @@ class Regex:
     # 2 weeks
     # in 2 weeks
     WEEKS = re.compile(r"""
-                           (?:in\ )?
+                           (?:in\ |for\ )?
                            (?P<weeks>[0-9]+)
                            (?:w|\ weeks?)
                         """, re.VERBOSE)
@@ -452,7 +452,7 @@ class Regex:
     # 2 days
     # in 2 days
     DAYS = re.compile(r"""
-                          (?:in\ )?
+                          (?:in\ |for\ )?
                           (?P<days>[0-9]+)
                           (?:d|\ days?)
                        """, re.VERBOSE)
@@ -464,7 +464,7 @@ class Regex:
     # 2 hours
     # in 2 hours
     HOURS = re.compile(r"""
-                           (?:in\ )?
+                           (?:in\ |for\ )?
                            (?P<hours>[0-9]+)
                            (?:h|\ hours?)
                         """, re.VERBOSE)
@@ -476,7 +476,7 @@ class Regex:
     # 2 minutes
     # in 2 minutes
     MINUTES = re.compile(r"""
-                             (?:in\ )?
+                             (?:in\ |for\ )?
                              (?P<minutes>[0-9]+)
                              (?:m|\ minutes?)
                           """, re.VERBOSE)
@@ -488,13 +488,13 @@ class Regex:
     # 2 seconds
     # in 2 seconds
     SECONDS = re.compile(r"""
-                             (?:in\ )?
+                             (?:in\ |for\ )?
                              (?P<seconds>[0-9]+)
                              (?:s|\ seconds?)
                           """, re.VERBOSE)
 
     LONG_HUMANIZED_TIME = re.compile(r"""
-                                         (?:in\ )?
+                                         (?:in\ |for\ )?
                                          (?:(?P<years>[0-9]+)(?:\ years?))?\ ?
                                          (?:\ ?and\ )?
                                          (?:(?P<months>[0-9]+)(?:\ months?))?\ ?
@@ -515,7 +515,7 @@ class Regex:
                                       """, re.VERBOSE)
     
     SHORT_HUMANIZED_TIME = re.compile(r"""
-                                          (?:in\ )?
+                                          (?:in\ |for\ )?
                                           (?:(?P<years>[0-9]+)(?:y))?\ ?
                                           (?:\ ?&\ )?
                                           (?:(?P<months>[0-9]+)(?:mo))?\ ?
@@ -536,7 +536,7 @@ class Regex:
                                        """, re.VERBOSE)
 
     ANY_HUMANIZED_TIME = re.compile(r"""
-                                        (?:in\ )?
+                                        (?:in\ |for\ )?
                                         (?:(?P<years>[0-9]+)(?:y|\ years?))?\ ?
                                         (?:\ ?and |\ ?&\ )?
                                         (?:(?P<months>[0-9]+)(?:mo|\ months?))?\ ?
