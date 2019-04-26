@@ -33,7 +33,7 @@ from utils import (
 )
 
 
-class GitHub(commands.Cog):
+class GitHub(commands.Cog, name="github"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
