@@ -51,7 +51,6 @@ class Color(commands.Converter):
         """
 
         argument = argument.upper()
-        result = None
 
         match = re.fullmatch(regex.Regex.HEXADECIMAL, argument)
         if (match):
@@ -217,9 +216,7 @@ class Date(commands.Converter):
         """
         
         argument = argument.lower()
-
         self.now = datetime.datetime.utcnow()
-        result = None
 
         match = re.fullmatch(regex.Regex.US_DATE, argument)
         if (match):
@@ -348,9 +345,7 @@ class Time(commands.Converter):
         """
         
         argument = argument.lower()
-
         self.now = datetime.datetime.utcnow()
-        result = None
         
         match = re.fullmatch(regex.Regex.DIGITS, argument)
         if (match):
@@ -620,17 +615,19 @@ class DateTime(commands.Converter):
         """
         
         argument = argument.lower()
-
         self.now = datetime.datetime.utcnow()
-        result = None
         
-        date = Date.parse(argument)
-        if (date):
+        try:
+            date = Date.parse(argument)
             return datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
+        except (Exception) as e:
+            pass
 
-        time = Time.parse(argument)
-        if (time):
+        try:
+            time = Time.parse(argument)
             return datetime.datetime(self.now.year, self.now.month, self.now.day, time.hour, time.minute, time.second)
+        except (Exception) as e:
+            pass
 
         match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
         if (match):
