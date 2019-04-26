@@ -43,12 +43,10 @@ class Regex:
                            (?P<digits>\d+)
                         """, re.VERBOSE)
 
-    # -flag
-    # -flag=value
     # --flag
     # --flag=value
     FLAG_TOKEN = re.compile(r"""
-                             (?:--|-)
+                             (?:--)
                              (?P<flag>[a-z]+)
                              (?:=(?P<value>.+))?
                              """, re.VERBOSE)
