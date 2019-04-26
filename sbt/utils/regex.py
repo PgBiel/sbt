@@ -42,6 +42,16 @@ class Regex:
     DIGITS = re.compile(r"""
                            (?P<digits>\d+)
                         """, re.VERBOSE)
+
+    # -flag
+    # -flag=value
+    # --flag
+    # --flag=value
+    FLAG_TOKEN = re.compile(r"""
+                             (?:--|-)
+                             (?P<flag>[a-z]+)
+                             (?:=(?P<value>.+))?
+                             """, re.VERBOSE)
     
     # 000
     # #000
