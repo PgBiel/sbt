@@ -94,7 +94,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Characters", value=str(characters))
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -132,7 +132,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Cyan, Magenta, Yellow, Key", value=cmyk)
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -208,7 +208,7 @@ class Information(commands.Cog, name="information"):
 
         message = ""
         for (member) in members:
-            message += "{0}#{1}\n".format(member.name, member.discriminator)
+            message += "{0}\n".format(member)
 
         color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
 
@@ -216,7 +216,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Members", value=message)
         e.set_footer(
             text="{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -277,7 +277,7 @@ class Information(commands.Cog, name="information"):
         color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
 
         e = discord.Embed(color=color)
-        e.add_field(name="Flags for {0}".format(ctx.author.name), value=message)
+        e.add_field(name="Flags for {0}".format(ctx.author), value=message)
         e.set_footer(
             text = "{0} | {1}".format(
                 author.name,
@@ -304,7 +304,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="SBT OAuth Invite", value=sbt_oauth)
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -477,7 +477,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Guilds", value=guilds)
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -582,7 +582,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="discord.py Version", value=dpy_version)
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -620,7 +620,7 @@ class Information(commands.Cog, name="information"):
         e.add_field(name="Version", value=version)
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
@@ -702,7 +702,7 @@ class Information(commands.Cog, name="information"):
 
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url
