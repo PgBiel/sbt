@@ -252,6 +252,22 @@ class Regex:
                              (?P<hour>[0-9]{1,2})\ ?
                              (?P<meridies>am|pm)?
                           """, re.VERBOSE)
+
+    # until 0
+    # until 0am
+    # until 0 am
+    # until 0pm
+    # until 0 pm
+    # until 00
+    # until 00am
+    # until 00 am
+    # until 00pm
+    # until 00 pm
+    UNITL_HOUR = re.compile(r"""
+                                (?:until\ )
+                                (?P<hour>[0-9]{1,2})\ ?
+                                (?P<meridies>am|pm)?
+                             """)
     
     # today at 0
     # today at 0am
@@ -269,6 +285,22 @@ class Regex:
                                    (?P<meridies>am|pm)?
                                 """, re.VERBOSE)
     
+    # until today at 0
+    # until today at 0am
+    # until today at 0 am
+    # until today at 0pm
+    # until today at 0 pm
+    # until today at 00
+    # until today at 00am
+    # until today at 00 am
+    # until today at 00pm
+    # until today at 00 pm
+    UNTIL_TODAY_AT_HOUR = re.compile(r"""
+                                         (?:until\ today\ at\ )
+                                         (?P<hour>[0-9]{1,2})\ ?
+                                         (?P<meridies>am|pm)?
+                                      """, re.VERBOSE)
+    
     # tomorrow at 0
     # tomorrow at 0am
     # tomorrow at 0 am
@@ -284,6 +316,22 @@ class Regex:
                                       (?P<hour>[0-9]{1,2})\ ?
                                       (?P<meridies>am|pm)?
                                    """, re.VERBOSE)
+    
+    # until tomorrow at 0
+    # until tomorrow at 0am
+    # until tomorrow at 0 am
+    # until tomorrow at 0pm
+    # until tomorrow at 0 pm
+    # until tomorrow at 00
+    # until tomorrow at 00am
+    # until tomorrow at 00 am
+    # until tomorrow at 00pm
+    # until tomorrow at 00 pm
+    UNTIL_TOMORROW_AT_HOUR = re.compile(r"""
+                                         (?:until\ tomorrow\ at\ )
+                                         (?P<hour>[0-9]{1,2})\ ?
+                                         (?P<meridies>am|pm)?
+                                      """, re.VERBOSE)
     
     # 00:00
     # 00:00:00
@@ -306,10 +354,32 @@ class Regex:
                              (?P<second>[0-9]{2})?
                           """, re.VERBOSE)
     
+    # until 00:00
+    # until 00:00:00
+    UNTIL_TIME = re.compile(r"""
+                             (?:until\ )
+                             (?P<hour>[0-9]{2})
+                             (?::)
+                             (?P<minute>[0-9]{2})
+                             (?::)?
+                             (?P<second>[0-9]{2})?
+                          """, re.VERBOSE)
+    
     # today at 00:00
     # today at 00:00:00
     TODAY_AT_TIME = re.compile(r"""
                                    (?:today\ at\ )
+                                   (?P<hour>[0-9]{2})
+                                   (?::)
+                                   (?P<minute>[0-9]{2})
+                                   (?::)?
+                                   (?P<second>[0-9]{2})?
+                                """, re.VERBOSE)
+    
+    # until today at 00:00
+    # until today at 00:00:00
+    UNTIL_TODAY_AT_TIME = re.compile(r"""
+                                   (?:until\ today\ at\ )
                                    (?P<hour>[0-9]{2})
                                    (?::)
                                    (?P<minute>[0-9]{2})
@@ -327,6 +397,17 @@ class Regex:
                                       (?::)?
                                       (?P<second>[0-9]{2})?
                                    """, re.VERBOSE)
+    
+    # until tomorrow at 00:00
+    # until tomorrow at 00:00:00
+    UNTIL_TOMORROW_AT_TIME = re.compile(r"""
+                                   (?:until\ tomorrow\ at\ )
+                                   (?P<hour>[0-9]{2})
+                                   (?::)
+                                   (?P<minute>[0-9]{2})
+                                   (?::)?
+                                   (?P<second>[0-9]{2})?
+                                """, re.VERBOSE)
     
     # 1y
     # in 1y
