@@ -554,7 +554,7 @@ class Moderation(commands.Cog, name="moderation"):
         e.add_field(name="Members", value="\n".join(members))
         e.set_footer(
             text = "{0} | {1}".format(
-                ctx.author.name,
+                ctx.author,
                 format.humanize_datetime()
             ),
             icon_url=ctx.author.avatar_url

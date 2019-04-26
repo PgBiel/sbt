@@ -498,7 +498,7 @@ class General(commands.Cog, name="general"):
             e.add_field(name=title, value=description, inline=False)
 
         e.set_footer(text="{0} | safe={1} results={2} time={3}".format(
-                     ctx.author.name,
+                     ctx.author,
                      "on" if safe else "off",
                      results[0].results,
                      results[0].time),
@@ -611,7 +611,7 @@ class General(commands.Cog, name="general"):
                          ),
                          color=color,
                          footer="{0} | {1}".format(
-                             ctx.author.name,
+                             ctx.author,
                              format.humanize_datetime(time)
                          ),
                          footer_icon_url=ctx.author.avatar_url)
@@ -895,7 +895,7 @@ class General(commands.Cog, name="general"):
                                  ("Example", example)
                              ],
                              footer="{0} | {1}".format(
-                                 ctx.author.name,
+                                 ctx.author,
                                  format.humanize_datetime()
                              ),
                              footer_icon_url=ctx.author.avatar_url)
