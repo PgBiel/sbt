@@ -392,7 +392,9 @@ class Moderation(commands.Cog, name="moderation"):
         """
 
         await ctx.bot.send_help(ctx)
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role.command(name="add")
     async def _role_add(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
         """
@@ -411,7 +413,9 @@ class Moderation(commands.Cog, name="moderation"):
         reason = "{0} added roles {1} to {2}".format(ctx.author.id, ", ".join([r.name for r in roles]), member.id)
         await member.add_roles(*roles, reason=reason)
         await ctx.send("done.")
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role.group(name="edit", invoke_without_command=True)
     async def _role_edit(self, ctx: commands.Context):
         """
@@ -419,7 +423,9 @@ class Moderation(commands.Cog, name="moderation"):
         """
 
         await ctx.bot.send_help(ctx)
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit.command(name="color", aliases=["colour"])
     async def _role_edit_color(self, ctx: commands.Context, role: discord.Role, color: parse.Color):
         """
@@ -434,6 +440,8 @@ class Moderation(commands.Cog, name="moderation"):
         await role.edit(color=color, reason="{0} changed this role's color")
         await ctx.send("done.")
         
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit.command(name="hoist")
     async def _role_edit_hoist(self, ctx: commands.Context, role: discord.Role):
         """
@@ -448,6 +456,8 @@ class Moderation(commands.Cog, name="moderation"):
         await role.edit(hoist=hoist, reason="{0} changed this role's hoist property")
         await ctx.send("done.")
         
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit.command(name="mentionable")
     async def _role_edit_mentionable(self, ctx: commands.Context, role: discord.Role):
         """
@@ -462,6 +472,8 @@ class Moderation(commands.Cog, name="moderation"):
         await role.edit(mentionable=mentionable, reason="{0} changed this role's mentionable property")
         await ctx.send("done.")
         
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit.command(name="name")
     async def _role_edit_name(self, ctx: commands.Context, role: discord.Role, *, name: str):
         """
@@ -474,7 +486,9 @@ class Moderation(commands.Cog, name="moderation"):
 
         await role.edit(name=name, reason="{0} changed this role's name")
         await ctx.send("done.")
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit.group(name="permissions", aliases=["perms", "permission", "perm"], invoke_without_command=True)
     async def _role_edit_permissions(self, ctx: commands.Context):
         """
@@ -482,7 +496,9 @@ class Moderation(commands.Cog, name="moderation"):
         """
 
         await ctx.bot.send_help(ctx)
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit_permissions.command(name="add")
     async def _role_edit_permissions_add(self, ctx: commands.Context, role: discord.Role, *permissions: str):
         """
@@ -511,7 +527,9 @@ class Moderation(commands.Cog, name="moderation"):
 
         await role.edit(permissions=permissions)
         await ctx.send("done")
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role_edit_permissions.command(name="remove")
     async def _role_edit_permissions_remove(self, ctx: commands.Context, role: discord.Role, *permissions: str):
         """
@@ -536,7 +554,9 @@ class Moderation(commands.Cog, name="moderation"):
 
         await role.edit(permissions=permissions)
         await ctx.send("done")
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role.command(name="members")
     async def _role_members(self, ctx: commands.Context, role: discord.Role):
         """
@@ -561,7 +581,9 @@ class Moderation(commands.Cog, name="moderation"):
         )
 
         await ctx.send(embed=e)
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role.command(name="permissions", aliases=["perms"])
     async def _role_permissions(self, ctx: commands.Context, role: discord.Role):
         """
@@ -576,7 +598,9 @@ class Moderation(commands.Cog, name="moderation"):
                 message += "- {0}\n".format(permission)
 
         await ctx.send(format.code(message, "diff"))
-
+        
+    @checks.is_guild()
+    @checks.moderator_or_permissions(manage_roles=True)
     @_role.command(name="remove")
     async def _role_remove(self, ctx: commands.Context, member: discord.Member, *roles: discord.Role):
         """

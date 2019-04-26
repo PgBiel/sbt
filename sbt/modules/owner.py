@@ -492,7 +492,8 @@ class Owner(commands.Cog, name="owner"):
         for (page) in format.pagify(message, shorten_by=8):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
-
+                
+    @checks.is_owner()
     @_blacklist.command(name="add")
     async def _blacklist_add(self, ctx: commands.Context, *, user: discord.User):
         """
@@ -504,7 +505,8 @@ class Owner(commands.Cog, name="owner"):
             ctx.bot._settings.save()
 
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_blacklist.command(name="remove")
     async def _blacklist_remove(self, ctx: commands.Context, *, user: discord.User):
         """
@@ -525,7 +527,8 @@ class Owner(commands.Cog, name="owner"):
         """
 
         await ctx.bot.send_help(ctx)
-
+        
+    @checks.is_owner()
     @_command.group(name="disable", invoke_without_command=True)
     async def _command_disable(self, ctx: commands.Context, *, command: str):
         """
@@ -544,7 +547,8 @@ class Owner(commands.Cog, name="owner"):
             command_.enabled = False
 
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_command_disable.command(name="all")
     async def _command_disable_all(self, ctx: commands.Context):
         """
@@ -553,7 +557,8 @@ class Owner(commands.Cog, name="owner"):
 
         self.disable_commands_all(ctx, ctx.bot.commands)
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_command.group(name="enable", invoke_without_command=True)
     async def _command_enable(self, ctx: commands.Context, *, command: str):
         """
@@ -572,7 +577,8 @@ class Owner(commands.Cog, name="owner"):
             command_.enabled = True
 
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_command_enable.command(name="all")
     async def _command_enable_all(self, ctx: commands.Context):
         """
@@ -581,7 +587,8 @@ class Owner(commands.Cog, name="owner"):
 
         self.enable_commands_all(ctx, ctx.bot.commands)
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_command.command(name="hide")
     async def _command_hide(self, ctx: commands.Context, *, command: str):
         """
@@ -600,7 +607,8 @@ class Owner(commands.Cog, name="owner"):
             command_.hidden = True
 
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_command.command(name="unhide")
     async def _command_unhide(self, ctx: commands.Context, *, command: str):
         """
@@ -676,7 +684,8 @@ class Owner(commands.Cog, name="owner"):
         """
 
         await ctx.bot.send_help(ctx)
-
+        
+    @checks.is_owner()
     @_loaded.command(name="extensions", aliases=["modules"])
     async def _loaded_extensions(self, ctx: commands.Context):
         """
@@ -691,7 +700,8 @@ class Owner(commands.Cog, name="owner"):
         for (page) in format.pagify(message, shorten_by=8):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
-
+                
+    @checks.is_owner()
     @_loaded.command(name="imports")
     async def _loaded_imports(self, ctx: commands.Context):
         """
@@ -743,6 +753,7 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
 
     @checks.is_guild()
+    @checks.administrator_or_permissions(manage_guild=True)
     @commands.cooldown(1, 120, commands.cooldowns.BucketType.guild)
     @_settings.command(name="muterole", aliases=["mute"])
     async def _settings_muterole(self, ctx: commands.Context, *, role: discord.Role = None):
@@ -772,6 +783,7 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send("done.")
         
     @checks.is_guild()
+    @checks.administrator_or_permissions(manage_guild=True)
     @commands.cooldown(1, 120, commands.cooldowns.BucketType.guild)
     @_settings.command(name="prefix", aliases=["guildprefix"])
     async def _settings_prefix(self, ctx: commands.Context, prefix: str = None):
@@ -877,7 +889,8 @@ class Owner(commands.Cog, name="owner"):
         for (page) in format.pagify(message, shorten_by=8):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
-
+                
+    @checks.is_owner()
     @_whitelist.command(name="add")
     async def _whitelist_add(self, ctx: commands.Context, *, user: discord.User):
         """
@@ -889,7 +902,8 @@ class Owner(commands.Cog, name="owner"):
             ctx.bot._settings.save()
 
         await ctx.send("done.")
-
+        
+    @checks.is_owner()
     @_whitelist.command(name="remove")
     async def _whitelist_remove(self, ctx: commands.Context, *, user: discord.User):
         """

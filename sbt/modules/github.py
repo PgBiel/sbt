@@ -75,7 +75,9 @@ class GitHub(commands.Cog, name="github"):
             url = "{0}/issues/{1}".format(ctx.bot._settings.github, id)
 
         await ctx.send(format.wrap_url(url))
-
+        
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_issue.command(name="close")
     async def _github_close(self, ctx: commands.Context, id: int):
         """
@@ -83,7 +85,9 @@ class GitHub(commands.Cog, name="github"):
         """
 
         pass
-
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_issue.command(name="open")
     async def _github_open(self, ctx: commands.Context, id: int):
         """
@@ -91,7 +95,9 @@ class GitHub(commands.Cog, name="github"):
         """
 
         pass
-
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
     async def _github_labels(self, ctx: commands.Context, id: int):
         """
@@ -99,7 +105,9 @@ class GitHub(commands.Cog, name="github"):
         """
 
         pass
-
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_labels.command(name="add")
     async def _github_labels_add(self, ctx: commands.Context, id: int, *labels: str):
         """
@@ -111,7 +119,9 @@ class GitHub(commands.Cog, name="github"):
             return
 
         pass
-
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_labels.command(name="remove")
     async def _github_labels_remove(self, ctx: commands.Context, id: int, *labels: str):
         """
