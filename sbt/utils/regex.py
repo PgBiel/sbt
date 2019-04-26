@@ -35,10 +35,14 @@ class Regex:
                        (?P<word>\W+)
                        """, re.IGNORECASE | re.VERBOSE)
 
-    HEXADECIMAL = re.compile(r"""
-                                 (?:0X|\#)?
-                                 (?:[A-F0-9]{8}|[A-F0-9]{6}|[A-F0-9]{4}|[A-F0-9]{3})
-                              """, re.VERBOSE)
+    DIGIT = re.compile(r"""
+                           (?P<digit>\d)
+                        """, re.VERBOSE)
+    
+    DIGITS = re.compile(r"""
+                           (?P<digits>\d+)
+                        """, re.VERBOSE)
+    
     # 000
     # #000
     # 0x000
@@ -51,7 +55,15 @@ class Regex:
     # 00000000
     # #00000000
     # 0x00000000
+    HEXADECIMAL = re.compile(r"""
+                                 (?:0X|\#)?
+                                 (?:[A-F0-9]{8}|[A-F0-9]{6}|[A-F0-9]{4}|[A-F0-9]{3})
+                              """, re.VERBOSE)
     
+    # 000,000,000
+    # 000, 000, 000
+    # (000,000,000)
+    # (000, 000, 000)
     RGB = re.compile(r"""
                          (?:\(?)
                          (?P<r>[0-9]{1,3})
@@ -61,11 +73,11 @@ class Regex:
                          (?P<b>[0-9]{1,3})
                          (?:\)?)
                       """, re.VERBOSE)
-    # 000,000,000
-    # 000, 000, 000
-    # (000,000,000)
-    # (000, 000, 000)
     
+    # 000,000,000,000
+    # 000, 000, 000, 000
+    # (000,000,000,000)
+    # (000, 000, 000, 000)
     CMYK = re.compile(r"""
                           (?:\(?)
                           (?P<c>[0-9]{1,3})
@@ -77,18 +89,6 @@ class Regex:
                           (?P<k>[0-9]{1,3})
                           (?:\)?)
                        """, re.VERBOSE)
-    # 000,000,000,000
-    # 000, 000, 000, 000
-    # (000,000,000,000)
-    # (000, 000, 000, 000)
-
-    DIGIT = re.compile(r"""
-                           (?P<digit>\d)
-                        """, re.VERBOSE)
-    
-    DIGITS = re.compile(r"""
-                           (?P<digits>\d+)
-                        """, re.VERBOSE)
 
     # 12
     # 11
