@@ -27,6 +27,10 @@ import re
 
 
 class Regex:
+    __all__ = {
+        "WORD", "WORDS", "DIGIT", "DIGITS", "ISSUE"
+    }
+
     WORD = re.compile(r"""
                           (?P<word>\W)
                        """, re.IGNORECASE | re.VERBOSE)
@@ -134,33 +138,16 @@ class Regex:
     # 12/31/0000
     # 12-31-00
     # 12-31-0000
-    US_DATE = re.compile(r"""
-                             (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                             (?:/|-)
-                             (?P<day>[0-9]{1,2})
-                             (?:/|-)
-                             (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                          """, re.VERBOSE)
-    
     # on 12/31/00
     # on 12/31/0000
     # on 12-31-00
     # on 12-31-0000
-    ON_US_DATE = re.compile(r"""
-                             (?:on\ )
-                             (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                             (?:/|-)
-                             (?P<day>[0-9]{1,2})
-                             (?:/|-)
-                             (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                          """, re.VERBOSE)
-    
     # until 12/31/00
     # until 12/31/0000
     # until 12-31-00
     # until 12-31-0000
-    UNTIL_US_DATE = re.compile(r"""
-                             (?:until\ )
+    US_DATE = re.compile(r"""
+                             (?:on\ |until\ )?
                              (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
                              (?:/|-)
                              (?P<day>[0-9]{1,2})
@@ -172,33 +159,16 @@ class Regex:
     # 31/12/0000
     # 31-12-00
     # 31-12-0000
-    EU_DATE = re.compile(r"""
-                             (?P<day>[0-9]{1,2})
-                             (?:/|-)
-                             (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                             (?:/|-)
-                             (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                          """, re.VERBOSE)
-    
     # on 31/12/00
     # on 31/12/0000
     # on 31-12-00
     # on 31-12-0000
-    ON_EU_DATE = re.compile(r"""
-                             (?:on\ )
-                             (?P<day>[0-9]{1,2})
-                             (?:/|-)
-                             (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                             (?:/|-)
-                             (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                          """, re.VERBOSE)
-    
     # until 31/12/00
     # until 31/12/0000
     # until 31-12-00
     # until 31-12-0000
-    UNTIL_EU_DATE = re.compile(r"""
-                             (?:until\ )
+    EU_DATE = re.compile(r"""
+                             (?:on\ |until\ )?
                              (?P<day>[0-9]{1,2})
                              (?:/|-)
                              (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
@@ -222,21 +192,6 @@ class Regex:
     # 12-31-0000 at 00:00
     # 12-31-0000 00:00:00
     # 12-31-0000 at 00:00:00
-    US_DATE_TIME = re.compile(r"""
-                                  (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                                  (?:/|-)
-                                  (?P<day>[0-9]{1,2})
-                                  (?:/|-)
-                                  (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                                  (?:\ )
-                                  (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
-                                  (?::)
-                                  (?P<minute>[0-9]{2})
-                                  (?::)?
-                                  (?P<second>[0-9]{2})?
-                               """, re.VERBOSE)
-    
     # on 12/31/00 00:00
     # on 12/31/00 at 00:00
     # on 12/31/00 00:00:00
@@ -253,22 +208,6 @@ class Regex:
     # on 12-31-0000 at 00:00
     # on 12-31-0000 00:00:00
     # on 12-31-0000 at 00:00:00
-    ON_US_DATE_TIME = re.compile(r"""
-                                  (?:on\ )
-                                  (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                                  (?:/|-)
-                                  (?P<day>[0-9]{1,2})
-                                  (?:/|-)
-                                  (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                                  (?:\ )
-                                  (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
-                                  (?::)
-                                  (?P<minute>[0-9]{2})
-                                  (?::)?
-                                  (?P<second>[0-9]{2})?
-                               """, re.VERBOSE)
-    
     # until 12/31/00 00:00
     # until 12/31/00 at 00:00
     # until 12/31/00 00:00:00
@@ -285,8 +224,8 @@ class Regex:
     # until 12-31-0000 at 00:00
     # until 12-31-0000 00:00:00
     # until 12-31-0000 at 00:00:00
-    UNTIL_US_DATE_TIME = re.compile(r"""
-                                  (?:until\ )
+    US_DATE_TIME = re.compile(r"""
+                                  (?:on\ |until\ )?
                                   (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
                                   (?:/|-)
                                   (?P<day>[0-9]{1,2})
@@ -317,21 +256,6 @@ class Regex:
     # 31-12-0000 at 00:00
     # 31-12-0000 00:00:00
     # 31-12-0000 at 00:00:00
-    EU_DATE_TIME = re.compile(r"""
-                                  (?P<day>[0-9]{1,2})
-                                  (?:/|-)
-                                  (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                                  (?:/|-)
-                                  (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                                  (?:\ )
-                                  (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
-                                  (?::)
-                                  (?P<minute>[0-9]{2})
-                                  (?::)?
-                                  (?P<second>[0-9]{2})?
-                               """, re.VERBOSE)
-    
     # on 31/12/00 00:00
     # on 31/12/00 at 00:00
     # on 31/12/00 00:00:00
@@ -348,22 +272,6 @@ class Regex:
     # on 31-12-0000 at 00:00
     # on 31-12-0000 00:00:00
     # on 31-12-0000 at 00:00:00
-    ON_EU_DATE_TIME = re.compile(r"""
-                                  (?:on\ )
-                                  (?P<day>[0-9]{1,2})
-                                  (?:/|-)
-                                  (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
-                                  (?:/|-)
-                                  (?P<year>(?:[0-9]{4}|[0-9]{2}))
-                                  (?:\ )
-                                  (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
-                                  (?::)
-                                  (?P<minute>[0-9]{2})
-                                  (?::)?
-                                  (?P<second>[0-9]{2})?
-                               """, re.VERBOSE)
-    
     # until 31/12/00 00:00
     # until 31/12/00 at 00:00
     # until 31/12/00 00:00:00
@@ -380,8 +288,8 @@ class Regex:
     # until 31-12-0000 at 00:00
     # until 31-12-0000 00:00:00
     # until 31-12-0000 at 00:00:00
-    UNTIL_EU_DATE_TIME = re.compile(r"""
-                                  (?:until\ )
+    EU_DATE_TIME = re.compile(r"""
+                                  (?:on\ |until\ )?
                                   (?P<day>[0-9]{1,2})
                                   (?:/|-)
                                   (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
@@ -406,11 +314,6 @@ class Regex:
     # 00 am
     # 00pm
     # 00 pm
-    HOUR = re.compile(r"""
-                          (?P<hour>[0-9]{1,2})\ ?
-                          (?P<meridies>am|pm)?
-                       """, re.VERBOSE)
-    
     # at 0
     # at 0am
     # at 0 am
@@ -421,12 +324,6 @@ class Regex:
     # at 00 am
     # at 00pm
     # at 00 pm
-    AT_HOUR = re.compile(r"""
-                             (?:at\ )
-                             (?P<hour>[0-9]{1,2})\ ?
-                             (?P<meridies>am|pm)?
-                          """, re.VERBOSE)
-
     # until 0
     # until 0am
     # until 0 am
@@ -437,11 +334,12 @@ class Regex:
     # until 00 am
     # until 00pm
     # until 00 pm
-    UNTIL_HOUR = re.compile(r"""
-                                (?:until\ )
-                                (?P<hour>[0-9]{1,2})\ ?
-                                (?P<meridies>am|pm)?
-                             """)
+    HOUR = re.compile(r"""
+                          (?:at\ |until\ )?
+                          (?P<hour>[0-9]{1,2})
+                          (?:\ ?)
+                          (?P<meridies>am|pm)?
+                       """, re.VERBOSE)
     
     # today at 0
     # today at 0am
@@ -453,12 +351,6 @@ class Regex:
     # today at 00 am
     # today at 00pm
     # today at 00 pm
-    TODAY_AT_HOUR = re.compile(r"""
-                                   (?:today\ at\ )
-                                   (?P<hour>[0-9]{1,2})\ ?
-                                   (?P<meridies>am|pm)?
-                                """, re.VERBOSE)
-    
     # until today at 0
     # until today at 0am
     # until today at 0 am
@@ -469,11 +361,12 @@ class Regex:
     # until today at 00 am
     # until today at 00pm
     # until today at 00 pm
-    UNTIL_TODAY_AT_HOUR = re.compile(r"""
-                                         (?:until\ today\ at\ )
-                                         (?P<hour>[0-9]{1,2})\ ?
-                                         (?P<meridies>am|pm)?
-                                      """, re.VERBOSE)
+    TODAY_AT_HOUR = re.compile(r"""
+                                   (?:until\ )?
+                                   (?:today\ at\ )
+                                   (?P<hour>[0-9]{1,2})\ ?
+                                   (?P<meridies>am|pm)?
+                                """, re.VERBOSE)
     
     # tomorrow at 0
     # tomorrow at 0am
@@ -485,12 +378,6 @@ class Regex:
     # tomorrow at 00 am
     # tomorrow at 00pm
     # tomorrow at 00 pm
-    TOMORROW_AT_HOUR = re.compile(r"""
-                                      (?:tomorrow\ at\ )
-                                      (?P<hour>[0-9]{1,2})\ ?
-                                      (?P<meridies>am|pm)?
-                                   """, re.VERBOSE)
-    
     # until tomorrow at 0
     # until tomorrow at 0am
     # until tomorrow at 0 am
@@ -501,15 +388,21 @@ class Regex:
     # until tomorrow at 00 am
     # until tomorrow at 00pm
     # until tomorrow at 00 pm
-    UNTIL_TOMORROW_AT_HOUR = re.compile(r"""
-                                         (?:until\ tomorrow\ at\ )
-                                         (?P<hour>[0-9]{1,2})\ ?
-                                         (?P<meridies>am|pm)?
-                                      """, re.VERBOSE)
+    TOMORROW_AT_HOUR = re.compile(r"""
+                                      (?:until\ )?
+                                      (?:tomorrow\ at\ )
+                                      (?P<hour>[0-9]{1,2})\ ?
+                                      (?P<meridies>am|pm)?
+                                   """, re.VERBOSE)
     
     # 00:00
     # 00:00:00
+    # at 00:00
+    # at 00:00:00
+    # until 00:00
+    # until 00:00:00
     TIME = re.compile(r"""
+                          (?:at\ |until\ )?
                           (?P<hour>[0-9]{2}|[0-9])
                           (?::)
                           (?P<minute>[0-9]{2})
@@ -517,43 +410,13 @@ class Regex:
                           (?P<second>[0-9]{2})?
                        """, re.VERBOSE)
     
-    # at 00:00
-    # at 00:00:00
-    AT_TIME = re.compile(r"""
-                             (?:at\ )
-                             (?P<hour>[0-9]{2}|[0-9])
-                             (?::)
-                             (?P<minute>[0-9]{2})
-                             (?::)?
-                             (?P<second>[0-9]{2})?
-                          """, re.VERBOSE)
-    
-    # until 00:00
-    # until 00:00:00
-    UNTIL_TIME = re.compile(r"""
-                             (?:until\ )
-                             (?P<hour>[0-9]{2}|[0-9])
-                             (?::)
-                             (?P<minute>[0-9]{2})
-                             (?::)?
-                             (?P<second>[0-9]{2})?
-                          """, re.VERBOSE)
-    
     # today at 00:00
     # today at 00:00:00
-    TODAY_AT_TIME = re.compile(r"""
-                                   (?:today\ at\ )
-                                   (?P<hour>[0-9]{2}|[0-9])
-                                   (?::)
-                                   (?P<minute>[0-9]{2})
-                                   (?::)?
-                                   (?P<second>[0-9]{2})?
-                                """, re.VERBOSE)
-    
     # until today at 00:00
     # until today at 00:00:00
-    UNTIL_TODAY_AT_TIME = re.compile(r"""
-                                   (?:until\ today\ at\ )
+    TODAY_AT_TIME = re.compile(r"""
+                                   (?:until\ )?
+                                   (?:today\ at\ )
                                    (?P<hour>[0-9]{2}|[0-9])
                                    (?::)
                                    (?P<minute>[0-9]{2})
@@ -563,7 +426,10 @@ class Regex:
 
     # tomorrow at 00:00
     # tomorrow at 00:00:00
+    # until tomorrow at 00:00
+    # until tomorrow at 00:00:00
     TOMORROW_AT_TIME = re.compile(r"""
+                                      (?:until\ )?
                                       (?:tomorrow\ at\ )
                                       (?P<hour>[0-9]{2}|[0-9])
                                       (?::)
@@ -571,17 +437,6 @@ class Regex:
                                       (?::)?
                                       (?P<second>[0-9]{2})?
                                    """, re.VERBOSE)
-    
-    # until tomorrow at 00:00
-    # until tomorrow at 00:00:00
-    UNTIL_TOMORROW_AT_TIME = re.compile(r"""
-                                   (?:until\ tomorrow\ at\ )
-                                   (?P<hour>[0-9]{2}|[0-9])
-                                   (?::)
-                                   (?P<minute>[0-9]{2})
-                                   (?::)?
-                                   (?P<second>[0-9]{2})?
-                                """, re.VERBOSE)
     
     # 1y
     # in 1y
