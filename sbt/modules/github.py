@@ -135,17 +135,13 @@ class GitHub(commands.Cog, name="github"):
         pass
     
     @checks.is_debugging()
-    @_github.command(name="pull", aliases=["pulls", "pr", "prs"])
-    async def _github_pull(self, ctx: commands.Context, id: typing.Optional[int]):
+    @_github.command(name="pulls", aliases=["prs"])
+    async def _github_pull(self, ctx: commands.Context):
         """
-        show a github pull request
+        show pull requests
         """
 
-        if (not id):
-            url = "{0}/pulls/".format(ctx.bot._settings.github)
-        else:
-            url = "{0}/pulls/{1}".format(ctx.bot._settings.github, id)
-
+        url = "{0}/pulls/".format(ctx.bot._settings.github)
         await ctx.send(format.wrap_url(url))
 
     async def on_message(self, message: discord.Message):
@@ -153,11 +149,6 @@ class GitHub(commands.Cog, name="github"):
             match = regex.Regex.ISSUE.search(message.content)
             if (match):
                 url = "{0}/issues/{1}".format(self.bot._settings.github, match.group("number"))
-                await message.channel.send(format.wrap_url(url))
-
-            match = regex.Regex.PULL_REQUEST.search(message.content)
-            if (match):
-                url = "{0}/pulls/{1}".format(self.bot._settings.github, match.group("number"))
                 await message.channel.send(format.wrap_url(url))
                 
 
