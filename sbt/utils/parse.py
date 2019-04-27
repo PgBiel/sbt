@@ -157,7 +157,7 @@ class Color(commands.Converter):
     
     @classmethod
     def int_to_hexadecimal(self, int_: int) -> str:
-        hexadecimal = "{0:06X}".format(100)
+        hexadecimal = "{0:06X}".format(int_)
         
         if (len(hexadecimal) != 6):
             raise ValueError("too big")
