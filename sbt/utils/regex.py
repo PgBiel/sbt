@@ -230,11 +230,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # on 12/31/00 00:00
@@ -262,11 +262,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # until 12/31/00 00:00
@@ -294,11 +294,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # 31/12/00 00:00
@@ -325,11 +325,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # on 31/12/00 00:00
@@ -357,11 +357,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # until 31/12/00 00:00
@@ -389,11 +389,11 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2})
+                                  (?P<hour>[0-9]{2}|[0-9])
                                   (?::)
-                                  (?P<minute>[0-9]{2})
+                                  (?P<minute>[0-9]{2}|[0-9])
                                   (?::)?
-                                  (?P<second>[0-9]{2})?
+                                  (?P<second>[0-9]{2}|[0-9])?
                                """, re.VERBOSE)
     
     # 0
@@ -510,77 +510,77 @@ class Regex:
     # 00:00
     # 00:00:00
     TIME = re.compile(r"""
-                          (?P<hour>[0-9]{2})
+                          (?P<hour>[0-9]{2}|[0-9])
                           (?::)
-                          (?P<minute>[0-9]{2})
+                          (?P<minute>[0-9]{2}|[0-9])
                           (?::)?
-                          (?P<second>[0-9]{2})?
+                          (?P<second>[0-9]{2}|[0-9])?
                        """, re.VERBOSE)
     
     # at 00:00
     # at 00:00:00
     AT_TIME = re.compile(r"""
                              (?:at\ )
-                             (?P<hour>[0-9]{2})
+                             (?P<hour>[0-9]{2}|[0-9])
                              (?::)
-                             (?P<minute>[0-9]{2})
+                             (?P<minute>[0-9]{2}|[0-9])
                              (?::)?
-                             (?P<second>[0-9]{2})?
+                             (?P<second>[0-9]{2}|[0-9])?
                           """, re.VERBOSE)
     
     # until 00:00
     # until 00:00:00
     UNTIL_TIME = re.compile(r"""
                              (?:until\ )
-                             (?P<hour>[0-9]{2})
+                             (?P<hour>[0-9]{2}|[0-9])
                              (?::)
-                             (?P<minute>[0-9]{2})
+                             (?P<minute>[0-9]{2}|[0-9])
                              (?::)?
-                             (?P<second>[0-9]{2})?
+                             (?P<second>[0-9]{2}|[0-9])?
                           """, re.VERBOSE)
     
     # today at 00:00
     # today at 00:00:00
     TODAY_AT_TIME = re.compile(r"""
                                    (?:today\ at\ )
-                                   (?P<hour>[0-9]{2})
+                                   (?P<hour>[0-9]{2}|[0-9])
                                    (?::)
-                                   (?P<minute>[0-9]{2})
+                                   (?P<minute>[0-9]{2}|[0-9])
                                    (?::)?
-                                   (?P<second>[0-9]{2})?
+                                   (?P<second>[0-9]{2}|[0-9])?
                                 """, re.VERBOSE)
     
     # until today at 00:00
     # until today at 00:00:00
     UNTIL_TODAY_AT_TIME = re.compile(r"""
                                    (?:until\ today\ at\ )
-                                   (?P<hour>[0-9]{2})
+                                   (?P<hour>[0-9]{2}|[0-9])
                                    (?::)
-                                   (?P<minute>[0-9]{2})
+                                   (?P<minute>[0-9]{2}|[0-9])
                                    (?::)?
-                                   (?P<second>[0-9]{2})?
+                                   (?P<second>[0-9]{2}|[0-9])?
                                 """, re.VERBOSE)
 
     # tomorrow at 00:00
     # tomorrow at 00:00:00
     TOMORROW_AT_TIME = re.compile(r"""
                                       (?:tomorrow\ at\ )
-                                      (?P<hour>[0-9]{2})
+                                      (?P<hour>[0-9]{2}|[0-9])
                                       (?::)
-                                      (?P<minute>[0-9]{2})
+                                      (?P<minute>[0-9]{2}|[0-9])
                                       (?::)?
-                                      (?P<second>[0-9]{2})?
+                                      (?P<second>[0-9]{2}|[0-9])?
                                    """, re.VERBOSE)
     
     # until tomorrow at 00:00
     # until tomorrow at 00:00:00
     UNTIL_TOMORROW_AT_TIME = re.compile(r"""
                                    (?:until\ tomorrow\ at\ )
-                                   (?P<hour>[0-9]{2})
+                                   (?P<hour>[0-9]{2}|[0-9])
                                    (?::)
-                                   (?P<minute>[0-9]{2})
+                                   (?P<minute>[0-9]{2}|[0-9])
                                    (?::)?
-                                   (?P<second>[0-9]{2})?
+                                   (?P<second>[0-9]{2}|[0-9])?
                                 """, re.VERBOSE)
     
     # 1y
