@@ -16,11 +16,15 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+
+__all__ = {
+    "Regex",
+}
 
 
 import re
@@ -34,7 +38,7 @@ class Regex:
         "TODAY_AT_HOUR", "TOMORROW_AT_HOUR", "TIME", "TODAY_AT_TIME",
         "TOMORROW_AT_TIME", "YEARS", "MONTHS", "WEEKS", "DAYS",
         "HOURS", "MINUTES", "SECONDS", "SHORT_HUMANIZED_TIME",
-        "LONG_HUMANIZED_TIME", "ANY_HUMANIZED_TIME"
+        "LONG_HUMANIZED_TIME", "ANY_HUMANIZED_TIME",
     }
 
     WORD = re.compile(r"""
