@@ -54,6 +54,13 @@ class Color(commands.Converter):
 
         match = re.fullmatch(regex.Regex.HEXADECIMAL, argument)
         if (match):
+            # 000
+            # #000
+            # 0x000
+            # 000000
+            # #000000
+            # 0x000000
+
             if (argument.startswith("0X")):
                 argument = argument[2:]
             elif (argument.startswith("#")):
@@ -70,6 +77,11 @@ class Color(commands.Converter):
 
         match = re.fullmatch(regex.Regex.RGB, argument)
         if (match):
+            # 000,000,000
+            # 000, 000, 000
+            # (000,000,000)
+            # (000, 000, 000)
+
             r = int(match.group("r"))
             g = int(match.group("g"))
             b = int(match.group("b"))
@@ -85,6 +97,11 @@ class Color(commands.Converter):
 
         match = re.fullmatch(regex.Regex.CMYK, argument)
         if (match):
+            # 000,000,000,000
+            # 000, 000, 000, 000
+            # (000,000,000,000)
+            # (000, 000, 000, 000)
+
             c = int(match.group("c"))
             m = int(match.group("m"))
             y = int(match.group("y"))
@@ -221,6 +238,14 @@ class Date(commands.Converter):
             # 12/31/0000
             # 12-31-00
             # 12-31-0000
+            # on 12/31/00
+            # on 12/31/0000
+            # on 12-31-00
+            # on 12-31-0000
+            # until 12/31/00
+            # until 12/31/0000
+            # until 12-31-00
+            # until 12-31-0000
 
             month = int(match.group("month"))
             day = int(match.group("day"))
@@ -243,6 +268,14 @@ class Date(commands.Converter):
             # 31/12/0000
             # 31-12-00
             # 31-12-0000
+            # on 31/12/00
+            # on 31/12/0000
+            # on 31-12-00
+            # on 31-12-0000
+            # until 31/12/00
+            # until 31/12/0000
+            # until 31-12-00
+            # until 31-12-0000
 
             day = int(match.group("day"))
             month = int(match.group("month"))
@@ -363,6 +396,26 @@ class Time(commands.Converter):
             # 00 am
             # 00pm
             # 00 pm
+            # at 0
+            # at 0am
+            # at 0 am
+            # at 0pm
+            # at 0 pm
+            # at 00
+            # at 00am
+            # at 00 am
+            # at 00pm
+            # at 00 pm
+            # until 0
+            # until 0am
+            # until 0 am
+            # until 0pm
+            # until 0 pm
+            # until 00
+            # until 00am
+            # until 00 am
+            # until 00pm
+            # until 00 pm
 
             hour = int(match.group("hour"))
 
@@ -387,6 +440,16 @@ class Time(commands.Converter):
             # today at 00 am
             # today at 00pm
             # today at 00 pm
+            # until today at 0
+            # until today at 0am
+            # until today at 0 am
+            # until today at 0pm
+            # until today at 0 pm
+            # until today at 00
+            # until today at 00am
+            # until today at 00 am
+            # until today at 00pm
+            # until today at 00 pm
 
             hour = int(match.group("hour"))
 
@@ -403,6 +466,10 @@ class Time(commands.Converter):
         if (match):
             # 00:00
             # 00:00:00
+            # at 00:00
+            # at 00:00:00
+            # until 00:00
+            # until 00:00:00
 
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
@@ -419,6 +486,8 @@ class Time(commands.Converter):
         if (match):
             # today at 00:00
             # today at 00:00:00
+            # until today at 00:00
+            # until today at 00:00:00
 
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
@@ -521,6 +590,16 @@ class DateTime(commands.Converter):
             # tomorrow at 00 am
             # tomorrow at 00pm
             # tomorrow at 00 pm
+            # until tomorrow at 0
+            # until tomorrow at 0am
+            # until tomorrow at 0 am
+            # until tomorrow at 0pm
+            # until tomorrow at 0 pm
+            # until tomorrow at 00
+            # until tomorrow at 00am
+            # until tomorrow at 00 am
+            # until tomorrow at 00pm
+            # until tomorrow at 00 pm
 
             hour = int(match.group("hour"))
 
@@ -538,6 +617,8 @@ class DateTime(commands.Converter):
         if (match):
             # tomorrow at 00:00
             # tomorrow at 00:00:00
+            # until tomorrow at 00:00
+            # until tomorrow at 00:00:00
 
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
@@ -569,6 +650,38 @@ class DateTime(commands.Converter):
             # 12-31-0000 at 00:00
             # 12-31-0000 00:00:00
             # 12-31-0000 at 00:00:00
+            # on 12/31/00 00:00
+            # on 12/31/00 at 00:00
+            # on 12/31/00 00:00:00
+            # on 12/31/00 at 00:00:00
+            # on 12/31/0000 00:00
+            # on 12/31/0000 at 00:00
+            # on 12/31/0000 00:00:00
+            # on 12/31/0000 at 00:00:00
+            # on 12-31-00 00:00
+            # on 12-31-00 at 00:00
+            # on 12-31-00 00:00:00
+            # on 12-31-00 at 00:00:00
+            # on 12-31-0000 00:00
+            # on 12-31-0000 at 00:00
+            # on 12-31-0000 00:00:00
+            # on 12-31-0000 at 00:00:00
+            # until 12/31/00 00:00
+            # until 12/31/00 at 00:00
+            # until 12/31/00 00:00:00
+            # until 12/31/00 at 00:00:00
+            # until 12/31/0000 00:00
+            # until 12/31/0000 at 00:00
+            # until 12/31/0000 00:00:00
+            # until 12/31/0000 at 00:00:00
+            # until 12-31-00 00:00
+            # until 12-31-00 at 00:00
+            # until 12-31-00 00:00:00
+            # until 12-31-00 at 00:00:00
+            # until 12-31-0000 00:00
+            # until 12-31-0000 at 00:00
+            # until 12-31-0000 00:00:00
+            # until 12-31-0000 at 00:00:00
 
             month = int(match.group("month"))
             day = int(match.group("day"))
@@ -608,6 +721,38 @@ class DateTime(commands.Converter):
             # 31-12-0000 at 00:00
             # 31-12-0000 00:00:00
             # 31-12-0000 at 00:00:00
+            # on 31/12/00 00:00
+            # on 31/12/00 at 00:00
+            # on 31/12/00 00:00:00
+            # on 31/12/00 at 00:00:00
+            # on 31/12/0000 00:00
+            # on 31/12/0000 at 00:00
+            # on 31/12/0000 00:00:00
+            # on 31/12/0000 at 00:00:00
+            # on 31-12-00 00:00
+            # on 31-12-00 at 00:00
+            # on 31-12-00 00:00:00
+            # on 31-12-00 at 00:00:00
+            # on 31-12-0000 00:00
+            # on 31-12-0000 at 00:00
+            # on 31-12-0000 00:00:00
+            # on 31-12-0000 at 00:00:00
+            # until 31/12/00 00:00
+            # until 31/12/00 at 00:00
+            # until 31/12/00 00:00:00
+            # until 31/12/00 at 00:00:00
+            # until 31/12/0000 00:00
+            # until 31/12/0000 at 00:00
+            # until 31/12/0000 00:00:00
+            # until 31/12/0000 at 00:00:00
+            # until 31-12-00 00:00
+            # until 31-12-00 at 00:00
+            # until 31-12-00 00:00:00
+            # until 31-12-00 at 00:00:00
+            # until 31-12-0000 00:00
+            # until 31-12-0000 at 00:00
+            # until 31-12-0000 00:00:00
+            # until 31-12-0000 at 00:00:00
 
             day = int(match.group("day"))
             month = int(match.group("month"))
