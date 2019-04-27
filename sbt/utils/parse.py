@@ -100,8 +100,8 @@ class Color(commands.Converter):
             return (int_, hexadecimal, rgb, (c, m, y, k))
 
         match = re.fullmatch(regex.Regex.DIGITS, argument)
-        if (metch):
-            int_ = match.group("digits")
+        if (match):
+            int_ = int(match.group("digits"))
 
             try:
                 hexadecimal = self.int_to_hexadecimal(int_)
