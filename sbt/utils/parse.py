@@ -360,10 +360,13 @@ class Date(commands.Converter):
         if (match):
             # 1d
             # in 1d
+            # for 1d
             # 1 day
             # in 1 day
+            # for 1 day
             # 2 days
             # in 2 days
+            # for 2 days
 
             days = int(match.group(days))
             if (days):
