@@ -28,6 +28,12 @@ __level__             = 6
 import discord
 from discord.ext import commands
 
+from utils import (
+    checks,
+    format,
+    parse,
+)
+
 
 class Beta(commands.Cog, name="beta"):
     def __init__(self, bot: commands.Bot):
@@ -44,6 +50,203 @@ class Beta(commands.Cog, name="beta"):
 
     def cog_unload(self):
         del self.bot._extensions.extensions[self.qualified_name]
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @commands.group(name="parse", invoke_without_command=True)
+    async def _parse(self, ctx: commands.Context):
+        """
+        parser debugging
+        """
+
+        await ctx.bot.send_help(ctx)
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="color")
+    async def _parse_color(self, ctx: commands.Context, *, color: str):
+        """
+        color parser
+        """
+
+        try:
+            color = parse.Color.parse(color)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(color))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="date")
+    async def _parse_date(self, ctx: commands.Context, *, date: str):
+        """
+        date parser
+        """
+
+        try:
+            date = parse.Date.parse(date)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(date)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="futuredate")
+    async def _parse_futuredate(self, ctx: commands.Context, *, date: str):
+        """
+        futuredate parser
+        """
+
+        try:
+            date = parse.FutureDate.parse(date)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(date)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="pastdate")
+    async def _parse_pastdate(self, ctx: commands.Context, *, date: str):
+        """
+        pastdate parser
+        """
+
+        try:
+            date = parse.PastDate.parse(date)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(date)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="time")
+    async def _parse_time(self, ctx: commands.Context, *, time: str):
+        """
+        time parser
+        """
+
+        try:
+            time = parse.Time.parse(time)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(time)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="futuretime")
+    async def _parse_futuretime(self, ctx: commands.Context, *, time: str):
+        """
+        futuretime parser
+        """
+
+        try:
+            time = parse.FutureTime.parse(time)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(time)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="pasttime")
+    async def _parse_pasttime(self, ctx: commands.Context, *, time: str):
+        """
+        pasttime parser
+        """
+
+        try:
+            time = parse.PastTime.parse(time)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(time)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="datetime")
+    async def _parse_datetime(self, ctx: commands.Context, *, datetime: str):
+        """
+        datetime parser
+        """
+
+        try:
+            datetime = parse.DateTime.parse(datetime)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(datetime)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="futuredatetime")
+    async def _parse_futuredatetime(self, ctx: commands.Context, *, datetime: str):
+        """
+        futuredatetime parser
+        """
+
+        try:
+            datetime = parse.FutureDateTime.parse(datetime)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(datetime)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="pastdatetime")
+    async def _parse_pastdatetime(self, ctx: commands.Context, *, datetime: str):
+        """
+        pastdatetime parser
+        """
+
+        try:
+            datetime = parse.PastDateTime.parse(datetime)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(format.humanize_datetime(datetime)))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="flags")
+    async def _parse_flags(self, ctx: commands.Context, *, flags: str):
+        """
+        flags parser
+        """
+
+        try:
+            flags = parse.Flags.parse(flags)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(flags))
 
 
 def setup(bot: commands.Bot):
