@@ -591,10 +591,13 @@ class Regex:
     
     # 1y
     # in 1y
+    # for 1y
     # 1 year
     # in 1 year
+    # for 1 year
     # 2 years
     # in 2 years
+    # for 2 years
     YEARS = re.compile(r"""
                            (?:in\ |for\ )?
                            (?P<years>[0-9]+)
@@ -603,10 +606,13 @@ class Regex:
     
     # 1mo
     # in 1mo
+    # for 1mo
     # 1 month
     # in 1 month
+    # for 1 month
     # 2 months
     # in 2 months
+    # for 2 months
     MONTHS = re.compile(r"""
                             (?:in\ |for\ )?
                             (?P<months>[0-9]+)
@@ -615,10 +621,13 @@ class Regex:
     
     # 1w
     # in 1w
+    # for 1w
     # 1 week
     # in 1 week
+    # for 1 week
     # 2 weeks
     # in 2 weeks
+    # for 2 weeks
     WEEKS = re.compile(r"""
                            (?:in\ |for\ )?
                            (?P<weeks>[0-9]+)
@@ -627,10 +636,13 @@ class Regex:
     
     # 1d
     # in 1d
+    # for 1d
     # 1 day
     # in 1 day
+    # for 1 day
     # 2 days
     # in 2 days
+    # for 2 days
     DAYS = re.compile(r"""
                           (?:in\ |for\ )?
                           (?P<days>[0-9]+)
@@ -639,10 +651,13 @@ class Regex:
     
     # 1h
     # in 1h
+    # for 1h
     # 1 hour
     # in 1 hour
+    # for 1 hour
     # 2 hours
     # in 2 hours
+    # for 2 hours
     HOURS = re.compile(r"""
                            (?:in\ |for\ )?
                            (?P<hours>[0-9]+)
@@ -651,10 +666,13 @@ class Regex:
     
     # 1m
     # in 1m
+    # for 1m
     # 1 minute
     # in 1 minute
+    # for 1 minute
     # 2 minutes
     # in 2 minutes
+    # for 2 minutes
     MINUTES = re.compile(r"""
                              (?:in\ |for\ )?
                              (?P<minutes>[0-9]+)
@@ -663,10 +681,13 @@ class Regex:
     
     # 1s
     # in 1s
+    # for 1s
     # 1 second
     # in 1 second
+    # for 1 second
     # 2 seconds
     # in 2 seconds
+    # for 2 seconds
     SECONDS = re.compile(r"""
                              (?:in\ |for\ )?
                              (?P<seconds>[0-9]+)
