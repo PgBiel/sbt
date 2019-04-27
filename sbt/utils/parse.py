@@ -59,11 +59,8 @@ class Color(commands.Converter):
             elif (argument.startswith("#")):
                 argument = argument[1:]
 
-            if (len(argument) in [3, 4]):
+            if (len(argument) == 3):
                 argument = "".join(i * 2 for i in argument)
-
-            if (len(argument) == 8):
-                argument = argument[2:]
                 
             int_ = self.hexadecimal_to_int(argument)
             rgb = self.hexadecimal_to_rgb(argument)
