@@ -224,6 +224,7 @@ class Date(commands.Converter):
             # 12/31/0000
             # 12-31-00
             # 12-31-0000
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -245,6 +246,7 @@ class Date(commands.Converter):
             # on 12/31/0000
             # on 12-31-00
             # on 12-31-0000
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -266,6 +268,7 @@ class Date(commands.Converter):
             # until 12/31/0000
             # until 12-31-00
             # until 12-31-0000
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -287,6 +290,7 @@ class Date(commands.Converter):
             # 31/12/0000
             # 31-12-00
             # 31-12-0000
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -308,6 +312,7 @@ class Date(commands.Converter):
             # on 31/12/0000
             # on 31-12-00
             # on 31-12-0000
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -329,6 +334,7 @@ class Date(commands.Converter):
             # until 31/12/0000
             # until 31-12-00
             # until 31-12-0000
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -345,10 +351,8 @@ class Date(commands.Converter):
                 raise commands.BadArgument(argument)
 
         if (argument == "today"):
-            # today
             return datetime.date(self.now.year, self.now.month, self.now.day)
         elif (argument == "tomorrow"):
-            # tomorrow
             tomorrow = self.now + datetime.timedelta(days=1)
             return datetime.date(tomorrow.year, tomorrow.month, tomorrow.day)
 
@@ -360,6 +364,7 @@ class Date(commands.Converter):
             # in 1 day
             # 2 days
             # in 2 days
+
             days = int(match.group(days))
             if (days):
                 new = self.now + datetime.timedelta(days=days)
@@ -452,6 +457,7 @@ class Time(commands.Converter):
             # 00 am
             # 00pm
             # 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -475,6 +481,7 @@ class Time(commands.Converter):
             # at 00 am
             # at 00pm
             # at 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -498,6 +505,7 @@ class Time(commands.Converter):
             # until 00 am
             # until 00pm
             # until 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -521,6 +529,7 @@ class Time(commands.Converter):
             # today at 00 am
             # today at 00pm
             # today at 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -544,6 +553,7 @@ class Time(commands.Converter):
             # until today at 00 am
             # until today at 00pm
             # until today at 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -725,6 +735,7 @@ class DateTime(commands.Converter):
             # tomorrow at 00 am
             # tomorrow at 00pm
             # tomorrow at 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -749,6 +760,7 @@ class DateTime(commands.Converter):
             # until tomorrow at 00 am
             # until tomorrow at 00pm
             # until tomorrow at 00 pm
+
             hour = int(match.group("hour"))
 
             meridies = match.group("meridies")
@@ -765,6 +777,7 @@ class DateTime(commands.Converter):
         if (match):
             # tomorrow at 00:00
             # tomorrow at 00:00:00
+
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
 
@@ -781,6 +794,7 @@ class DateTime(commands.Converter):
         if (match):
             # until tomorrow at 00:00
             # until tomorrow at 00:00:00
+
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
 
@@ -811,6 +825,7 @@ class DateTime(commands.Converter):
             # 12-31-0000 at 00:00
             # 12-31-0000 00:00:00
             # 12-31-0000 at 00:00:00
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -849,6 +864,7 @@ class DateTime(commands.Converter):
             # on 12-31-0000 at 00:00
             # on 12-31-0000 00:00:00
             # on 12-31-0000 at 00:00:00
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -887,6 +903,7 @@ class DateTime(commands.Converter):
             # until 12-31-0000 at 00:00
             # until 12-31-0000 00:00:00
             # until 12-31-0000 at 00:00:00
+
             month = int(match.group("month"))
             day = int(match.group("day"))
 
@@ -925,6 +942,7 @@ class DateTime(commands.Converter):
             # 31-12-0000 at 00:00
             # 31-12-0000 00:00:00
             # 31-12-0000 at 00:00:00
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -963,6 +981,7 @@ class DateTime(commands.Converter):
             # on 31-12-0000 at 00:00
             # on 31-12-0000 00:00:00
             # on 31-12-0000 at 00:00:00
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
@@ -1001,6 +1020,7 @@ class DateTime(commands.Converter):
             # until 31-12-0000 at 00:00
             # until 31-12-0000 00:00:00
             # until 31-12-0000 at 00:00:00
+
             day = int(match.group("day"))
             month = int(match.group("month"))
 
