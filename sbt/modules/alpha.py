@@ -35,12 +35,11 @@ from discord.ext import commands
 
 class Alpha(commands.Cog, name="alpha"):
     __all__ = {
-        "__init__", "cog_unload",
+        "__init__",
     }
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -49,9 +48,6 @@ class Alpha(commands.Cog, name="alpha"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
 
 
 def setup(bot: commands.Bot):

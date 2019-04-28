@@ -78,7 +78,7 @@ VALID_PERMISSIONS = [
 
 class Moderation(commands.Cog, name="moderation"):
     __all__ = {
-        "__init__", "cog_unload", "_ban", "_hackban", "_kick", "_mute",
+        "__init__", "_ban", "_hackban", "_kick", "_mute",
         "_names",  "_prune",  "_rename",  "_softban",  "_unban",
         "_unmute", "_role", "_role_add", "_role_edit",
         "_role_edit_color", "_role_edit_hoist",
@@ -90,7 +90,6 @@ class Moderation(commands.Cog, name="moderation"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -99,9 +98,6 @@ class Moderation(commands.Cog, name="moderation"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
         
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)

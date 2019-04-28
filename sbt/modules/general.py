@@ -54,7 +54,7 @@ from utils import (
 
 class General(commands.Cog, name="general"):
     __all__ = {
-        "__init__", "cog_unload", "_2D", "_3D", "_choose",
+        "__init__", "_2D", "_3D", "_choose",
         "_eightball", "_embed", "_figlet", "_flip", "_google", "_hoi",
         "_intellect", "_morse", "_pigeonify", "_reminder", "_reverse",
         "_roll", "_rps", "_scramble", "_semiscramble", "_spellout",
@@ -64,7 +64,6 @@ class General(commands.Cog, name="general"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -73,9 +72,6 @@ class General(commands.Cog, name="general"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
         
     @commands.command(name="2D", aliases=["ascii"])
     async def _2D(self, ctx: commands.Context, *, text: str):

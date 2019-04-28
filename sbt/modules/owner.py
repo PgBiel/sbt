@@ -51,12 +51,10 @@ from utils import (
     checks,
     dataio,
     enumerators,
-    extensions,
     extensions_,
     format,
     fuzzywuzzy,
     parse,
-    parse_,
     regex,
     search,
     settings,
@@ -65,7 +63,7 @@ from utils import (
 
 class Owner(commands.Cog, name="owner"):
     __all__ = {
-        "__init__", "cog_unload", "_debug", "_do", "_echo",
+        "__init__", "_debug", "_do", "_echo",
         "_evaluate", "_leave", "_load", "_owner", "_reload",
         "_restart", "_rift", "_send", "_shutdown", "_sudo", "_unload",
         "_walk", "_blacklist", "_blacklist_add", "_blacklist_remove",
@@ -84,7 +82,6 @@ class Owner(commands.Cog, name="owner"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -95,9 +92,6 @@ class Owner(commands.Cog, name="owner"):
         self._results = collections.deque(maxlen=10)
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
         
     @checks.is_owner()
     @commands.command(name="debug", aliases=["?", ">?"])

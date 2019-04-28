@@ -53,7 +53,7 @@ from utils import (
 
 class Information(commands.Cog, name="information"):
     __all__ = {
-        "__init__", "cog_unload", "_code", "_color", "_contributors",
+        "__init__", "_code", "_color", "_contributors",
         "_dis", "_discriminator", "_flags", "_invite", "_latency",
         "_messages", "_now", "_permissions", "_since", "_source",
         "_statistics", "_unicode", "_until", "_uptime", "_version",
@@ -65,7 +65,6 @@ class Information(commands.Cog, name="information"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -74,9 +73,6 @@ class Information(commands.Cog, name="information"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
 
     @commands.cooldown(1, 60, commands.cooldowns.BucketType.user)
     @commands.command(name="code", aliases=["lines"])

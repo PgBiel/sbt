@@ -50,7 +50,6 @@ class Reminder(commands.Cog, name="reminder"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -62,9 +61,6 @@ class Reminder(commands.Cog, name="reminder"):
         self.send_reminders.start()
 
     def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
-
-        self.save()
         self.send_reminders.cancel()
 
     def add_reminder(self, ctx: commands.Context, reminder: str):

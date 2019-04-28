@@ -41,7 +41,7 @@ from utils import (
 
 class Beta(commands.Cog, name="beta"):
     __all__ = {
-        "__init__", "cog_unload", "_parse", "_parse_color",
+        "__init__", "_parse", "_parse_color",
         "_parse_date", "_parse_futuredate", "_parse_pastdate",
         "_parse_time", "_parse_futuretime", "_parse_pasttime",
         "_parse_datetime", "_parse_futuredatetime",
@@ -50,7 +50,6 @@ class Beta(commands.Cog, name="beta"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -59,9 +58,6 @@ class Beta(commands.Cog, name="beta"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
 
     @checks.is_beta()
     @checks.is_debugging()

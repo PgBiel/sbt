@@ -56,7 +56,6 @@ class Help(commands.Cog, name="help"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -74,8 +73,6 @@ class Help(commands.Cog, name="help"):
     def cog_unload(self):
         self.bot.remove_command("help")
         self.bot.add_command(self.old_help)
-
-        del self.bot._extensions.extensions[self.qualified_name]
 
     @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
     @commands.group(name="help", aliases=["h"], hidden=True, invoke_without_command=True)

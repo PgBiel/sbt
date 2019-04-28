@@ -41,7 +41,6 @@ import pyfiglet
 
 from utils import (
     channels,
-    extensions,
     format,
     settings,
 )
@@ -61,7 +60,6 @@ class Bot(commands.Bot):
 
     def __init__(self, *args, **kwargs):
         self._channels = channels.Channels()
-        self._extensions = extensions.Extensions()
         self._settings = settings.Settings()
 
         self.__authors__ = __authors__

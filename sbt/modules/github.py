@@ -43,7 +43,7 @@ from utils import (
 
 class GitHub(commands.Cog, name="github"):
     __all__ = {
-        "__init__", "cog_unload", "_github", "_github_issue",
+        "__init__", "_github", "_github_issue",
         "_github_issue_close", "_github_issue_open",
         "_github_issue_labels", "_github_issue_labels_add",
         "_github_issue_labels_remove", "_github_pulls",
@@ -51,7 +51,6 @@ class GitHub(commands.Cog, name="github"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot._extensions.add_extension(self)
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
@@ -60,9 +59,6 @@ class GitHub(commands.Cog, name="github"):
         self.__level__ = __level__
 
         super().__init__()
-
-    def cog_unload(self):
-        del self.bot._extensions.extensions[self.qualified_name]
 
     @commands.group(name="github", aliases=["gh"], invoke_without_command=True)
     async def _github(self, ctx: commands.Context):
