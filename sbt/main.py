@@ -150,50 +150,12 @@ def init() -> commands.Bot:
         os.system("cls")
 
         print()
-        print(pyfiglet.figlet_format("SBT"))
+        print(pyfiglet.figlet_format("SBT v2"))
         print()
         print("Client:")
-        print(" {0}#{1} ({2})".format(bot.user.name, bot.user.discriminator, bot.user.id))
-        print()
-        print("Settings:")
-        print(" Owner: {0}".format(bot._settings.owner))
-        print(" Prefix{0}: {1}".format("" if len(bot._settings.get_prefixes()) == 1 else "es", " ".join(bot._settings.get_prefixes())))
-        
+        print(" {0} ({1})".format(bot.user, bot.user.id))
+
         owner = bot.get_cog("owner")
-        if (owner):
-            print(" Extensions: {0}/{1}".format(len(bot.cogs), len(EXTENSIONS)))
-
-        print()
-        print()
-
-        guilds = len(bot.guilds)
-        channels_ = len([c for c in bot.get_all_channels()])
-        users = len([m for m in bot.get_all_members()])
-        commands_ = len(bot.commands)
-
-        print("Statistics:")
-        print(" --------------------------------")
-        print(" |  guilds           |  {0:<6}  |".format(guilds))
-        print(" |  channels         |  {0:<6}  |".format(channels_))
-        print(" |  users            |  {0:<6}  |".format(users))
-        print(" |  commands         |  {0:<6}  |".format(commands_))
-        print(" --------------------------------")
-        print()
-
-        max_width = max([len(extension) for extension in EXTENSIONS])
-
-        print("Debugging:")
-        print(" ---{0}--------------".format("-" * max_width))
-
-        for (extension) in bot._extensions.extensions.keys():
-            if (bot.get_cog(extension)):
-                print(" |  {0:<{width}}  |  True    |".format(extension, width=max_width))
-            else:
-                print(" |  {0:<{width}}  |  False   |".format(extension, width=max_width))
-            
-        print(" ---{0}--------------".format("-" * max_width))
-        print()
-
         if (owner):
             owner.disable_commands(bot)
             owner.hide_commands(bot)
