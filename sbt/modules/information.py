@@ -486,7 +486,7 @@ class Information(commands.Cog, name="information"):
         version = ctx.bot.__version__
 
         users = 0
-        for (user) in ctx.bot.get_all_members():
+        for (user) in ctx.bot.users:
             if (not user.bot):
                 users += 1
 
