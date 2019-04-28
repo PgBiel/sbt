@@ -16,17 +16,37 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (3, 0, 0, "final", 6)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (3, 0, 0, "final", 7)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+
+__all__ = {
+    "is_valid", "load", "__load", "save", "__save",
+}
 
 
 import json
 import os
 import random
 
+
+def is_valid(file_path: str) -> bool:
+    try:
+        _ = __load(file_path)
+        return True
+    except (json.decoder.JSONDecodeError) as e:
+        return False
+
+def load(file_path: str) -> dict:
+    return __load(file_path)
+
+def __load(file_path: str) -> dict:
+    with open(file_path, encoding="utf-8", mode="r") as file_stream:
+        data = json.load(file_stream)
+
+    return data
 
 def save(file_path: str, data: dict) -> int:
     id = random.randint(1000, 9999)
@@ -46,19 +66,3 @@ def save(file_path: str, data: dict) -> int:
 def __save(file_path: str, data: dict):
     with open(file_path, encoding="utf-8", mode="w") as file_stream:
         json.dump(data, file_stream, indent=2, separators=(",", ": "))
-
-def load(file_path: str) -> dict:
-    return __load(file_path)
-
-def __load(file_path: str) -> dict:
-    with open(file_path, encoding="utf-8", mode="r") as file_stream:
-        data = json.load(file_stream)
-
-    return data
-
-def is_valid(file_path: str) -> bool:
-    try:
-        _ = __load(file_path)
-        return True
-    except (json.decoder.JSONDecodeError) as e:
-        return False

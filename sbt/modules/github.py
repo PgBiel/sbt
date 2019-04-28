@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 3
+__level__        = 3
+
+__all__ = {
+    "GitHub", "setup",
+}
 
 
 import typing
@@ -38,6 +42,13 @@ from utils import (
 
 
 class GitHub(commands.Cog, name="github"):
+    __all__ = {
+        "__init__", "cog_unload", "_github", "_github_issue",
+        "_github_issue_close", "_github_issue_open",
+        "_github_issue_labels", "_github_issue_labels_add",
+        "_github_issue_labels_remove", "_github_pulls",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
@@ -79,7 +90,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.command(name="close")
-    async def _github_close(self, ctx: commands.Context, id: int):
+    async def _github_issue_close(self, ctx: commands.Context, id: int):
         """
         close a github issue
         """
@@ -89,7 +100,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.command(name="open")
-    async def _github_open(self, ctx: commands.Context, id: int):
+    async def _github_issue_open(self, ctx: commands.Context, id: int):
         """
         open a github issue
         """
@@ -99,7 +110,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
-    async def _github_labels(self, ctx: commands.Context, id: int):
+    async def _github_issue_labels(self, ctx: commands.Context, id: int):
         """
         show labels for a github issue
         """
@@ -108,8 +119,8 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_labels.command(name="add")
-    async def _github_labels_add(self, ctx: commands.Context, id: int, *labels: str):
+    @_github_issue_labels.command(name="add")
+    async def _github_issue_labels_add(self, ctx: commands.Context, id: int, *labels: str):
         """
         add labels to a github issue
         """
@@ -122,8 +133,8 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_labels.command(name="remove")
-    async def _github_labels_remove(self, ctx: commands.Context, id: int, *labels: str):
+    @_github_issue_labels.command(name="remove")
+    async def _github_issue_labels_remove(self, ctx: commands.Context, id: int, *labels: str):
         """
         remove labels from a github issue
         """
@@ -136,7 +147,7 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_debugging()
     @_github.command(name="pulls", aliases=["prs"])
-    async def _github_pull(self, ctx: commands.Context):
+    async def _github_pulls(self, ctx: commands.Context):
         """
         show pull requests
         """

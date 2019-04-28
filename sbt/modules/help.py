@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 2
+__level__        = 2
+
+__all__ = {
+    "COMMANDS_PER_PAGE", "_chunks", "Help", "setup",
+}
 
 
 import asyncio
@@ -44,6 +48,12 @@ def _chunks(list_: list, number: int):
 
 
 class Help(commands.Cog, name="help"):
+    __all__ = {
+        "__init__", "cog_unload", "_help", "_help_cog",
+        "_help_command", "_help_old", "all_help", "cog_help",
+        "command_help", "paginate", "send_old_help",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)

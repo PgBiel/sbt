@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 6
+__level__        = 6
+
+__all__ = {
+    "Beta", "setup",
+}
 
 
 import discord
@@ -36,6 +40,14 @@ from utils import (
 
 
 class Beta(commands.Cog, name="beta"):
+    __all__ = {
+        "__init__", "cog_unload", "_parse", "_parse_color",
+        "_parse_date", "_parse_futuredate", "_parse_pastdate",
+        "_parse_time", "_parse_futuretime", "_parse_pasttime",
+        "_parse_datetime", "_parse_futuredatetime",
+        "_parse_pastdatetime", "_parse_flags",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)

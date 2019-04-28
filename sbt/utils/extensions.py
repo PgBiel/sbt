@@ -16,17 +16,25 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+
+__all__ = {
+    "Extensions",
+}
 
 
 from discord.ext import commands
 
 
 class Extensions():
+    __all__ = {
+        "__init__", "add_extension", "find", "open_path",
+    }
+
     def __init__(self):
         self.extensions = dict()
 

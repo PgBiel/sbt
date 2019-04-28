@@ -33,7 +33,7 @@ import re
 class Regex:
     __all__ = {
         "WORD", "WORDS", "DIGIT", "DIGITS", "ISSUE", "FLAG_TOKEN",
-        "HEXADECIMAL", "RGB", "CMYK", "MONTH", "DAY", "YEAR" "US_DATE",
+        "HEXADECIMAL", "RGB", "CMYK", "MONTH", "DAY", "YEAR", "US_DATE",
         "EU_DATE", "US_DATE_TIME", "EU_DATE_TIME", "HOUR",
         "TODAY_AT_HOUR", "TOMORROW_AT_HOUR", "TIME", "TODAY_AT_TIME",
         "TOMORROW_AT_TIME", "YEARS", "MONTHS", "WEEKS", "DAYS",

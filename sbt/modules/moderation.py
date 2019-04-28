@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 1
+__level__        = 1
+
+__all__ = {
+    "VALID_PERMISSIONS", "Moderation", "setup",
+}
 
 
 import asyncio
@@ -73,6 +77,17 @@ VALID_PERMISSIONS = [
 
 
 class Moderation(commands.Cog, name="moderation"):
+    __all__ = {
+        "__init__", "cog_unload", "_ban", "_hackban", "_kick", "_mute",
+        "_names",  "_prune",  "_rename",  "_softban",  "_unban",
+        "_unmute", "_role", "_role_add", "_role_edit",
+        "_role_edit_color", "_role_edit_hoist",
+        "_role_edit_mentionable", "_role_edit_name",
+        "_role_edit_permissions", "_role_edit_permissions_add",
+        "_role_edit_permissions_remove", "_role_members",
+        "_role_permissions", "_role_remove",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)

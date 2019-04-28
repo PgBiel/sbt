@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 0
+__level__        = 0
+
+__all__ = {
+    "EXTENSIONS", "prefix_manager", "Bot", "init", "load_extensions", "main",
+}
 
 
 import aiohttp
@@ -51,6 +55,10 @@ def prefix_manager(bot: commands.Bot, message: discord.Message) -> list:
 
 
 class Bot(commands.Bot):
+    __all__ = {
+        "__init__", "run", "send_help", "user_allowed",
+    }
+
     def __init__(self, *args, **kwargs):
         self._channels = channels.Channels()
         self._extensions = extensions.Extensions()

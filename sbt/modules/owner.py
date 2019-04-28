@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 1
+__level__        = 1
+
+__all__ = {
+    "Owner", "setup",
+}
 
 
 import asyncio
@@ -60,6 +64,24 @@ from utils import (
 
 
 class Owner(commands.Cog, name="owner"):
+    __all__ = {
+        "__init__", "cog_unload", "_debug", "_do", "_echo",
+        "_evaluate", "_leave", "_load", "_owner", "_reload",
+        "_restart", "_rift", "_send", "_shutdown", "_sudo", "_unload",
+        "_walk", "_blacklist", "_blacklist_add", "_blacklist_remove",
+        "_command", "_command_disable", "_command_disable_all",
+        "_command_enable", "_command_enable_all", "_command_hide",
+        "_command_unhide", "_contact", "_contact_close",
+        "_contact_respond", "_loaded", "_loaded_extensions",
+        "_loaded_imports", "_settings", "_settings_globalprefixes",
+        "_settings_load", "_settings_muterole", "_settings_prefix",
+        "_settings_presence", "_settings_save", "_settings_username",
+        "_whitelist", "_whitelist_add", "_whitelist_remove",
+        "on_message", "on_message_edit", "on_typing",
+        "disable_commands", "disable_commands_all",
+        "enable_commands_all", "hide_commands",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
@@ -915,26 +937,6 @@ class Owner(commands.Cog, name="owner"):
             ctx.bot._settings.save()
 
         await ctx.send("done.")
-
-    async def on_message_edit(self, before: discord.Message, after: discord.Message):
-        if (not hasattr(self, "rift")):
-            return
-
-        if (before.author == self.bot.user):
-            return
-
-        if (after.id in self.rift["dst-msgs"].keys()):
-            channel = self.bot.get_channel(self.rift["src"])
-            if (channel):
-                message = await channel.fetch_message(self.rift["dst-msgs"][after.id])
-                if (message):
-                    await message.edit(content="{0.author.name} ({0.author.id}):\n{0.content}".format(after))
-        elif (after.id in self.rift["src-msgs"].keys()):
-            channel = self.bot.get_channel(self.rift["dst"])
-            if (channel):
-                message = await channel.fetch_message(self.rift["src-msgs"][after.id])
-                if (message):
-                    await message.edit(content=after.content)
             
     async def on_message(self, message: discord.Message):
         if (not hasattr(self, "rift")):
@@ -963,6 +965,26 @@ class Owner(commands.Cog, name="owner"):
             if (channel):
                 message_ = await channel.send(message.content)
                 self.rift["src-msgs"][message.id] = message_.id
+
+    async def on_message_edit(self, before: discord.Message, after: discord.Message):
+        if (not hasattr(self, "rift")):
+            return
+
+        if (before.author == self.bot.user):
+            return
+
+        if (after.id in self.rift["dst-msgs"].keys()):
+            channel = self.bot.get_channel(self.rift["src"])
+            if (channel):
+                message = await channel.fetch_message(self.rift["dst-msgs"][after.id])
+                if (message):
+                    await message.edit(content="{0.author.name} ({0.author.id}):\n{0.content}".format(after))
+        elif (after.id in self.rift["src-msgs"].keys()):
+            channel = self.bot.get_channel(self.rift["dst"])
+            if (channel):
+                message = await channel.fetch_message(self.rift["src-msgs"][after.id])
+                if (message):
+                    await message.edit(content=after.content)
 
     async def on_typing(self, channel: discord.abc.Messageable, user: discord.User, when: datetime.datetime):
         if (not hasattr(self, "rift")):

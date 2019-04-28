@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 3
+__level__        = 3
+
+__all__ = {
+    "General", "setup",
+}
 
 
 import aiohttp
@@ -49,6 +53,15 @@ from utils import (
 
 
 class General(commands.Cog, name="general"):
+    __all__ = {
+        "__init__", "cog_unload", "_2D", "_3D", "_choose",
+        "_eightball", "_embed", "_figlet", "_flip", "_google", "_hoi",
+        "_intellect", "_morse", "_pigeonify", "_reminder", "_reverse",
+        "_roll", "_rps", "_scramble", "_semiscramble", "_spellout",
+        "_steam", "_stopwatch", "_topic", "_urban", "_regex",
+        "_regex_findall", "_regex_fullmatch",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)

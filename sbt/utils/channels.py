@@ -16,20 +16,31 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
+__all__ = {
+    "InternalLoggingChannels", "Channels",
+}
 
-class LoggingChannels():
-    def __init__(self):
-        self.joinleave = 0
-        self.dm = 0
 
 class Channels():
+    __all__ = {
+        "__init__",
+    }
+
     def __init__(self):
         self.contact = 562798511532277806
+        self.logging = InternalLoggingChannels()
 
-        self.logging = LoggingChannels()
+class InternalLoggingChannels():
+    __all__ = {
+        "__init__",
+    }
+
+    def __init__(self):
+        self.dm = 0
+        self.joinleave = 0

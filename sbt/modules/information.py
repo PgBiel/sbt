@@ -16,13 +16,17 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__level__             = 3
+__level__        = 3
+
+__all__ = {
+    "Information", "setup",
+}
 
 
 import copy
@@ -48,6 +52,17 @@ from utils import (
 
 
 class Information(commands.Cog, name="information"):
+    __all__ = {
+        "__init__", "cog_unload", "_code", "_color", "_contributors",
+        "_dis", "_discriminator", "_flags", "_invite", "_latency",
+        "_messages", "_now", "_permissions", "_since", "_source",
+        "_statistics", "_unicode", "_until", "_uptime", "_version",
+        "_information", "_information_bot", "_information_channel",
+        "_information_guild", "_information_member",
+        "_information_message", "_information_role",
+        "_information_system", "_information_user",
+    }
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot._extensions.add_extension(self)
@@ -406,6 +421,26 @@ class Information(commands.Cog, name="information"):
 
         await ctx.send(format.code(message, "diff"))
         
+    @commands.command(name="since")
+    async def _since(self, ctx: commands.Context, date: parse.PastDate):
+        """
+        display distance between today and a date
+
+        examples:
+            `>since 01/01/19`
+        """
+
+        now = datetime.datetime.utcnow()
+        today = datetime.date(now.year, now.month, now.day)
+        days = -(date - today).days
+
+        message = "{0} since {1}".format(
+            format.humanize_seconds(days * 86400),
+            format.humanize_datetime(date)
+        )
+
+        await ctx.send(message)
+        
     @commands.command(name="source", aliases=["src"])
     async def _source(self, ctx: commands.Context, command: str, start: typing.Optional[int], end: typing.Optional[int]):
         """
@@ -516,26 +551,6 @@ class Information(commands.Cog, name="information"):
         for (page) in format.pagify(message, shorten_by=8):
             if (page):
                 await ctx.send("```\n{0}```".format(page))
-        
-    @commands.command(name="since")
-    async def _since(self, ctx: commands.Context, date: parse.PastDate):
-        """
-        display distance between today and a date
-
-        examples:
-            `>since 01/01/19`
-        """
-
-        now = datetime.datetime.utcnow()
-        today = datetime.date(now.year, now.month, now.day)
-        days = -(date - today).days
-
-        message = "{0} since {1}".format(
-            format.humanize_seconds(days * 86400),
-            format.humanize_datetime(date)
-        )
-
-        await ctx.send(message)
         
     @commands.command(name="until")
     async def _until(self, ctx: commands.Context, date: parse.FutureDate):

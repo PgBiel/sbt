@@ -16,11 +16,15 @@
     limitations under the License.
 """
 
-__authors__           = [("shineydev", "contact@shiney.dev")]
-__maintainers__       = [("shineydev", "contact@shiney.dev")]
+__authors__      = [("shineydev", "contact@shiney.dev")]
+__maintainers__  = [("shineydev", "contact@shiney.dev")]
 
-__version_info__      = (2, 0, 0, "alpha", 0)
-__version__           = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+__version_info__ = (2, 0, 0, "alpha", 0)
+__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
+
+__all__ = {
+    "Settings",
+}
 
 
 import copy
@@ -34,6 +38,20 @@ from utils import (
 
 
 class Settings():
+    __all__ = {
+        "__init__", "administrator_role", "alpha_testers",
+        "beta_testers", "blacklist", "debugging_guild", "djs",
+        "github", "google_api_key", "google_engine_id",
+        "moderator_role", "mute_role", "oauth", "owner", "prefixes",
+        "set_prefixes", "secret", "supervisors", "support_team",
+        "token", "whitelist", "get_guild_administrator_role",
+        "get_guild_moderator_role", "get_guild_mute_role",
+        "get_prefixes", "get_restart_message", "load", "save",
+        "set_guild_administrator_role", "set_guild_moderator_role",
+        "set_guild_mute_role", "set_guild_prefix",
+        "set_restart_message",
+    }
+
     def __init__(self):
         self.settings = dataio.load("data/sbt/settings.json")
 
@@ -94,7 +112,7 @@ class Settings():
         return self.settings["prefixes"]
     
     @prefixes.setter
-    def prefixes(self, prefixes: list):
+    def set_prefixes(self, prefixes: list):
         self.settings["prefixes"] = prefixes
 
     @property
