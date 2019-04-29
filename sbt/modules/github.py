@@ -281,6 +281,10 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_debugging()
     @_github.command(name="labels")
     async def _github_labels(self, ctx: commands.Context):
+        """
+        show labels for the sbt repo
+        """
+
         await ctx.invoke(self._github_issue_labels, id=None)
     
     @checks.is_debugging()
