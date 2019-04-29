@@ -381,22 +381,28 @@ class GitHub(commands.Cog, name="github"):
             remaining = response.headers.get("X-Ratelimit-Remaining")
 
             if ((response.status == 429) or (remaining == "0")):
+                if (not session):
+                    await session_.close()
+
                 raise GitHubError("ratelimit exceeded")
             elif (300 > response.status >= 200):
+                if (not session):
+                    await session_.close()
+
                 try:
                     json_ = await response.json()
                     return json_
                 except (aiohttp.ContentTypeError) as e:
                     pass
             else:
+                if (not session):
+                    await session_.close()
+
                 try:
                     json_ = await response.json()
                     raise GitHubError(json_["message"])
                 except (aiohttp.ContentTypeError) as e:
                     pass
-
-        if (not session):
-            await session_.close()
                 
 
 def setup(bot: commands.Bot):
