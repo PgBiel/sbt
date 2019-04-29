@@ -196,7 +196,7 @@ class GitHub(commands.Cog, name="github"):
         if ((message.guild) and (message.guild.id == self.bot._settings.debugging_guild)):
             match = regex.Regex.ISSUE.search(message.content)
             if (match):
-                url = "{0}/issues/{1}".format(self.bot._settings.github, match.group("number"))
+                url = "{0}/issues/{1}/".format(self.bot._settings.github, match.group("number"))
                 await message.channel.send(format.wrap_url(url))
 
     async def request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
