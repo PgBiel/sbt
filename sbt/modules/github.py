@@ -152,7 +152,7 @@ class GitHub(commands.Cog, name="github"):
             return
 
         json = {
-            "labels": list(labels)
+            "labels": list(labels),
         }
         
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
@@ -184,7 +184,30 @@ class GitHub(commands.Cog, name="github"):
 
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
+        try:
+            labels_ = await self.request("GET", url)
+            labels_ = [l["name"] for (l) in labels_]
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
 
+        for (label) in labels:
+            if (label in labels_):
+                labels_.remove(label)
+
+        json = {
+            "labels": list(labels_),
+        }
+
+        url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
+
+        try:
+            await self.request("PUT", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
     
     @checks.is_supervisor()
     @checks.is_debugging()
