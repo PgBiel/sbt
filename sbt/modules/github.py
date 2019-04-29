@@ -25,7 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 3
 
 __all__ = {
-    "GitHub", "setup",
+    "GitHub",
+    "setup",
 }
 
 
@@ -58,10 +59,22 @@ class GitHubError(Exception):
 
 class GitHub(commands.Cog, name="github"):
     __all__ = {
-        "__init__", "_github", "_github_issue",
-        "_github_issue_close", "_github_issue_open",
-        "_github_issue_labels", "_github_issue_labels_add",
-        "_github_issue_labels_remove", "_github_pulls",
+        "__init__",
+        "_github",
+        "_github_issue",
+        "_github_issue_assign",
+        "_github_issue_close",
+        "_github_issue_label",
+        "_github_issue_label_add",
+        "_github_issue_label_remove",
+        "_github_issue_list",
+        "_github_issue_lock",
+        "_github_issue_open",
+        "_github_issue_unassign",
+        "_github_issue_unlock",
+        "_github_labels",
+        "_github_limit",
+        "_github_pulls",
     }
 
     def __init__(self, bot: commands.Bot):
@@ -154,7 +167,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.group(name="label", aliases=["labels"], invoke_without_command=True)
-    async def _github_issue_labels(self, ctx: commands.Context, id: typing.Optional[int]):
+    async def _github_issue_label(self, ctx: commands.Context, id: typing.Optional[int]):
         """
         show labels for a github issue
         """
@@ -182,7 +195,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue_labels.command(name="add")
-    async def _github_issue_labels_add(self, ctx: commands.Context, id: int, *labels: str):
+    async def _github_issue_label_add(self, ctx: commands.Context, id: int, *labels: str):
         """
         add labels to a github issue
         """
@@ -209,7 +222,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue_labels.command(name="remove")
-    async def _github_issue_labels_remove(self, ctx: commands.Context, id: int, *labels: str):
+    async def _github_issue_label_remove(self, ctx: commands.Context, id: int, *labels: str):
         """
         remove labels from a github issue
         """
