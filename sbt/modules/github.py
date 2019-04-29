@@ -100,6 +100,33 @@ class GitHub(commands.Cog, name="github"):
             url = "{0}/issues/{1}/".format(ctx.bot._settings.github, id)
 
         await ctx.send(format.wrap_url(url))
+
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="assign")
+    async def _github_issue_assign(self, ctx: commands.Context, id: int, *users: str):
+        """
+        assign users to an issue
+        """
+
+        if (not users):
+            await ctx.bot.send_help(ctx)
+            return
+
+        json = {
+            "assignees": list(users)
+        }
+
+        # https://developer.github.com/v3/issues/assignees/#add-assignees-to-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}/assignees".format(id)
+
+        try:
+            await self.request("POST", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
         
     @checks.is_supervisor()
     @checks.is_debugging()
@@ -309,6 +336,33 @@ class GitHub(commands.Cog, name="github"):
 
         try:
             await self.request("PATCH", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
+
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="unassign")
+    async def _github_issue_unassign(self, ctx: commands.Context, id: int, *users: str):
+        """
+        unassign users from an issue
+        """
+
+        if (not users):
+            await ctx.bot.send_help(ctx)
+            return
+
+        json = {
+            "assignees": list(users)
+        }
+
+        # https://developer.github.com/v3/issues/assignees/#remove-assignees-from-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}/assignees".format(id)
+
+        try:
+            await self.request("DELETE", url, json=json)
         except (GitHubError) as e:
             await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             return
