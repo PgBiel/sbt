@@ -43,6 +43,14 @@ from utils import (
 )
 
 
+VALID_LOCK_REASONS = {
+    "off-topic",
+    "too heated",
+    "resolved",
+    "spam",
+}
+
+
 class GitHubError(Exception):
     pass
 
@@ -256,6 +264,34 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
+    @_github_issue.command(name="lock")
+    async def _github_issue_lock(self, ctx: commands.Context, id: int, reason: str):
+        """
+        lock an issue
+        """
+
+        if (reason not in VALID_LOCK_REASONS):
+            await ctx.send("reason must be one of\n{0}".format(
+                ", ".join(VALID_LOCK_REASONS)))
+            return
+
+        json = {
+            "locked": True,
+            "active_lock_reason": reason,
+        }
+
+        url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
+
+        try:
+            await self.request("PUT", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_issue.command(name="open")
     async def _github_issue_open(self, ctx: commands.Context, id: int):
         """
@@ -271,6 +307,24 @@ class GitHub(commands.Cog, name="github"):
 
         try:
             await self.request("PATCH", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="unlock")
+    async def _github_issue_unlock(self, ctx: commands.Context, id: int):
+        """
+        unlock an issue
+        """
+
+        url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
+
+        try:
+            await self.request("DELETE", url)
         except (GitHubError) as e:
             await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             return
