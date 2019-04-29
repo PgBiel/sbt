@@ -272,7 +272,7 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (reason not in VALID_LOCK_REASONS):
-            await ctx.send("reason must be one of\n{0}".format(
+            await ctx.send("reason must be one of the following:\n{0}".format(
                 ", ".join(VALID_LOCK_REASONS)))
             return
 
