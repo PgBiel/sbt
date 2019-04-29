@@ -296,7 +296,7 @@ class GitHub(commands.Cog, name="github"):
             message += "{0}\n".format(url)
 
         if (not message):
-            await ctx.send("there are no open issues to show")
+            await ctx.send("there are no open issues")
             return
 
         for (page) in format.pagify(message):
