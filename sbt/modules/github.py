@@ -206,7 +206,7 @@ class GitHub(commands.Cog, name="github"):
             session_ = session
 
         headers_ = {
-            "User-Agent": "SBT GitHub Manager",
+            "User-Agent": "sbt-github-manager",
             "Authorization": "token {0}".format(self.bot._settings.github_api_key)
         }
 
