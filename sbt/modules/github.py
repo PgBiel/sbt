@@ -306,7 +306,7 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.command(name="lock")
-    async def _github_issue_lock(self, ctx: commands.Context, id: int, reason: str):
+    async def _github_issue_lock(self, ctx: commands.Context, id: int, *, reason: str):
         """
         lock an issue
         """
