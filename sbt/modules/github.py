@@ -219,6 +219,43 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
+    @_github_issue.command(name="list")
+    async def _github_issue_list(self, ctx: commands.Context):
+        """
+        list open issues
+        """
+
+        url = "repos/ShineyDev/sbt/issues"
+
+        try:
+            issues = await self.request("GET", url)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        message = ""
+
+        for (issue) in issues:
+            if (issue.get("pull_request")):
+                # not an issue, i will never understand why prs show as
+                # issues ¯\_(ツ)_/¯
+                continue
+            elif (issue.get("state") == "closed"):
+                continue
+
+            url = format.wrap_url(issue.get("html_url"))
+            message += "{0}\n".format(url)
+
+        if (not message):
+            await ctx.send("none")
+            return
+
+        for (page) in format.pagify(message):
+            if (page):
+                await ctx.send(page)
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
     @_github_issue.command(name="open")
     async def _github_issue_open(self, ctx: commands.Context, id: int):
         """
