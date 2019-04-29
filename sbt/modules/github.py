@@ -498,8 +498,9 @@ class GitHub(commands.Cog, name="github"):
             session_ = session
 
         headers_ = {
+            "Accept": "application/vnd.github.v3+json",
+            "Authorization": "token {0}".format(self.bot._settings.github_api_key),
             "User-Agent": "sbt-github-manager",
-            "Authorization": "token {0}".format(self.bot._settings.github_api_key)
         }
 
         if (headers):
