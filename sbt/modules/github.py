@@ -122,31 +122,22 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (not id):
-            try:
-                labels = await self.request("GET", "repos/ShineyDev/sbt/labels")
-            except (GitHubError) as e:
-                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-                return
-
-            labels = [l["name"] for (l) in labels]
-
-            if (labels):
-                await ctx.send(", ".join(labels))
-            else:
-                await ctx.send("none")
+            url = "repos/ShineyDev/sbt/labels"
         else:
-            try:
-                labels = await self.request("GET", "/repos/ShineyDev/sbt/issues/{0}/labels".format(id))
-            except (GitHubError) as e:
-                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-                return
+            url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
-            labels = [l["name"] for (l) in labels]
+        try:
+            labels = await self.request("GET", url)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
 
-            if (labels):
-                await ctx.send(", ".join(labels))
-            else:
-                await ctx.send("none")
+        labels = [l["name"] for (l) in labels]
+
+        if (labels):
+            await ctx.send(", ".join(labels))
+        else:
+            await ctx.send("none")
     
     @checks.is_supervisor()
     @checks.is_debugging()
@@ -160,7 +151,18 @@ class GitHub(commands.Cog, name="github"):
             await ctx.send("no labels were given")
             return
 
-        pass
+        json = {
+            "labels": list(labels)
+        }
+
+        try:
+            url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
+            await self.request("POST", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
     
     @checks.is_supervisor()
     @checks.is_debugging()
