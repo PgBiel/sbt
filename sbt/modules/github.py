@@ -83,7 +83,6 @@ class GitHub(commands.Cog, name="github"):
         url = "{0}/".format(ctx.bot._settings.github)
         await ctx.send(format.wrap_url(url))
 
-    @checks.is_debugging()
     @_github.group(name="issue", aliases=["issues"], invoke_without_command=True)
     async def _github_issue(self, ctx: commands.Context, id: typing.Optional[int]):
         """
@@ -344,7 +343,6 @@ class GitHub(commands.Cog, name="github"):
 
         await ctx.invoke(self._github_issue_labels, id=None)
     
-    @checks.is_debugging()
     @_github.command(name="pulls", aliases=["pr", "prs"])
     async def _github_pulls(self, ctx: commands.Context):
         """

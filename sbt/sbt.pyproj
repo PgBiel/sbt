@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>6b12a865-a9ac-415b-a628-12d4c1c38619</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>launcher.py</StartupFile>
+    <StartupFile>modules\github.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
