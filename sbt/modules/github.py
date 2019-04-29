@@ -30,6 +30,7 @@ __all__ = {
 
 
 import aiohttp
+import datetime
 import typing
 import yarl
 
@@ -342,6 +343,44 @@ class GitHub(commands.Cog, name="github"):
         """
 
         await ctx.invoke(self._github_issue_labels, id=None)
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github.command(name="limits", aliases=["rates"])
+    async def _github_limits(self, ctx: commands.Context):
+        """
+        show rate-limits
+        """
+
+        # "accessing this endpoint does not count against your REST API
+        # rate limit" - that's really nice of y'all :)
+        # https://developer.github.com/v3/rate_limit/#get-your-current-rate-limit-status
+        url = "rate_limit"
+
+        try:
+            limits = await self.request("GET", url)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        message = "```\n"
+        message += " --------------------------------------------\n"
+        message += " |  Resource     |  Used       |  Reset     |\n"
+        message += " |---------------|-------------|------------|\n"
+
+        for (limit) in limits["resources"].keys():
+            name = limit.split("_")[0]
+            used = limits["resources"][limit]["limit"] - limits["resources"][limit]["remaining"]
+            total = limits["resources"][limit]["limit"]
+            reset = datetime.datetime.fromtimestamp(limits["resources"][limit]["reset"])
+            reset = reset.strftime("%H:%M:%S")
+
+            message += " |  {0:<11}  |  {1:>4}/{2:<4}  |  {3:<8}  |\n".format(
+                name, used, total, reset)
+            
+        message += " --------------------------------------------```"
+
+        await ctx.send(message)
     
     @_github.command(name="pulls", aliases=["pr", "prs"])
     async def _github_pulls(self, ctx: commands.Context):
