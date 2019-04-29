@@ -121,7 +121,7 @@ class GitHub(commands.Cog, name="github"):
         show labels for a github issue
         """
 
-        if ((ctx.invoked_with == "labels") and (not id)):
+        if (not id):
             labels = await self.request("GET", "repos/ShineyDev/sbt/labels")
             labels = [l["name"] for (l) in labels]
 
@@ -130,10 +130,6 @@ class GitHub(commands.Cog, name="github"):
             else:
                 await ctx.send("none")
         else:
-            if (not id):
-                await ctx.bot.send_help(ctx)
-                return
-
             labels = await self.request("GET", "/repos/ShineyDev/sbt/issues/{0}/labels".format(id))
             labels = [l["name"] for (l) in labels]
 
