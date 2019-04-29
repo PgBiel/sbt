@@ -124,7 +124,20 @@ class GitHub(commands.Cog, name="github"):
         open a github issue
         """
 
-        pass
+        json = {
+            "state": "open",
+        }
+
+        # https://developer.github.com/v3/issues/#edit-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}".format(id)
+
+        try:
+            await self.request("PATCH", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
     
     @checks.is_supervisor()
     @checks.is_debugging()
