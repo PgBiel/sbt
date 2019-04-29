@@ -118,29 +118,6 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_issue.command(name="open")
-    async def _github_issue_open(self, ctx: commands.Context, id: int):
-        """
-        open a github issue
-        """
-
-        json = {
-            "state": "open",
-        }
-
-        # https://developer.github.com/v3/issues/#edit-an-issue
-        url = "repos/ShineyDev/sbt/issues/{0}".format(id)
-
-        try:
-            await self.request("PATCH", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
-
-        await ctx.send("done.")
-    
-    @checks.is_supervisor()
-    @checks.is_debugging()
     @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
     async def _github_issue_labels(self, ctx: commands.Context, id: typing.Optional[int]):
         """
@@ -234,6 +211,29 @@ class GitHub(commands.Cog, name="github"):
 
         try:
             await self.request("PUT", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
+    
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="open")
+    async def _github_issue_open(self, ctx: commands.Context, id: int):
+        """
+        open a github issue
+        """
+
+        json = {
+            "state": "open",
+        }
+
+        # https://developer.github.com/v3/issues/#edit-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}".format(id)
+
+        try:
+            await self.request("PATCH", url, json=json)
         except (GitHubError) as e:
             await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             return
