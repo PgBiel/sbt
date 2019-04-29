@@ -89,7 +89,7 @@ class GitHub(commands.Cog, name="github"):
                 await ctx.bot.send_help(ctx)
                 return
 
-            url = "{0}/issues/{1}".format(ctx.bot._settings.github, id)
+            url = "{0}/issues/{1}/".format(ctx.bot._settings.github, id)
 
         await ctx.send(format.wrap_url(url))
         
