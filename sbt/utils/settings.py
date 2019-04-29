@@ -84,6 +84,10 @@ class Settings():
         return self.settings["github"]
 
     @property
+    def github_token(self) -> str:
+        return self.settings["github_token"]
+
+    @property
     def google_api_key(self) -> str:
         return self.settings["google_api_key"]
 
