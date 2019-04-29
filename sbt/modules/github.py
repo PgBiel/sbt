@@ -122,7 +122,12 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (not id):
-            labels = await self.request("GET", "repos/ShineyDev/sbt/labels")
+            try:
+                labels = await self.request("GET", "repos/ShineyDev/sbt/labels")
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
+
             labels = [l["name"] for (l) in labels]
 
             if (labels):
@@ -130,7 +135,12 @@ class GitHub(commands.Cog, name="github"):
             else:
                 await ctx.send("none")
         else:
-            labels = await self.request("GET", "/repos/ShineyDev/sbt/issues/{0}/labels".format(id))
+            try:
+                labels = await self.request("GET", "/repos/ShineyDev/sbt/issues/{0}/labels".format(id))
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
+
             labels = [l["name"] for (l) in labels]
 
             if (labels):
