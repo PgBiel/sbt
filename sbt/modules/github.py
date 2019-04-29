@@ -376,14 +376,21 @@ class GitHub(commands.Cog, name="github"):
 
         async with session_.request(method, url, json=json, headers=headers_) as response:
             remaining = response.headers.get("X-Ratelimit-Remaining")
-            json_ = await response.json()
 
             if ((response.status == 429) or (remaining == "0")):
                 raise GitHubError("ratelimit exceeded")
             elif (300 > response.status >= 200):
-                return json_
+                try:
+                    json_ = await response.json()
+                    return json_
+                except (aiohttp.ContentTypeError) as e:
+                    pass
             else:
-                raise GitHubError(json_["message"])
+                try:
+                    json_ = await response.json()
+                    raise GitHubError(json_["message"])
+                except (aiohttp.ContentTypeError) as e:
+                    pass
 
         if (not session):
             await session_.close()
