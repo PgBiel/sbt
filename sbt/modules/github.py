@@ -220,8 +220,8 @@ class GitHub(commands.Cog, name="github"):
 
         # we gotta do some weird shit for this one because there are
         # only endpoints for removing one or all labels from an issue,
-        # so we have to get current labels, remove `labels` and then
-        # PUT that back into the issue :/
+        # so we have to GET the current labels, remove `labels` and
+        # then PUT that back into the issue :/
 
         # https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
