@@ -194,7 +194,7 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_issue_labels.command(name="add")
+    @_github_issue_label.command(name="add")
     async def _github_issue_label_add(self, ctx: commands.Context, id: int, *labels: str):
         """
         add labels to a github issue
@@ -221,7 +221,7 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_issue_labels.command(name="remove")
+    @_github_issue_label.command(name="remove")
     async def _github_issue_label_remove(self, ctx: commands.Context, id: int, *labels: str):
         """
         remove labels from a github issue
