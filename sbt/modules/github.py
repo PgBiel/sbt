@@ -76,9 +76,13 @@ class GitHub(commands.Cog, name="github"):
         show a github issue
         """
 
-        if (not id):
+        if (ctx.invoked_with == "issues"):
             url = "{0}/issues/".format(ctx.bot._settings.github)
         else:
+            if (not id):
+                await ctx.bot.send_help(ctx)
+                return
+
             url = "{0}/issues/{1}".format(ctx.bot._settings.github, id)
 
         await ctx.send(format.wrap_url(url))
@@ -142,7 +146,7 @@ class GitHub(commands.Cog, name="github"):
         pass
     
     @checks.is_debugging()
-    @_github.command(name="pulls", aliases=["prs"])
+    @_github.command(name="pulls", aliases=["pr", "prs"])
     async def _github_pulls(self, ctx: commands.Context):
         """
         show pull requests
