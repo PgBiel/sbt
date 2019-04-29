@@ -110,7 +110,7 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (not users):
-            await ctx.bot.send_help(ctx)
+            await ctx.send("no users were given")
             return
 
         json = {
@@ -351,7 +351,7 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (not users):
-            await ctx.bot.send_help(ctx)
+            await ctx.send("no users were given")
             return
 
         json = {
