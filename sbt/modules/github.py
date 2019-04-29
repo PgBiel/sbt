@@ -101,7 +101,20 @@ class GitHub(commands.Cog, name="github"):
         close a github issue
         """
 
-        pass
+        json = {
+            "state": "closed",
+        }
+
+        # https://developer.github.com/v3/issues/#edit-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}".format(id)
+
+        try:
+            await self.request("PATCH", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
     
     @checks.is_supervisor()
     @checks.is_debugging()
@@ -122,8 +135,10 @@ class GitHub(commands.Cog, name="github"):
         """
 
         if (not id):
+            # https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository
             url = "repos/ShineyDev/sbt/labels"
         else:
+            # https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue
             url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
         try:
@@ -155,6 +170,7 @@ class GitHub(commands.Cog, name="github"):
             "labels": list(labels),
         }
         
+        # https://developer.github.com/v3/issues/labels/#add-labels-to-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
         try:
@@ -182,6 +198,7 @@ class GitHub(commands.Cog, name="github"):
         # so we have to get current labels, remove `labels` and then
         # PUT that back into the issue :/
 
+        # https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
         try:
@@ -199,6 +216,7 @@ class GitHub(commands.Cog, name="github"):
             "labels": list(labels_),
         }
 
+        # https://developer.github.com/v3/issues/labels/#replace-all-labels-for-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
         try:
