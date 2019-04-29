@@ -465,7 +465,7 @@ class GitHub(commands.Cog, name="github"):
             name = limit.split("_")[0]
             used = limits["resources"][limit]["limit"] - limits["resources"][limit]["remaining"]
             total = limits["resources"][limit]["limit"]
-            reset = datetime.datetime.utcfromtimestamp(limits["resources"][limit]["reset"])
+            reset = datetime.datetime.fromtimestamp(limits["resources"][limit]["reset"])
             reset = reset.strftime("%H:%M:%S")
 
             message += " |  {0:<11}  |  {1:>4}/{2:<4}  |  {3:<8}  |\n".format(
