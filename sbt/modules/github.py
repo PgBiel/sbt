@@ -29,7 +29,9 @@ __all__ = {
 }
 
 
+import aiohttp
 import typing
+import yarl
 
 import discord
 from discord.ext import commands
@@ -39,6 +41,10 @@ from utils import (
     format,
     regex,
 )
+
+
+class GitHubError(Exception):
+    pass
 
 
 class GitHub(commands.Cog, name="github"):
@@ -110,12 +116,31 @@ class GitHub(commands.Cog, name="github"):
     @checks.is_supervisor()
     @checks.is_debugging()
     @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
-    async def _github_issue_labels(self, ctx: commands.Context, id: int):
+    async def _github_issue_labels(self, ctx: commands.Context, id: typing.Optional[int]):
         """
         show labels for a github issue
         """
 
-        pass
+        if ((ctx.invoked_with == "labels") and (not id)):
+            labels = await self.request("GET", "repos/ShineyDev/sbt/labels")
+            labels = [l["name"] for (l) in labels]
+
+            if (labels):
+                await ctx.send(", ".join(labels))
+            else:
+                await ctx.send("none")
+        else:
+            if (not id):
+                await ctx.bot.send_help(ctx)
+                return
+
+            labels = await self.request("GET", "/repos/ShineyDev/sbt/issues/{0}/labels".format(id))
+            labels = [l["name"] for (l) in labels]
+
+            if (labels):
+                await ctx.send(", ".join(labels))
+            else:
+                await ctx.send("none")
     
     @checks.is_supervisor()
     @checks.is_debugging()
@@ -145,6 +170,12 @@ class GitHub(commands.Cog, name="github"):
 
         pass
     
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github.command(name="labels")
+    async def _github_labels(self, ctx: commands.Context):
+        await ctx.invoke(self._github_issue_labels, id=None)
+    
     @checks.is_debugging()
     @_github.command(name="pulls", aliases=["pr", "prs"])
     async def _github_pulls(self, ctx: commands.Context):
@@ -161,6 +192,36 @@ class GitHub(commands.Cog, name="github"):
             if (match):
                 url = "{0}/issues/{1}".format(self.bot._settings.github, match.group("number"))
                 await message.channel.send(format.wrap_url(url))
+
+    async def request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
+        if (not session):
+            session_ = aiohttp.ClientSession()
+        else:
+            session_ = session
+
+        headers_ = {
+            "User-Agent": "SBT GitHub Manager",
+            "Authorization": "token {0}".format(self.bot._settings.github_api_key)
+        }
+
+        if (headers):
+            headers_.update(headers)
+
+        url = yarl.URL("https://api.github.com") / url
+
+        async with session_.request(method, url, json=json, headers=headers_) as response:
+            remaining = response.headers.get("X-Ratelimit-Remaining")
+            json_ = await response.json()
+
+            if ((response.status == 429) or (remaining == "0")):
+                raise GitHubError("ratelimit exceeded")
+            elif (300 > response.status >= 200):
+                return json_
+            else:
+                raise GitHubError(json_["message"])
+
+        if (not session):
+            await session_.close()
                 
 
 def setup(bot: commands.Bot):
