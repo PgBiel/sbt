@@ -154,9 +154,10 @@ class GitHub(commands.Cog, name="github"):
         json = {
             "labels": list(labels)
         }
+        
+        url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
         try:
-            url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
             await self.request("POST", url, json=json)
         except (GitHubError) as e:
             await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
@@ -176,7 +177,14 @@ class GitHub(commands.Cog, name="github"):
             await ctx.send("no labels were given")
             return
 
-        pass
+        # we gotta do some weird shit for this one because there are
+        # only endpoints for removing one or all labels from an issue,
+        # so we have to get current labels, remove `labels` and then
+        # PUT that back into the issue :/
+
+        url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
+
+
     
     @checks.is_supervisor()
     @checks.is_debugging()
