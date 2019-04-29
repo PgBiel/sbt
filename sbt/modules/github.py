@@ -163,6 +163,32 @@ class GitHub(commands.Cog, name="github"):
             return
 
         await ctx.send("done.")
+
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="comment")
+    async def _github_issue_comment(self, ctx: commands.Context, id: int, *, message: str):
+        """
+        add a comment to an issue
+        """
+
+        if (ctx.author.id != ctx.bot._settings.owner):
+            message = "`{0} ({0.id})`\n{1}".format(ctx.author, message)
+
+        json = {
+            "body": message
+        }
+
+        # https://developer.github.com/v3/issues/comments/#create-a-comment
+        url = "repos/ShineyDev/sbt/issues/{0}/comments".format(id)
+
+        try:
+            await self.request("POST", url, json=json)
+        except (GitHubError) as e:
+            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+            return
+
+        await ctx.send("done.")
     
     @checks.is_supervisor()
     @checks.is_debugging()
