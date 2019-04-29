@@ -153,7 +153,7 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github_issue.group(name="labels", aliases=["label"], invoke_without_command=True)
+    @_github_issue.group(name="label", aliases=["labels"], invoke_without_command=True)
     async def _github_issue_labels(self, ctx: commands.Context, id: typing.Optional[int]):
         """
         show labels for a github issue
@@ -177,7 +177,7 @@ class GitHub(commands.Cog, name="github"):
         if (labels):
             await ctx.send(", ".join(labels))
         else:
-            await ctx.send("none")
+            await ctx.send("there are no labels on this issue")
     
     @checks.is_supervisor()
     @checks.is_debugging()
@@ -283,7 +283,7 @@ class GitHub(commands.Cog, name="github"):
             message += "{0}\n".format(url)
 
         if (not message):
-            await ctx.send("none")
+            await ctx.send("there are no open issues to show")
             return
 
         for (page) in format.pagify(message):
@@ -400,8 +400,8 @@ class GitHub(commands.Cog, name="github"):
     
     @checks.is_supervisor()
     @checks.is_debugging()
-    @_github.command(name="limits", aliases=["rates"])
-    async def _github_limits(self, ctx: commands.Context):
+    @_github.command(name="limit", aliases=["limits", "rate", "rates"])
+    async def _github_limit(self, ctx: commands.Context):
         """
         show rate-limits
         """
