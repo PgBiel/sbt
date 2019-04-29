@@ -233,6 +233,7 @@ class GitHub(commands.Cog, name="github"):
         list open issues
         """
 
+        # https://developer.github.com/v3/issues/#list-issues-for-a-repository
         url = "repos/ShineyDev/sbt/issues"
 
         try:
@@ -280,6 +281,7 @@ class GitHub(commands.Cog, name="github"):
             "active_lock_reason": reason,
         }
 
+        # https://developer.github.com/v3/issues/#lock-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
 
         try:
@@ -321,6 +323,7 @@ class GitHub(commands.Cog, name="github"):
         unlock an issue
         """
 
+        # https://developer.github.com/v3/issues/#unlock-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
 
         try:
