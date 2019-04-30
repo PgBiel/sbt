@@ -25,7 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 6
 
 __all__ = {
-    "Alpha", "setup",
+    "Alpha",
+    "setup",
 }
 
 

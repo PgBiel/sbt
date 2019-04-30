@@ -25,7 +25,10 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 2
 
 __all__ = {
-    "COMMANDS_PER_PAGE", "_chunks", "Help", "setup",
+    "COMMANDS_PER_PAGE",
+    "_chunks",
+    "Help",
+    "setup",
 }
 
 
@@ -49,9 +52,17 @@ def _chunks(list_: list, number: int):
 
 class Help(commands.Cog, name="help"):
     __all__ = {
-        "__init__", "cog_unload", "_help", "_help_cog",
-        "_help_command", "_help_old", "all_help", "cog_help",
-        "command_help", "paginate", "send_old_help",
+        "__init__",
+        "cog_unload",
+        "_help",
+        "_help_cog",
+        "_help_command",
+        "_help_old",
+        "all_help",
+        "cog_help",
+        "command_help",
+        "paginate",
+        "send_old_help",
     }
 
     def __init__(self, bot: commands.Bot):

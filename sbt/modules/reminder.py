@@ -25,7 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 7
 
 __all__ = {
-    "Reminder", "setup",
+    "Reminder",
+    "setup",
 }
 
 
@@ -43,8 +44,14 @@ class Reminder(commands.Cog, name="reminder"):
     """
 
     __all__ = {
-        "__init__", "cog_unload", "add_reminder", "get_reminders",
-        "load", "remove_reminder", "save", "send_reminders",
+        "__init__",
+        "cog_unload",
+        "add_reminder",
+        "get_reminders",
+        "load",
+        "remove_reminder",
+        "save",
+        "send_reminders",
         "before_send_reminders",
     }
 

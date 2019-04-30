@@ -25,7 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 3
 
 __all__ = {
-    "General", "setup",
+    "General",
+    "setup",
 }
 
 
@@ -54,12 +55,33 @@ from utils import (
 
 class General(commands.Cog, name="general"):
     __all__ = {
-        "__init__", "_2D", "_3D", "_choose",
-        "_eightball", "_embed", "_figlet", "_flip", "_google", "_hoi",
-        "_intellect", "_morse", "_pigeonify", "_reminder", "_reverse",
-        "_roll", "_rps", "_scramble", "_semiscramble", "_spellout",
-        "_steam", "_stopwatch", "_topic", "_urban", "_regex",
-        "_regex_findall", "_regex_fullmatch",
+        "__init__",
+        "_2D",
+        "_3D",
+        "_choose",
+        "_eightball",
+        "_embed",
+        "_figlet",
+        "_flip",
+        "_google",
+        "_hoi",
+        "_intellect",
+        "_morse",
+        "_pigeonify",
+        "_reminder",
+        "_reverse",
+        "_roll",
+        "_rps",
+        "_scramble",
+        "_semiscramble",
+        "_spellout",
+        "_steam",
+        "_stopwatch",
+        "_topic",
+        "_urban",
+        "_regex",
+        "_regex_findall",
+        "_regex_fullmatch",
     }
 
     def __init__(self, bot: commands.Bot):

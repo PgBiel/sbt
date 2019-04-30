@@ -25,7 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 3
 
 __all__ = {
-    "Information", "setup",
+    "Information",
+    "setup",
 }
 
 
@@ -53,14 +54,34 @@ from utils import (
 
 class Information(commands.Cog, name="information"):
     __all__ = {
-        "__init__", "_code", "_color", "_contributors",
-        "_dis", "_discriminator", "_flags", "_invite", "_latency",
-        "_messages", "_now", "_permissions", "_since", "_source",
-        "_statistics", "_unicode", "_until", "_uptime", "_version",
-        "_information", "_information_bot", "_information_channel",
-        "_information_guild", "_information_member",
-        "_information_message", "_information_role",
-        "_information_system", "_information_user",
+        "__init__",
+        "_code",
+        "_color",
+        "_contributors",
+        "_dis",
+        "_discriminator",
+        "_flags",
+        "_invite",
+        "_latency",
+        "_messages",
+        "_now",
+        "_permissions",
+        "_since",
+        "_source",
+        "_statistics",
+        "_unicode",
+        "_until",
+        "_uptime",
+        "_version",
+        "_information",
+        "_information_bot",
+        "_information_channel",
+        "_information_guild",
+        "_information_member",
+        "_information_message",
+        "_information_role",
+        "_information_system",
+        "_information_user",
     }
 
     def __init__(self, bot: commands.Bot):

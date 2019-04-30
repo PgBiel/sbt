@@ -25,7 +25,9 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 1
 
 __all__ = {
-    "VALID_PERMISSIONS", "Moderation", "setup",
+    "VALID_PERMISSIONS",
+    "Moderation",
+    "setup",
 }
 
 
@@ -78,14 +80,30 @@ VALID_PERMISSIONS = [
 
 class Moderation(commands.Cog, name="moderation"):
     __all__ = {
-        "__init__", "_ban", "_hackban", "_kick", "_mute",
-        "_names",  "_prune",  "_rename",  "_softban",  "_unban",
-        "_unmute", "_role", "_role_add", "_role_edit",
-        "_role_edit_color", "_role_edit_hoist",
-        "_role_edit_mentionable", "_role_edit_name",
-        "_role_edit_permissions", "_role_edit_permissions_add",
-        "_role_edit_permissions_remove", "_role_members",
-        "_role_permissions", "_role_remove",
+        "__init__",
+        "_ban",
+        "_hackban",
+        "_kick",
+        "_mute",
+        "_names",
+        "_prune",
+        "_rename",
+        "_softban",
+        "_unban",
+        "_unmute",
+        "_role",
+        "_role_add",
+        "_role_edit",
+        "_role_edit_color",
+        "_role_edit_hoist",
+        "_role_edit_mentionable",
+        "_role_edit_name",
+        "_role_edit_permissions",
+        "_role_edit_permissions_add",
+        "_role_edit_permissions_remove",
+        "_role_members",
+        "_role_permissions",
+        "_role_remove",
     }
 
     def __init__(self, bot: commands.Bot):
