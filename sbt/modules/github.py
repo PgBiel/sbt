@@ -521,7 +521,7 @@ class GitHub(commands.Cog, name="github"):
         show labels for the sbt repo
         """
 
-        await ctx.invoke(self._github_issue_labels, id=None)
+        await ctx.invoke(self._github_issue_label, id=None)
     
     @checks.is_supervisor()
     @checks.is_debugging()
