@@ -619,14 +619,8 @@ class Moderation(commands.Cog, name="moderation"):
         display a role's permissions
         """
 
-        message = "{0} ({1})\n\n".format(role.name, role.id)
-        for (permission, value) in sorted(role.permissions):
-            if (value):
-                message += "+ {0}\n".format(permission)
-            else:
-                message += "- {0}\n".format(permission)
-
-        await ctx.send(format.code(message, "diff"))
+        command = ctx.bot.get_command("permissions")
+        await ctx.invoke(command, object=role, member_or_role=None)
         
     @checks.is_guild()
     @checks.moderator_or_permissions(manage_roles=True)
