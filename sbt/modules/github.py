@@ -112,6 +112,8 @@ class GitHub(commands.Cog, name="github"):
         self.__version__ = __version__
         self.__level__ = __level__
 
+        self._request_attempts = 0
+
         super().__init__()
 
     @commands.group(name="github", aliases=["gh"], invoke_without_command=True)
@@ -579,10 +581,20 @@ class GitHub(commands.Cog, name="github"):
     async def request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
         task = asyncio.Task(self._request(method, url, json=json, headers=headers, session=session))
 
+        # we don't want recursion to cause issues in the future so we
+        # should limit the recursion to 5 attempts before just raising
+        # the exception anyway
+        if (self._request_attempts == 3):
+            raise asyncio.TimeoutError()
+
         try:
             return await asyncio.wait_for(task, 5)
         except (asyncio.TimeoutError) as e:
+            # try again
+            self._request_attempts += 1
             return await self.request(method, url, json=json, headers=headers, session=session)
+        else:
+            self._request_attempts = 0
 
     async def _request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
         if (not session):
