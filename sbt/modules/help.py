@@ -85,7 +85,7 @@ class Help(commands.Cog, name="help"):
         self.bot.remove_command("help")
         self.bot.add_command(self.old_help)
 
-    @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
+    @commands.cooldown(1, 120, commands.cooldowns.BucketType.user)
     @commands.group(name="help", aliases=["h"], hidden=True, invoke_without_command=True)
     async def _help(self, ctx: commands.Context, *, thing: str = None):
         """
