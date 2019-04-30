@@ -582,13 +582,14 @@ class GitHub(commands.Cog, name="github"):
         task = asyncio.Task(self._request(method, url, json=json, headers=headers))
 
         # we don't want recursion to cause issues in the future so we
-        # should limit the recursion to 5 attempts before just raising
+        # should limit the recursion to 3 attempts before just raising
         # the exception anyway
         if (self._request_attempts == 3):
+            self._request_attempts = 0
             raise asyncio.TimeoutError("hit request attempt limit ;(")
 
         try:
-            return await asyncio.wait_for(task, timeout=5)
+            json = await asyncio.wait_for(task, timeout=5)
         except (asyncio.TimeoutError) as e:
             # try again
             self._request_attempts += 1
