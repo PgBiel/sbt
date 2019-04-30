@@ -241,7 +241,7 @@ class GitHub(commands.Cog, name="github"):
                 await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
                 return
 
-        # 
+        # https://developer.github.com/v3/issues/#get-a-single-issue
         url = "repos/ShineyDev/sbt/issues/{0}".format(id)
 
         async with ctx.typing():
