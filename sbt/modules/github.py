@@ -25,7 +25,7 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 3
 
 __all__ = {
-    "EVENTS",
+    "EVENT_MESSAGES",
     "VALID_LOCK_REASONS",
     "GitHub",
     "setup",
@@ -47,7 +47,7 @@ from utils import (
 )
 
 
-EVENTS = {
+EVENT_MESSAGES = {
     "added_to_project"         : "  {0[actor][login]} added this issue to a project",
     "assigned"                 : "+ {0[assigner][login]} assigned {0[assignee][login]} to this issue",
     "closed"                   : "- {0[actor][login]} closed this issue",
@@ -244,10 +244,10 @@ class GitHub(commands.Cog, name="github"):
         message = ""
 
         for (event) in events:
-            if (event["event"] not in EVENTS.keys()):
+            if (event["event"] not in EVENT_MESSAGES.keys()):
                 continue
 
-            message += EVENTS[event["event"]].format(event)
+            message += EVENT_MESSAGES[event["event"]].format(event)
             message += "\n"
 
         for (page) in format.pagify(message, shorten_by=12):
