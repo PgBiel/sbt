@@ -531,7 +531,8 @@ class GitHub(commands.Cog, name="github"):
 
                 try:
                     json_ = await response.json()
-                    raise GitHubError(json_["message"])
+                    message = "{0} {1}".format(response.status, json_["message"])
+                    raise GitHubError(message)
                 except (aiohttp.ContentTypeError) as e:
                     pass
                 
