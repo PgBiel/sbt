@@ -132,12 +132,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/assignees/#add-assignees-to-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/assignees".format(id)
-
-        try:
-            await self.request("POST", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("POST", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
         
@@ -155,12 +156,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/#edit-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}".format(id)
-
-        try:
-            await self.request("PATCH", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("PATCH", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
 
@@ -181,12 +183,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/comments/#create-a-comment
         url = "repos/ShineyDev/sbt/issues/{0}/comments".format(id)
-
-        try:
-            await self.request("POST", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("POST", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -205,11 +208,12 @@ class GitHub(commands.Cog, name="github"):
             # https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue
             url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
 
-        try:
-            labels = await self.request("GET", url)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        async with ctx.typing():
+            try:
+                labels = await self.request("GET", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         labels = [l["name"] for (l) in labels]
 
@@ -236,12 +240,13 @@ class GitHub(commands.Cog, name="github"):
         
         # https://developer.github.com/v3/issues/labels/#add-labels-to-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
-
-        try:
-            await self.request("POST", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("POST", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -264,13 +269,14 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
-
-        try:
-            labels_ = await self.request("GET", url)
-            labels_ = [l["name"] for (l) in labels_]
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                labels_ = await self.request("GET", url)
+                labels_ = [l["name"] for (l) in labels_]
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         for (label) in labels:
             if (label in labels_):
@@ -282,12 +288,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/labels/#replace-all-labels-for-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/labels".format(id)
-
-        try:
-            await self.request("PUT", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("PUT", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -301,12 +308,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/#list-issues-for-a-repository
         url = "repos/ShineyDev/sbt/issues"
-
-        try:
-            issues = await self.request("GET", url)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                issues = await self.request("GET", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         message = ""
 
@@ -349,12 +357,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/#lock-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
-
-        try:
-            await self.request("PUT", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("PUT", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -372,12 +381,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/#edit-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}".format(id)
-
-        try:
-            await self.request("PATCH", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("PATCH", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
 
@@ -399,12 +409,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/assignees/#remove-assignees-from-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/assignees".format(id)
-
-        try:
-            await self.request("DELETE", url, json=json)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("DELETE", url, json=json)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -418,12 +429,13 @@ class GitHub(commands.Cog, name="github"):
 
         # https://developer.github.com/v3/issues/#unlock-an-issue
         url = "repos/ShineyDev/sbt/issues/{0}/lock".format(id)
-
-        try:
-            await self.request("DELETE", url)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        
+        async with ctx.typing():
+            try:
+                await self.request("DELETE", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         await ctx.send("done.")
     
@@ -450,11 +462,12 @@ class GitHub(commands.Cog, name="github"):
         # https://developer.github.com/v3/rate_limit/#get-your-current-rate-limit-status
         url = "rate_limit"
 
-        try:
-            limits = await self.request("GET", url)
-        except (GitHubError) as e:
-            await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
-            return
+        async with ctx.typing():
+            try:
+                limits = await self.request("GET", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
 
         message = "```\n"
         message += " --------------------------------------------\n"
