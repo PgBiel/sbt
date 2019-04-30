@@ -49,6 +49,13 @@ class NoMoreRequests(SearchBaseException):
     pass
 
 class Result():
+    __all__ = {
+        "__init__",
+        "__repr__",
+        "__str__",
+        "from_raw",
+    }
+
     def __init__(self, url: str, title: str, description: str, time: float, results: int):
         self.url = url
         self.title = title
@@ -78,6 +85,19 @@ class Result():
         return results
 
 class Google():
+    __all__ = {
+        "__init__",
+        "__repr__",
+        "__str__",
+        "key",
+        "set_key",
+        "engine",
+        "set_engine",
+        "session",
+        "set_session",
+        "search",
+    }
+
     def __init__(self, key: str, engine: str, *, session: aiohttp.ClientSession = None):
         self._key = key
         self._engine = engine
@@ -94,7 +114,7 @@ class Google():
         return self._key
 
     @key.setter
-    def key(self, key: str):
+    def set_key(self, key: str):
         self._key = key
 
     @property
@@ -102,7 +122,7 @@ class Google():
         return self._engine
 
     @engine.setter
-    def engine(self, engine: str):
+    def set_engine(self, engine: str):
         self._engine = engine
 
     @property
@@ -110,7 +130,7 @@ class Google():
         return self._session
 
     @session.setter
-    def key(self, session: aiohttp.ClientSession):
+    def set_session(self, session: aiohttp.ClientSession):
         self._session = session
 
     async def search(self, query: str, *, safe: bool = True) -> list:
