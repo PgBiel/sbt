@@ -915,7 +915,9 @@ class General(commands.Cog, name="general"):
             example = re.sub(r"\[([a-zA-Z0-9\']+)\]",
                              r"[\1](https://www.urbandictionary.com/define.php?term=\1)",
                              result["example"])
-            if (len(example) > 1024):
+            if (not example):
+                example = "no example"
+            elif (len(example) > 1024):
                 example = "{0}...".format(example[1021])
 
             e = format.embed(description=description,
