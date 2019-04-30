@@ -25,7 +25,12 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 0
 
 __all__ = {
-    "EXTENSIONS", "prefix_manager", "Bot", "init", "load_extensions", "main",
+    "EXTENSIONS",
+    "prefix_manager",
+    "Bot",
+    "init",
+    "load_extensions",
+    "main",
 }
 
 
@@ -55,7 +60,10 @@ def prefix_manager(bot: commands.Bot, message: discord.Message) -> list:
 
 class Bot(commands.Bot):
     __all__ = {
-        "__init__", "run", "send_help", "user_allowed",
+        "__init__",
+        "run",
+        "send_help",
+        "user_allowed",
     }
 
     def __init__(self, *args, **kwargs):

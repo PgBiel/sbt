@@ -38,7 +38,9 @@ import pyfiglet
 
 class SBT():
     __all__ = {
-        "__init__", "main_menu", "run",
+        "__init__",
+        "main_menu",
+        "run",
     }
 
     def __init__(self):

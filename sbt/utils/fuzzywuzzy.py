@@ -23,12 +23,21 @@ __version_info__ = (1, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "ratio", "quick_ratio", "real_quick_ratio", "partial_ratio",
-    "quick_partial_ratio", "real_quick_partial_ratio", "_sort_tokens",
-    "token_sort_ratio", "quick_token_sort_ratio",
-    "real_quick_token_sort_ratio", "partial_token_sort_ratio",
+    "ratio",
+    "quick_ratio",
+    "real_quick_ratio",
+    "partial_ratio",
+    "quick_partial_ratio",
+    "real_quick_partial_ratio",
+    "_sort_tokens",
+    "token_sort_ratio",
+    "quick_token_sort_ratio",
+    "real_quick_token_sort_ratio",
+    "partial_token_sort_ratio",
     "quick_partial_token_sort_ratio",
-    "real_quick_partial_token_sort_ratio", "_extractor", "extract",
+    "real_quick_partial_token_sort_ratio",
+    "_extractor",
+    "extract",
 }
 
 

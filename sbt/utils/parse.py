@@ -23,9 +23,19 @@ __version_info__ = (1, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "Color", "Date", "FutureDate", "PastDate", "Time", "FutureTime",
-    "PastTime", "DateTime", "FutureDateTime", "PastDateTime", "Flag",
-    "Flags", "RPS",
+    "Color",
+    "Date",
+    "FutureDate",
+    "PastDate",
+    "Time",
+    "FutureTime",
+    "PastTime",
+    "DateTime",
+    "FutureDateTime",
+    "PastDateTime",
+    "Flag",
+    "Flags",
+    "RPS",
 }
 
 
