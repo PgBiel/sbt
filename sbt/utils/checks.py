@@ -23,13 +23,28 @@ __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "is_owner", "is_owner_check", "is_supervisor",
-    "is_supervisor_check", "is_support", "is_support_check",
-    "is_alpha", "is_alpha_check", "is_beta", "is_beta_check", "is_dj",
-    "is_dj_check", "is_guild", "is_guild_check", "is_debugging",
-    "is_debugging_check", "has_permissions",
-    "administrator_or_permissions", "moderator_or_permissions",
-    "_moderator", "_administrator", "_permissions",
+    "is_owner",
+    "is_owner_check",
+    "is_supervisor",
+    "is_supervisor_check",
+    "is_support",
+    "is_support_check",
+    "is_alpha",
+    "is_alpha_check",
+    "is_beta",
+    "is_beta_check",
+    "is_dj",
+    "is_dj_check",
+    "is_guild",
+    "is_guild_check",
+    "is_debugging",
+    "is_debugging_check",
+    "has_permissions",
+    "administrator_or_permissions",
+    "moderator_or_permissions",
+    "_moderator",
+    "_administrator",
+    "_permissions",
 }
 
 

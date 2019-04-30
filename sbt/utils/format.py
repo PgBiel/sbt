@@ -23,11 +23,27 @@ __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "bold", "camelify", "code", "dedent", "embed", "escape",
-    "get_lines", "humanize_bytes", "humanize_percentage",
-    "humanize_seconds", "humanize_datetime", "indent", "inline",
-    "italic", "jump_url", "pagify", "snakify", "strikethrough",
-    "underline", "unescape", "wrap_url",
+    "bold",
+    "camelify",
+    "code",
+    "dedent",
+    "embed",
+    "escape",
+    "get_lines",
+    "humanize_bytes",
+    "humanize_percentage",
+    "humanize_seconds",
+    "humanize_datetime",
+    "indent",
+    "inline",
+    "italic",
+    "jump_url",
+    "pagify",
+    "snakify",
+    "strikethrough",
+    "underline",
+    "unescape",
+    "wrap_url",
 }
 
 

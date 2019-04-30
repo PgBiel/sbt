@@ -23,7 +23,11 @@ __version_info__ = (3, 0, 0, "final", 7)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "is_valid", "load", "__load", "save", "__save",
+    "is_valid",
+    "load",
+    "__load",
+    "save",
+    "__save",
 }
 
 
