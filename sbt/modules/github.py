@@ -33,6 +33,7 @@ __all__ = {
 
 
 import aiohttp
+import asyncio
 import datetime
 import typing
 import yarl
@@ -576,6 +577,14 @@ class GitHub(commands.Cog, name="github"):
                 await message.channel.send(format.wrap_url(url))
 
     async def request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
+        task = asyncio.Task(self._request(method, url, json=json, headers=headers, session=session))
+
+        try:
+            return await asyncio.wait_for(task, 5)
+        except (asyncio.TimeoutError) as e:
+            return await self.request(method, url, json=json, headers=headers, session=session)
+
+    async def _request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
         if (not session):
             session_ = aiohttp.ClientSession()
         else:
