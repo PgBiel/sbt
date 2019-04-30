@@ -112,8 +112,9 @@ class GitHub(commands.Cog, name="github"):
             await ctx.send(format.wrap_url(url))
         else:
             if (checks.is_supervisor_check(ctx)):
-                # we don't want people to bypass checks ;(
-                await ctx.invoke(self._github_issue_list)
+                if (checks.is_debugging_check(ctx)):
+                    # we don't want people to bypass checks ;(
+                    await ctx.invoke(self._github_issue_list)
             else:
                 url = "{0}/issues/".format(ctx.bot._settings.github)
                 await ctx.send(format.wrap_url(url))
