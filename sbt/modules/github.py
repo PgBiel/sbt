@@ -48,30 +48,24 @@ from utils import (
 
 
 EVENTS = {
-    "added_to_project"         : "",
+    "added_to_project"         : "  {0[actor][login]} added this issue to a project",
     "assigned"                 : "+ {0[assigner][login]} assigned {0[assignee][login]} to this issue",
     "closed"                   : "- {0[actor][login]} closed this issue",
-    "converted_note_to_issue"  : "",
-    "demilestoned"             : "",
+    "demilestoned"             : "  {0[actor][login]} removed this issue from a milestone",
     "labeled"                  : "+ {0[actor][login]} added label 'owo' to this issue",
     "locked"                   : "- {0[actor][login]} locked this issue",
-    "mentioned"                : "",
-    "marked_as_duplicate"      : "- {0[actor][login]} marked this issue as a duplicate",
-    "milestoned"               : "",
-    "moved_columns_in_project" : "",
-    "referenced"               : "",
-    "removed_from_project"     : "",
-    "renamed"                  : "",
+    "mentioned"                : "  {0[actor][login]} was mentioned in this issue",
+    "marked_as_duplicate"      : "  {0[actor][login]} marked this issue as a duplicate",
+    "milestoned"               : "  {0[actor][login]} added this issue to a milestone",
+    "moved_columns_in_project" : "  {0[actor][login]} moved this issue from {0[project_card][previous_column_name]} to {0[project_card][column_name]}",
+    "removed_from_project"     : "  {0[actor][login]} removed this issue from a project",
+    "renamed"                  : "  {0[actor][login]} changed the title of this issue",
     "reopened"                 : "+ {0[actor][login]} reopened this issue",
-    "review_dismissed"         : "",
-    "review_requested"         : "",
-    "review_request_removed"   : "",
-    "subscribed"               : "+ {0[actor][login]} subscribed to this issue",
+    "subscribed"               : "  {0[actor][login]} subscribed to this issue",
     "unassigned"               : "- {0[assigner][login]} unassigned {0[assignee][login]} from this issue",
     "unlabeled"                : "- {0[actor][login]} removed label 'owo' from this issue",
     "unlocked"                 : "+ {0[actor][login]} unlocked this issue",
-    "unmarked_as_duplicate"    : "+ {0[actor][login]} unmarked this issue as a duplicate",
-    "user_blocked"             : "",
+    "unmarked_as_duplicate"    : "  {0[actor][login]} unmarked this issue as a duplicate",
 }
 
 VALID_LOCK_REASONS = {
@@ -251,7 +245,6 @@ class GitHub(commands.Cog, name="github"):
 
         for (event) in events:
             if (event["event"] not in EVENTS.keys()):
-                print(event["event"])
                 continue
 
             message += EVENTS[event["event"]].format(event)
