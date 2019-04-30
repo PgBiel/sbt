@@ -592,9 +592,10 @@ class GitHub(commands.Cog, name="github"):
         except (asyncio.TimeoutError) as e:
             # try again
             self._request_attempts += 1
-            return await self.request(method, url, json=json, headers=headers, session=session)
-        else:
-            self._request_attempts = 0
+            json = await self.request(method, url, json=json, headers=headers, session=session)
+        
+        self._request_attempts = 0
+        return json
 
     async def _request(self, method: str, url: str, *, json: dict = None, headers: dict = None, session: aiohttp.ClientSession = None):
         if (not session):
