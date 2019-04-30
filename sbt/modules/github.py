@@ -241,7 +241,17 @@ class GitHub(commands.Cog, name="github"):
                 await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
                 return
 
-        message = ""
+        # 
+        url = "repos/ShineyDev/sbt/issues/{0}".format(id)
+
+        async with ctx.typing():
+            try:
+                issue = await self.request("GET", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
+
+        message = "+ {0} opened this issue\n".format(issue["user"]["login"])
 
         for (event) in events:
             if (event["event"] not in EVENT_MESSAGES.keys()):
