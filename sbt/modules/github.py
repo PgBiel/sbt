@@ -25,6 +25,8 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __level__        = 3
 
 __all__ = {
+    "EVENTS",
+    "VALID_LOCK_REASONS",
     "GitHub",
     "setup",
 }
@@ -45,6 +47,33 @@ from utils import (
 )
 
 
+EVENTS = {
+    "added_to_project"         : "",
+    "assigned"                 : "+ {0[assigner][login]} assigned {0[assignee][login]} to this issue",
+    "closed"                   : "- {0[actor][login]} closed this issue",
+    "converted_note_to_issue"  : "",
+    "demilestoned"             : "",
+    "labeled"                  : "+ {0[actor][login]} added label 'owo' to this issue",
+    "locked"                   : "- {0[actor][login]} locked this issue",
+    "mentioned"                : "",
+    "marked_as_duplicate"      : "- {0[actor][login]} marked this issue as a duplicate",
+    "milestoned"               : "",
+    "moved_columns_in_project" : "",
+    "referenced"               : "",
+    "removed_from_project"     : "",
+    "renamed"                  : "",
+    "reopened"                 : "+ {0[actor][login]} reopened this issue",
+    "review_dismissed"         : "",
+    "review_requested"         : "",
+    "review_request_removed"   : "",
+    "subscribed"               : "+ {0[actor][login]} subscribed to this issue",
+    "unassigned"               : "- {0[assigner][login]} unassigned {0[assignee][login]} from this issue",
+    "unlabeled"                : "- {0[actor][login]} removed label 'owo' from this issue",
+    "unlocked"                 : "+ {0[actor][login]} unlocked this issue",
+    "unmarked_as_duplicate"    : "+ {0[actor][login]} unmarked this issue as a duplicate",
+    "user_blocked"             : "",
+}
+
 VALID_LOCK_REASONS = {
     "off-topic",
     "too heated",
@@ -64,6 +93,8 @@ class GitHub(commands.Cog, name="github"):
         "_github_issue",
         "_github_issue_assign",
         "_github_issue_close",
+        "_github_issue_comment",
+        "_github_issue_events",
         "_github_issue_label",
         "_github_issue_label_add",
         "_github_issue_label_remove",
@@ -197,6 +228,38 @@ class GitHub(commands.Cog, name="github"):
                 return
 
         await ctx.send("done.")
+
+    @checks.is_supervisor()
+    @checks.is_debugging()
+    @_github_issue.command(name="events")
+    async def _github_issue_events(self, ctx: commands.Context, id: int):
+        """
+        show events for an issue
+        """
+
+        # https://developer.github.com/v3/issues/events/#list-events-for-an-issue
+        url = "repos/ShineyDev/sbt/issues/{0}/events".format(id)
+
+        async with ctx.typing():
+            try:
+                events = await self.request("GET", url)
+            except (GitHubError) as e:
+                await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
+                return
+
+        message = ""
+
+        for (event) in events:
+            if (event["event"] not in EVENTS.keys()):
+                print(event["event"])
+                continue
+
+            message += EVENTS[event["event"]].format(event)
+            message += "\n"
+
+        for (page) in format.pagify(message, shorten_by=12):
+            if (page):
+                await ctx.send("```diff\n{0}```".format(page))
     
     @checks.is_supervisor()
     @checks.is_debugging()
