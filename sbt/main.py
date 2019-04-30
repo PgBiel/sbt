@@ -212,6 +212,14 @@ def init() -> commands.Bot:
                 await ctx.send("i don't have permission to do that")
                 return
 
+            if (isinstance(exception.original, discord.errors.HTTPException)):
+                await ctx.send("i tried to send something that was too large :/")
+                return
+
+            if (isinstance(exception.original, asyncio.TimeoutError)):
+                await ctx.send("timed out :/")
+                return
+
             if (isinstance(exception.original, aiohttp.client_exceptions.ClientOSError)):
                 await ctx.bot.invoke(ctx)
                 return
