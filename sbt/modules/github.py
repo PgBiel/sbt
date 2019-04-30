@@ -103,16 +103,15 @@ class GitHub(commands.Cog, name="github"):
         show a github issue
         """
 
-        if (ctx.invoked_with == "issues"):
-            url = "{0}/issues/".format(ctx.bot._settings.github)
-        else:
+        if (ctx.invoked_with == "issue"):
             if (not id):
                 await ctx.bot.send_help(ctx)
                 return
 
             url = "{0}/issues/{1}/".format(ctx.bot._settings.github, id)
-
-        await ctx.send(format.wrap_url(url))
+            await ctx.send(format.wrap_url(url))
+        else:
+            await ctx.invoke(self._github_issue_list)
 
     @checks.is_supervisor()
     @checks.is_debugging()
