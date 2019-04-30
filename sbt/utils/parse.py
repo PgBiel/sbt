@@ -52,6 +52,23 @@ from utils import (
 
 
 class Color(commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+        "cmyk_to_hexadecimal",
+        "cmyk_to_rgb",
+        "cmyk_to_int",
+        "hexadecimal_to_cmyk",
+        "hexadecimal_to_int",
+        "hexadecimal_to_rgb",
+        "int_to_cmyk",
+        "int_to_hexadecimal",
+        "int_to_rgb",
+        "rgb_to_cmyk",
+        "rgb_to_hexadecimal",
+        "rgb_to_int",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> tuple:
         """
         used as a command converter by dpy
@@ -231,6 +248,11 @@ class Color(commands.Converter):
         return self.hexadecimal_to_int(hexadecimal)
 
 class Date(commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
@@ -328,6 +350,11 @@ class Date(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureDate(Date, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
@@ -351,6 +378,11 @@ class FutureDate(Date, commands.Converter):
         return result
 
 class PastDate(Date, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.date:
         """
         used as a command converter by dpy
@@ -374,6 +406,11 @@ class PastDate(Date, commands.Converter):
         return result
                 
 class Time(commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
@@ -519,6 +556,11 @@ class Time(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureTime(Time, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
@@ -542,6 +584,11 @@ class FutureTime(Time, commands.Converter):
         return result
 
 class PastTime(Time, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.time:
         """
         used as a command converter by dpy
@@ -565,6 +612,11 @@ class PastTime(Time, commands.Converter):
         return result
 
 class DateTime(commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
@@ -830,6 +882,11 @@ class DateTime(commands.Converter):
         raise commands.BadArgument(argument)
 
 class FutureDateTime(DateTime, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
@@ -852,6 +909,11 @@ class FutureDateTime(DateTime, commands.Converter):
         return result
 
 class PastDateTime(DateTime, commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str) -> datetime.datetime:
         """
         used as a command converter by dpy
@@ -874,6 +936,10 @@ class PastDateTime(DateTime, commands.Converter):
         return result
 
 class Flag():
+    __all__ = {
+        "__init__",
+    }
+
     def __init__(self, name: str, *, required: bool = False, value: bool = False, value_type: type = None, converter: commands.Converter = None):
         self.name = name
         self.required = required
@@ -882,6 +948,12 @@ class Flag():
         self.converter = converter
 
 class Flags(commands.Converter):
+    __all__ = {
+        "convert",
+        "parse",
+        "resolve",
+    }
+
     async def convert(self, ctx: commands.Context, argument: str):
         """
         used as a command converter by dpy
@@ -957,6 +1029,10 @@ class Flags(commands.Converter):
         return dict_
         
 class RPS():
+    __all__ = {
+        "__init__",
+    }
+
     def __init__(self, argument: str):
         argument = argument.lower()
 
