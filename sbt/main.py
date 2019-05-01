@@ -46,6 +46,7 @@ import pyfiglet
 
 from utils import (
     channels,
+    checks,
     format,
     settings,
 )
@@ -254,6 +255,11 @@ def init() -> commands.Bot:
                     await asyncio.sleep(exception.retry_after)
                     await ctx.bot.invoke(ctx)
                     return
+            elif (checks.is_supervisor_check(ctx)):
+                # supervisors bypass cooldowns
+                ctx.command.reset_cooldown(ctx)
+                await ctx.bot.invoke(ctx)
+                return
 
             await ctx.send("that command is on cooldown, try again in {0}".format(format.humanize_seconds(exception.retry_after)))
 
