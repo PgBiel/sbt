@@ -36,6 +36,7 @@ class Regex:
         "WORDS",
         "DIGIT",
         "DIGITS",
+        "VERSION",
         "ISSUE",
         "FLAG_TOKEN",
         "HEXADECIMAL",
@@ -79,8 +80,20 @@ class Regex:
                         """, re.VERBOSE)
     
     DIGITS = re.compile(r"""
-                           (?P<digits>\d+)
+                            (?P<digits>\d+)
                          """, re.VERBOSE)
+
+    # modified regex from PEP 440 (Version Identification and
+    # Dependency Specification)
+    # https://www.python.org/dev/peps/pep-0440/#public-version-identifiers
+    VERSION = re.compile(r"""
+                             (?:(?P<epoch>[0-9]+)!)?
+                             (?P<major>[0-9]+)
+                             (?:\.(?P<minor>[0-9]+))
+                             (?:\.(?P<micro>[0-9]+))?
+                             (?:(?P<release_id>a|b|rc|f)(?P<release_number>[0-9]+))?
+                             (?:\.post(?P<post>[0-9]+)|\.dev(?P<dev>[0-9]+))?
+                          """, re.VERBOSE)
 
     ISSUE = re.compile(r"""
                            (?:\#\#)

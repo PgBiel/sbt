@@ -43,6 +43,7 @@ __all__ = {
     "strikethrough",
     "underline",
     "unescape",
+    "version",
     "wrap_url",
 }
 
@@ -52,6 +53,10 @@ import re
 import typing
 
 import discord
+
+from utils import (
+    regex,
+)
 
 
 def bold(text: str) -> str:
@@ -485,6 +490,36 @@ def unescape(text: str,
         text = text.replace("\\_", "_")
 
     return text
+
+def _version(version_: str):
+    match = re.fullmatch(regex.Regex.VERSION, version_)
+    if (not match):
+        raise RuntimeError("invalid version")
+
+    return version(*match.groups())
+
+def version(epoch: typing.Optional[str],
+            major: str, minor: str, micro: typing.Optional[str],
+            release_id: typing.Optional[str], release_number: typing.Optional[str],
+            post: typing.Optional[str], dev: typing.Optional[str]):
+    if (not epoch):
+        epoch = "0"
+
+    if (not micro):
+        micro = "0"
+
+    if (not (release_id or release_number)):
+        release_id = release_number = ""
+
+    if (post):
+        ext = ".post{0}".format(post)
+    elif (dev):
+        ext = ".dev{0}".format(dev)
+    else:
+        ext = ""
+
+    return "{0}!{1}.{2}.{3}{4}{5}{6}".format(
+        epoch, major, minor, micro, release_id, release_number, ext)
 
 def wrap_url(text: str):
     return "<{0}>".format(text)

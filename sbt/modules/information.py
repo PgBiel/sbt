@@ -49,6 +49,7 @@ from utils import (
     checks,
     format,
     parse,
+    regex,
 )
 
 
@@ -604,8 +605,8 @@ class Information(commands.Cog, name="information"):
         display sbt's version
         """
 
-        sbt_version = ctx.bot.__version__
-        dpy_version = discord.__version__
+        sbt_version = format._version(ctx.bot.__version__)
+        dpy_version = format._version(discord.__version__)
 
         color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
 
