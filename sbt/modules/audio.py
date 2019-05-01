@@ -159,6 +159,27 @@ class Audio(commands.Cog, name="audio"):
 
         await ctx.voice_client.disconnect()
         await ctx.send("done.")
+
+    @checks.is_dj()
+    @commands.command(name="volume", aliases=["vol"])
+    async def _volume(self, ctx: commands.Context, volume: int):
+        """
+        change the volume
+        """
+
+        if (not ctx.voice_client):
+            await ctx.send("i'm not connected to voice in this guild")
+            return
+
+        if (not (200 >= volume >= 0)):
+            await ctx.send("invalid volume")
+            return
+
+        ctx.voice_client.source.volume = volume / 100
+        await ctx.send("done.")
+
+        if (200 >= volume > 100):
+            await ctx.send("sound usually breaks when volume > 100")
     
 
 def setup(bot: commands.Bot):
