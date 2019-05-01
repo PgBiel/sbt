@@ -97,6 +97,7 @@
     <Folder Include="data\" />
     <Folder Include="data\general\" />
     <Folder Include="data\sbt\" />
+    <Folder Include="ffmpeg\" />
     <Folder Include="modules\" />
     <Folder Include="utils\" />
   </ItemGroup>
