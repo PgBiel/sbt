@@ -167,6 +167,11 @@ class Audio(commands.Cog, name="audio"):
             await ctx.send("i'm not connected to voice in this guild")
             return
 
+        
+        if (ctx.author not in ctx.voice_client.channel.members):
+            # no
+            raise commands.errors.MissingPermissions([])
+
         await ctx.voice_client.disconnect()
         await ctx.send("done.")
 
