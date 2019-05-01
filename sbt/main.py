@@ -313,6 +313,9 @@ def init() -> commands.Bot:
 
             pass
 
+        if (hasattr(ctx.command, "error")):
+            return
+
         if (ctx.command.qualified_name not in bot._settings.settings["disabled_commands"]):
             bot._settings.settings["disabled_commands"].append(ctx.command.qualified_name)
             bot._settings.save()

@@ -209,6 +209,22 @@ class Audio(commands.Cog, name="audio"):
 
         if (200 >= volume > 100):
             await ctx.send("sound usually breaks when volume > 100")
+
+    @_play.error
+    @_stream.error
+    async def on_command_error(self, ctx: commands.Context, exception: discord.errors.DiscordException):
+        if (isinstance(exception, youtube_dl.utils.DownloadError)):
+            # probably failed to rename a file, retry
+            await ctx.bot.invoke(ctx)
+            return
+
+        if (ctx.command.qualified_name not in bot._settings.settings["disabled_commands"]):
+            bot._settings.settings["disabled_commands"].append(ctx.command.qualified_name)
+            bot._settings.save()
+            ctx.command.enabled = False
+
+        await ctx.send("something went wrong! i disabled the command to reduce future errors but you should report this to the deveolper.")
+        traceback.print_exception(type(exception), exception, None)
     
 
 def setup(bot: commands.Bot):
