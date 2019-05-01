@@ -343,6 +343,6 @@ healthchecksdb
 # user specified
 sbt/data/
 *.json
-*.mpeg
+*.audio
 sbt/ffmpeg/
 *.exe
