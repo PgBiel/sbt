@@ -76,7 +76,7 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
         self.url = data.get("url")
 
     @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
+    async def from_url(self, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
         data = await loop.run_in_executor(None, lambda: PLAYER.extract_info(url, download=not stream))
 
@@ -85,7 +85,7 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
             data = data["entries"][0]
 
         filename = data["url"] if stream else PLAYER.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS), data=data)
+        return self(discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS), data=data)
 
 class Audio(commands.Cog, name="audio"):
     __all__ = {
