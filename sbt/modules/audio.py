@@ -67,6 +67,11 @@ FFMPEG_OPTIONS = {
 PLAYER = youtube_dl.YoutubeDL(YOUTUBE_DL_FORMAT_OPTIONS)
 
 
+def after_play(e):
+    if (e):
+        print(e)
+
+
 class YoutubeDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
@@ -125,7 +130,8 @@ class Audio(commands.Cog, name="audio"):
         else:
             await channel.connect()
 
-        await ctx.send("done.")
+        if (ctx.invoked_with == "join"):
+            await ctx.send("done.")
 
     @checks.is_dj()
     @commands.command(name="play", aliases=["p"])
@@ -135,16 +141,15 @@ class Audio(commands.Cog, name="audio"):
         """
 
         if (not ctx.voice_client):
-            await ctx.send("i'm not connected to voice in this guild")
-            return
+            await ctx.invoke(self._join, channel=None)
 
         url = url.strip("<>")
 
         async with ctx.typing():
             player = await YoutubeDLSource.from_url(url)
-            ctx.voice_client.play(player, after=lambda e: print(e) if e else None)
+            ctx.voice_client.play(player, after=after_play)
 
-        await ctx.send("playing {0}".format(player.title))
+        await ctx.send("playing `{0}`".format(player.title))
 
     @checks.is_dj()
     @commands.command(name="stop")
@@ -159,6 +164,24 @@ class Audio(commands.Cog, name="audio"):
 
         await ctx.voice_client.disconnect()
         await ctx.send("done.")
+
+    @checks.is_dj()
+    @commands.command(name="stream")
+    async def _stream(self, ctx: commands.Context, url: str):
+        """
+        play a stream
+        """
+
+        if (not ctx.voice_client):
+            await ctx.invoke(self._join, channel=None)
+
+        url = url.strip("<>")
+
+        async with ctx.typing():
+            player = await YoutubeDLSource.from_url(url, stream=True)
+            ctx.voice_client.play(player, after=after_play)
+
+        await ctx.send("streaming `{0}`".format(player.title))
 
     @checks.is_dj()
     @commands.command(name="volume", aliases=["vol"])
