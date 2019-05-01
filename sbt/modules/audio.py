@@ -47,7 +47,7 @@ youtube_dl.utils.bug_reports_message = lambda: ""
 
 YOUTUBE_DL_FORMAT_OPTIONS = {
     "format": "bestaudio/best",
-    "outtmpl": "%(id)s.audio",
+    "outtmpl": "data\\audio\\cache\\%(id)s.audio",
     "restrictfilenames": True,
     "noplaylist": True,
     "nocheckcertificate": True,

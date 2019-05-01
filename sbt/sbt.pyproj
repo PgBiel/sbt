@@ -95,7 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="data\" />
+    <Folder Include="data\audio\cache\" />
     <Folder Include="data\general\" />
+    <Folder Include="data\audio\" />
     <Folder Include="data\sbt\" />
     <Folder Include="ffmpeg\" />
     <Folder Include="modules\" />
