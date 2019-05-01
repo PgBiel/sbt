@@ -265,9 +265,10 @@ class GitHub(commands.Cog, name="github"):
 
         for (event) in events:
             if (event["event"] == "moved_columns_in_project"):
-                # this will be here until github remove the
-                # `project_card` key from the starfox-preview since we
-                # use the sailor-v-preview to get access to the
+                # this will be here until github either remove the
+                # `project_card` key from starfox-preview or remove the
+                # `lock_reason` key from sailor-v-preview since we are
+                # currently using sailor-v-preview to get access to the
                 # `lock_reason` key
                 continue
 
