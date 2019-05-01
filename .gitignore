@@ -342,4 +342,5 @@ healthchecksdb
 
 # user specified
 *.json
-*.pyproj
+sbt/data/
+sbt/ffmpeg/
