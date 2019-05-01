@@ -65,11 +65,11 @@ def camelify(text: str) -> str:
 
     return "".join(result)
 
-def code(text: str, language: str = "") -> str:
+def code(text: str, *, language: str = "") -> str:
     return "```{0}\n{1}\n```".format(language, text)
 
 def cyan(text: str) -> str:
-    return code(text, "yaml")
+    return code(text, language="yaml")
 
 def dedent(text: str, *, max: int = None, force: bool = False) -> str:
     lines = text.split("\n")
@@ -218,7 +218,7 @@ def get_lines(text: str, start: int, end: int = None) -> str:
     return result
 
 def green(text: str) -> str:
-    return code(text, "css")
+    return code(text, language="css")
 
 def humanize_bytes(bytes: int) -> str:
     symbols = ["kB", "mB", "gB", "tB", "pB", "eB", "zB", "yB"]
@@ -425,7 +425,7 @@ def jump_url(message: discord.Message) -> str:
     return "https://discordapp.com/channels/@me/{0.channel.id}/{0.id}/".format(message)
 
 def orange(text: str) -> str:
-    return code(text, "fix")
+    return code(text, language="fix")
 
 def pagify(text: str, *, delims: list = ["\n"], shorten_by: int = 0, page_length: int = 2000) -> str:
     in_text = text
