@@ -118,6 +118,11 @@ class Audio(commands.Cog, name="audio"):
         join a voice channel
         """
 
+        if (ctx.voice_client):
+            if (ctx.author not in ctx.voice_client.channel.members):
+                # no stealing
+                raise commands.errors.MissingPermissions([])
+
         if (not channel):
             if (not ctx.author.voice):
                 await ctx.send("you're not in a voice channel")
@@ -166,6 +171,7 @@ class Audio(commands.Cog, name="audio"):
         await ctx.send("done.")
 
     @checks.is_dj()
+    @checks.is_owner()
     @commands.command(name="stream")
     async def _stream(self, ctx: commands.Context, url: str):
         """
