@@ -147,6 +147,9 @@ class Audio(commands.Cog, name="audio"):
 
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
+            if (not ctx.voice_client):
+                # didn't get a voice_client
+                return
 
         url = url.strip("<>")
 
@@ -184,6 +187,9 @@ class Audio(commands.Cog, name="audio"):
 
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
+            if (not ctx.voice_client):
+                # didn't get a voice_client
+                return
 
         url = url.strip("<>")
 
@@ -222,9 +228,9 @@ class Audio(commands.Cog, name="audio"):
             await ctx.bot.invoke(ctx)
             return
 
-        if (ctx.command.qualified_name not in bot._settings.settings["disabled_commands"]):
-            bot._settings.settings["disabled_commands"].append(ctx.command.qualified_name)
-            bot._settings.save()
+        if (ctx.command.qualified_name not in ctx.bot._settings.settings["disabled_commands"]):
+            ctx.bot._settings.settings["disabled_commands"].append(ctx.command.qualified_name)
+            ctx.bot._settings.save()
             ctx.command.enabled = False
 
         await ctx.send("something went wrong! i disabled the command to reduce future errors but you should report this to the deveolper.")
