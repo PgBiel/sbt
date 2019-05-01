@@ -408,7 +408,7 @@ def indent(text: str, *, amount: int) -> str:
     return result
 
 def inline(text: str) -> str:
-    return "`{0}`".format(text)
+    return "``{0}``".format(text)
 
 def italic(text: str) -> str:
     return "*{0}*".format(text)
