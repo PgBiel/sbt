@@ -47,7 +47,7 @@ youtube_dl.utils.bug_reports_message = lambda: ""
 
 YOUTUBE_DL_FORMAT_OPTIONS = {
     "format": "bestaudio/best",
-    "outtmpl": "%(id)s.%(ext)s",
+    "outtmpl": "%(id)s.audio",
     "restrictfilenames": True,
     "noplaylist": True,
     "nocheckcertificate": True,
@@ -60,7 +60,8 @@ YOUTUBE_DL_FORMAT_OPTIONS = {
 }
 
 FFMPEG_OPTIONS = {
-    "options": "-vn"
+    "executable": "ffmpeg/ffmpeg",
+    "options": "-vn",
 }
 
 PLAYER = youtube_dl.YoutubeDL(YOUTUBE_DL_FORMAT_OPTIONS)
