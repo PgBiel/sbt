@@ -31,6 +31,7 @@ __all__ = {
 
 
 import asyncio
+import traceback
 import typing
 import youtube_dl
 
@@ -39,6 +40,7 @@ from discord.ext import commands
 
 from utils import (
     checks,
+    dataio,
 )
 
 
@@ -67,11 +69,6 @@ FFMPEG_OPTIONS = {
 PLAYER = youtube_dl.YoutubeDL(YOUTUBE_DL_FORMAT_OPTIONS)
 
 
-def after_play(e):
-    if (e):
-        print(e)
-
-
 class YoutubeDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
@@ -82,7 +79,7 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
         self.url = data.get("url")
 
     @classmethod
-    async def from_url(self, url, *, loop=None, stream=False):
+    async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
         data = await loop.run_in_executor(None, lambda: PLAYER.extract_info(url, download=not stream))
 
@@ -91,7 +88,7 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
             data = data["entries"][0]
 
         filename = data["url"] if stream else PLAYER.prepare_filename(data)
-        return self(discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS), data=data)
+        return cls(discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS), data=data)
 
 class Audio(commands.Cog, name="audio"):
     __all__ = {
@@ -109,7 +106,12 @@ class Audio(commands.Cog, name="audio"):
         self.__version__ = __version__
         self.__level__ = __level__
 
+        self.settings = dataio.load("data/audio/settings.json")
+
         super().__init__()
+
+    def save(self):
+        return dataio.save("data/audio/settings.json", self.settings)
 
     @checks.is_dj()
     @commands.command(name="join")
@@ -145,6 +147,12 @@ class Audio(commands.Cog, name="audio"):
         play a url
         """
 
+        def after(exception):
+            if (exception):
+                traceback.print_exception(type(exception), exception, None)
+
+            self._after(ctx)
+
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
             if (not ctx.voice_client):
@@ -155,7 +163,7 @@ class Audio(commands.Cog, name="audio"):
 
         async with ctx.typing():
             player = await YoutubeDLSource.from_url(url)
-            ctx.voice_client.play(player, after=after_play)
+            ctx.voice_client.play(player, after=after)
 
         await ctx.send("playing `{0}`".format(player.title))
 
@@ -185,6 +193,12 @@ class Audio(commands.Cog, name="audio"):
         play a stream
         """
 
+        def after(exception):
+            if (exception):
+                traceback.print_exception(type(exception), exception, None)
+
+            self._after(ctx)
+
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
             if (not ctx.voice_client):
@@ -195,24 +209,33 @@ class Audio(commands.Cog, name="audio"):
 
         async with ctx.typing():
             player = await YoutubeDLSource.from_url(url, stream=True)
-            ctx.voice_client.play(player, after=after_play)
+            ctx.voice_client.play(player, after=after)
 
         await ctx.send("streaming `{0}`".format(player.title))
 
     @checks.is_dj()
     @commands.command(name="volume", aliases=["vol"])
-    async def _volume(self, ctx: commands.Context, volume: int):
+    async def _volume(self, ctx: commands.Context, volume: typing.Optional[int]):
         """
-        change the volume
+        show or change the volume
         """
 
         if (not ctx.voice_client):
             await ctx.send("i'm not connected to voice in this guild")
             return
 
+        if (volume == None):
+            await ctx.send("{0}%".format(int(ctx.voice_client.source.volume * 100)))
+            return
+
         if (not (200 >= volume >= 0)):
             await ctx.send("invalid volume")
             return
+
+        if (ctx.guild.id not in self.settings["guilds"].keys()):
+            self.settings["guilds"][ctx.guild.id] = dict()
+        self.settings["guilds"][ctx.guild.id]["volume"] = volume
+        self.save()
 
         ctx.voice_client.source.volume = volume / 100
         await ctx.send("done.")
@@ -227,14 +250,6 @@ class Audio(commands.Cog, name="audio"):
             # probably failed to rename a file, retry
             await ctx.bot.invoke(ctx)
             return
-
-        if (ctx.command.qualified_name not in ctx.bot._settings.settings["disabled_commands"]):
-            ctx.bot._settings.settings["disabled_commands"].append(ctx.command.qualified_name)
-            ctx.bot._settings.save()
-            ctx.command.enabled = False
-
-        await ctx.send("something went wrong! i disabled the command to reduce future errors but you should report this to the deveolper.")
-        traceback.print_exception(type(exception), exception, None)
     
 
 def setup(bot: commands.Bot):

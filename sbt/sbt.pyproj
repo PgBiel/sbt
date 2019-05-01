@@ -104,6 +104,9 @@
     <Folder Include="utils\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data\audio\settings.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="data\general\reminder.json" />
     <Content Include="data\sbt\settings.json" />
     <Content Include="utils\bytecode_instructions.txt" />
