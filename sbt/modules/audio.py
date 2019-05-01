@@ -166,7 +166,6 @@ class Audio(commands.Cog, name="audio"):
         if (not ctx.voice_client):
             await ctx.send("i'm not connected to voice in this guild")
             return
-
         
         if (ctx.author not in ctx.voice_client.channel.members):
             # no
