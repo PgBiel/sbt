@@ -52,19 +52,26 @@ EVENT_MESSAGES = {
     "added_to_project"         : "  {0[actor][login]} added this issue to a project",
     "assigned"                 : "+ {0[assigner][login]} assigned {0[assignee][login]} to this issue",
     "closed"                   : "- {0[actor][login]} closed this issue",
-    "demilestoned"             : "  {0[actor][login]} removed this issue from a milestone",
-    "labeled"                  : "+ {0[actor][login]} added label 'owo' to this issue",
-    "locked"                   : "- {0[actor][login]} locked this issue",
+    "demilestoned"             : "  {0[actor][login]} removed this issue from a milestone\n" \
+                                 "    {0[milestone][title]}",
+    "labeled"                  : "+ {0[actor][login]} added label '{0[label][name]}' to this issue",
+    "locked"                   : "- {0[actor][login]} locked this issue\n" \
+                                 "    {0[lock_reason]}",
     "mentioned"                : "  {0[actor][login]} was mentioned in this issue",
     "marked_as_duplicate"      : "  {0[actor][login]} marked this issue as a duplicate",
-    "milestoned"               : "  {0[actor][login]} added this issue to a milestone",
-    "moved_columns_in_project" : "  {0[actor][login]} moved this issue from {0[project_card][previous_column_name]} to {0[project_card][column_name]}",
+    "milestoned"               : "  {0[actor][login]} added this issue to a milestone\n" \
+                                 "    {0[milestone][title]}",
+    "moved_columns_in_project" : "  {0[actor][login]} moved this issue\n" \
+                                 "-   {0[project_card][previous_column_name]}\n" \
+                                 "+   {0[project_card][column_name]}",
     "removed_from_project"     : "  {0[actor][login]} removed this issue from a project",
-    "renamed"                  : "  {0[actor][login]} changed the title of this issue",
+    "renamed"                  : "  {0[actor][login]} changed the title of this issue\n" \
+                                 "-   {0[rename][from]}\n" \
+                                 "+   {0[rename][to]}",
     "reopened"                 : "+ {0[actor][login]} reopened this issue",
     "subscribed"               : "  {0[actor][login]} subscribed to this issue",
     "unassigned"               : "- {0[assigner][login]} unassigned {0[assignee][login]} from this issue",
-    "unlabeled"                : "- {0[actor][login]} removed label 'owo' from this issue",
+    "unlabeled"                : "- {0[actor][login]} removed label '{0[label][name]}' from this issue",
     "unlocked"                 : "+ {0[actor][login]} unlocked this issue",
     "unmarked_as_duplicate"    : "  {0[actor][login]} unmarked this issue as a duplicate",
 }
@@ -257,6 +264,13 @@ class GitHub(commands.Cog, name="github"):
         message = "+ {0} opened this issue\n".format(issue["user"]["login"])
 
         for (event) in events:
+            if (event["event"] == "moved_columns_in_project"):
+                # this will be here until github remove the
+                # `project_card` key from the starfox-preview since we
+                # use the sailor-v-preview to get access to the
+                # `lock_reason` key
+                continue
+
             if (event["event"] not in EVENT_MESSAGES.keys()):
                 continue
 
@@ -600,7 +614,7 @@ class GitHub(commands.Cog, name="github"):
 
     async def _request(self, method: str, url: str, *, json: dict = None, headers: dict = None):
         headers_ = {
-            "Accept": "application/vnd.github.v3+json",
+            "Accept": "application/vnd.github.sailor-v-preview+json",
             "Authorization": "token {0}".format(self.bot._settings.github_api_key),
             "User-Agent": "sbt-github-manager",
         }
