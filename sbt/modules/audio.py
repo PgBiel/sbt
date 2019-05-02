@@ -93,8 +93,11 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
 class Audio(commands.Cog, name="audio"):
     __all__ = {
         "__init__",
-        "join",
-        "stop",
+        "_join",
+        "_play",
+        "_stop",
+        "_stream",
+        "_volume",
     }
 
     def __init__(self, bot: commands.Bot):
