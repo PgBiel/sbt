@@ -39,6 +39,7 @@ import asyncio
 import datetime
 import os
 import traceback
+import typing
 
 import discord
 from discord.ext import commands
@@ -102,8 +103,8 @@ class Bot(commands.Bot):
             return True
 
         # ignore dpy
-        if (message.guild.id == self._settings.dpy):
-            return False
+        #if (message.guild.id == self._settings.dpy):
+        #    return False
 
         if (message.author.id in self._settings.blacklist):
             return False
