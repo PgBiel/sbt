@@ -98,17 +98,16 @@ class Bot(commands.Bot):
         if (message.author.bot):
             return False
 
-        if (str(message.author.id) == self._settings.owner):
+        if (message.author.id == self._settings.owner):
             return True
 
-        if (str(message.author.id) in self._settings.blacklist):
+        if (message.author.id in self._settings.blacklist):
             return False
-        if (str(message.author.id) in self._settings.whitelist):
+        if (message.author.id in self._settings.whitelist):
             return True
 
         if (isinstance(message.channel, discord.abc.GuildChannel)):
             names = (self._settings.get_guild_administrator_role(message.guild), self._settings.get_guild_moderator_role(message.guild))
-
             results = map(lambda name: discord.utils.get(message.author.roles, name=name), names)
 
             for (result) in results:
