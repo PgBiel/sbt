@@ -70,7 +70,7 @@ class Result():
         return "<Result url='{0}'>".format(self.url, self.time)
 
     @classmethod
-    def from_raw(self, data: dict) -> list:
+    def from_raw(cls, data: dict) -> list:
         results = list()
 
         for (result) in data["items"]:
@@ -80,7 +80,7 @@ class Result():
             time = data["searchInformation"]["searchTime"]
             results_ = int(data["searchInformation"]["totalResults"])
 
-            results.append(self(url, title, description, time, results_))
+            results.append(cls(url, title, description, time, results_))
 
         return results
 

@@ -962,13 +962,13 @@ class Flags(commands.Converter):
         return self.parse(argument)
 
     @classmethod
-    def parse(self, argument: str):
+    def parse(cls, argument: str):
         """
-        this method simply splits up the tokens and returns self for
+        this method simply splits up the tokens and returns cls for
         the `resolve` method to resolve
         """
 
-        self.tokens = dict()
+        cls.tokens = dict()
 
         for (token) in argument.split(" "):
             match = re.fullmatch(regex.Regex.FLAG_TOKEN, token)
@@ -978,15 +978,15 @@ class Flags(commands.Converter):
             flag = match.group("flag")
             value = match.group("value")
 
-            if (flag in self.tokens.keys()):
+            if (flag in cls.tokens.keys()):
                 raise commands.BadArgument("duplicate token '{0}'".format(token))
 
             if (value):
-                self.tokens[flag] = value
+                cls.tokens[flag] = value
             else:
-                self.tokens[flag] = None
+                cls.tokens[flag] = None
 
-        return self
+        return cls
 
     @classmethod
     async def resolve(self, ctx: commands.Context, flags: list) -> dict:
