@@ -101,6 +101,10 @@ class Bot(commands.Bot):
         if (message.author.id == self._settings.owner):
             return True
 
+        # ignore dpy
+        if (message.guild.id == self._settings.dpy):
+            return False
+
         if (message.author.id in self._settings.blacklist):
             return False
         if (message.author.id in self._settings.whitelist):
