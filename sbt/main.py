@@ -117,7 +117,7 @@ class Bot(commands.Bot):
                     if (message.author._roles.has(role)):
                         return True
                 elif (isinstance(role, str)):
-                    # we have a role name
+                    # we have a name
                     if (discord.utils.get(message.author.roles, name=name)):
                         return True
 
