@@ -50,6 +50,7 @@ __all__ = {
 
 import datetime
 import re
+import time
 import typing
 
 import discord
@@ -420,6 +421,12 @@ def indent(text: str, *, amount: int) -> str:
 
 def inline(text: str) -> str:
     return "``{0}``".format(text)
+
+def iso8601(datetime_: datetime.datetime = datetime.datetime.now):
+    if (callable(datetime_)):
+        datetime_ = datetime_()
+
+    return datetime_.strftime("%Y-%m-%dT%H:%MZ")
 
 def italic(text: str) -> str:
     return "*{0}*".format(text)
