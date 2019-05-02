@@ -154,7 +154,7 @@ class Audio(commands.Cog, name="audio"):
             if (exception):
                 traceback.print_exception(type(exception), exception, None)
 
-            self._after(ctx)
+            self.__after(ctx)
 
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
@@ -167,6 +167,10 @@ class Audio(commands.Cog, name="audio"):
         async with ctx.typing():
             player = await YoutubeDLSource.from_url(url)
             ctx.voice_client.play(player, after=after)
+
+            if (str(ctx.guild.id) in self.settings["guilds"].keys()):
+                if ("volume" in self.settings["guilds"][str(ctx.guild.id)].keys()):
+                    ctx.voice_client.source.volume = self.settings["guilds"][str(ctx.guild.id)]["volume"] / 100
 
         await ctx.send("playing `{0}`".format(player.title))
 
@@ -200,7 +204,7 @@ class Audio(commands.Cog, name="audio"):
             if (exception):
                 traceback.print_exception(type(exception), exception, None)
 
-            self._after(ctx)
+            self.__after(ctx)
 
         if (not ctx.voice_client):
             await ctx.invoke(self._join, channel=None)
@@ -235,9 +239,9 @@ class Audio(commands.Cog, name="audio"):
             await ctx.send("invalid volume")
             return
 
-        if (ctx.guild.id not in self.settings["guilds"].keys()):
-            self.settings["guilds"][ctx.guild.id] = dict()
-        self.settings["guilds"][ctx.guild.id]["volume"] = volume
+        if (str(ctx.guild.id) not in self.settings["guilds"].keys()):
+            self.settings["guilds"][str(ctx.guild.id)] = dict()
+        self.settings["guilds"][str(ctx.guild.id)]["volume"] = volume
         self.save()
 
         ctx.voice_client.source.volume = volume / 100
@@ -253,6 +257,9 @@ class Audio(commands.Cog, name="audio"):
             # probably failed to rename a file, retry
             await ctx.bot.invoke(ctx)
             return
+
+    def __after(self, ctx: commands.Context):
+        pass
     
 
 def setup(bot: commands.Bot):
