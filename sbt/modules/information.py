@@ -647,7 +647,12 @@ class Information(commands.Cog, name="information"):
         color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
 
         e = discord.Embed(title="Bot Information", color=color)
-        e.add_field(name="User", value="{0.name} ({0.id})".format(user), inline=False)
+
+        changes = await self._commits(count=3)
+        if (changes):
+            e.add_field(name="Recent Changes", value=changes, inline=False)
+
+        e.add_field(name="User", value="{0} ({0.id})".format(user), inline=False)
         e.add_field(name="Authors", value=authors)
         e.add_field(name="Maintainers", value=maintainers)
         e.add_field(name="Version", value=version)
@@ -660,6 +665,33 @@ class Information(commands.Cog, name="information"):
         )
 
         await ctx.send(embed=e)
+
+    async def _commits(self, *, count: int):
+        return None
+
+        github = self.bot.get_cog("github")
+        if (not github):
+            # github isn't loaded
+            return None
+
+        change_format = "[`{}`](https://github.com/ShineyDev/sbt/commit/{}) {}\n"
+
+        json = {
+            "since": format.iso8601(datetime.date.today()),
+        }
+
+        url = "repos/ShineyDev/sbt/commits"
+
+        try:
+            changes = await github.request("GET", url, json=json)
+        except (Exception) as e:
+            if (type(e).__name__ == "GitHubError"):
+                return None
+            elif (type(e).__name__ == "TimeoutError"):
+                return None
+            raise
+
+        
         
     @checks.is_guild()
     @_information.command(name="channel")
