@@ -111,12 +111,21 @@ class Bot(commands.Bot):
             return True
 
         if (isinstance(message.channel, discord.abc.GuildChannel)):
-            names = (self._settings.get_guild_administrator_role(message.guild), self._settings.get_guild_moderator_role(message.guild))
-            results = map(lambda name: discord.utils.get(message.author.roles, name=name), names)
+            def check(role: typing.Union[int, str]):
+                if (isinstance(role, int)):
+                    # we have an id
+                    if (message.author._roles.has(role)):
+                        return True
+                elif (isinstance(role, str)):
+                    # we have a role name
+                    if (discord.utils.get(message.author.roles, name=name)):
+                        return True
 
-            for (result) in results:
-                if (result):
-                    return True
+            names = (self._settings.get_guild_administrator_role(message.guild),
+                     self._settings.get_guild_moderator_role(message.guild))
+
+            if (any(map(check, names))):
+                return True
 
             moderation = self.get_cog("Moderation")
             if (moderation):
