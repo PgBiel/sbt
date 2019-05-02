@@ -691,7 +691,7 @@ class Information(commands.Cog, name="information"):
                 return None
             raise
 
-        
+        # cont
         
     @checks.is_guild()
     @_information.command(name="channel")
