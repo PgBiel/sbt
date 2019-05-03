@@ -440,6 +440,9 @@ class Owner(commands.Cog, name="owner"):
                 await channel_.send("rift has been closed")
             
             del self.rift
+
+        await channel.send("a rift has been opened")
+        await ctx.channel.send("a rift has been opened")
         
         self.rift = {
             "dst": channel.id,
@@ -447,9 +450,6 @@ class Owner(commands.Cog, name="owner"):
             "src": ctx.channel.id,
             "src-msgs": dict(),
         }
-
-        await channel.send("a rift has been opened")
-        await ctx.channel.send("a rift has been opened")
 
     @checks.is_owner()
     @commands.command(name="send")
