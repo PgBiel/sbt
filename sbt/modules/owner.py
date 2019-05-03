@@ -126,6 +126,7 @@ class Owner(commands.Cog, name="owner"):
         self.__level__ = __level__
 
         self._results = collections.deque(maxlen=10)
+        self._repl = set()
 
         super().__init__()
         
@@ -380,6 +381,41 @@ class Owner(commands.Cog, name="owner"):
         
         await message.edit(content="done.")
 
+    @checks.is_owner()
+    @commands.command(name="repl")
+    async def _repl(self, ctx: commands.Context):
+        """
+        open a repl session
+        """
+
+        if (ctx.channel.id in self._repl):
+            await ctx.send("there is already a repl session in this channel")
+            return
+
+        self._repl.add(ctx.channel.id)
+        await ctx.send("opened repl session")
+
+        def check(message: discord.Message):
+            if (message.author == ctx.author):
+                if (message.channel == ctx.channel):
+                    return True
+
+        while (True):
+            message = await ctx.bot.wait_for("message", check=check)
+
+            if (message.content in {"close", "exit", "quit"}):
+                break
+            elif (message.content == "{0}repl".format(ctx.prefix)):
+                continue
+
+            ctx_ = copy.copy(ctx)
+            ctx_.message = message
+
+            await ctx_.invoke(self._evaluate, shit=message.content)
+
+        self._repl.remove(ctx.channel.id)
+        await ctx.send("closed repl session")
+        
     @checks.is_supervisor()
     @commands.command(name="restart")
     async def _restart(self, ctx: commands.Context):
