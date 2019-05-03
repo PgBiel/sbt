@@ -126,7 +126,7 @@ class Owner(commands.Cog, name="owner"):
         self.__level__ = __level__
 
         self._results = collections.deque(maxlen=10)
-        self._repl = set()
+        self._repl_sessions = set()
 
         super().__init__()
         
@@ -388,11 +388,11 @@ class Owner(commands.Cog, name="owner"):
         open a repl session
         """
 
-        if (ctx.channel.id in self._repl):
+        if (ctx.channel.id in self._repl_sessions):
             await ctx.send("there is already a repl session in this channel")
             return
 
-        self._repl.add(ctx.channel.id)
+        self._repl_sessions.add(ctx.channel.id)
         await ctx.send("opened repl session")
 
         def check(message: discord.Message):
@@ -413,7 +413,7 @@ class Owner(commands.Cog, name="owner"):
 
             await ctx_.invoke(self._evaluate, shit=message.content)
 
-        self._repl.remove(ctx.channel.id)
+        self._repl_sessions.remove(ctx.channel.id)
         await ctx.send("closed repl session")
         
     @checks.is_supervisor()
