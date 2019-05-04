@@ -51,6 +51,20 @@ from utils import (
 )
 
 
+def iso8601(string: str):
+    match = re.fullmatch(regex.Regex.ISO8601, string)
+    if (not match):
+        return None
+
+    year = match.group("year")
+    month = match.group("month")
+    day = match.group("day")
+    hour = match.group("hour")
+    minute = match.group("minute")
+
+    return datetime.datetime(year, month, day, hour, minute, 0)
+
+
 class Color(commands.Converter):
     __all__ = {
         "convert",

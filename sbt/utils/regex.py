@@ -45,6 +45,7 @@ class Regex:
         "MONTH",
         "DAY",
         "YEAR",
+        "ISO8601",
         "US_DATE",
         "EU_DATE",
         "US_DATE_TIME",
@@ -176,6 +177,21 @@ class Regex:
     YEAR = re.compile(r"""
                           (?P<year>(?:[0-9]{4}|[0-9]{2}))
                        """, re.VERBOSE)
+
+    # 0000-00-00T00:00
+    # 0000-00-00T00:00Z
+    ISO8601 = re.compile(r"""
+                             (?P<year>[0-9]{4})
+                             (?:-)
+                             (?P<month>(?:12|11|10|0?9|0?8|0?7|0?6|0?5|0?4|0?3|0?2|0?1))
+                             (?:-)
+                             (?P<day>[0-9]{1,2})
+                             (?:T)
+                             (?P<hour>[0-9]{1,2})
+                             (?::)
+                             (?P<minute>[0-9]{1,2})
+                             (?:Z)?
+                          """, re.VERBOSE)
     
     # 12/31/00
     # 12/31/0000
