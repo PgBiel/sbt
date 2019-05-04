@@ -23,13 +23,40 @@ __version_info__ = (1, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
-    "Timer",
     "Suppress",
+    "Timer",
 }
 
 
 import time
 
+
+class Suppress():
+    """
+    with context.Suppress(discord.errors.HTTPException):
+	    await ctx.send(message)
+
+    # execution resumes here even if discord throws a HTTPException
+    """
+
+    def __init__(self, *exceptions):
+        self._exceptions = exceptions
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exception_type, exception_class, traceback):
+        if (not exception_type):
+            return True
+        elif (issubclass(exception_type, self._exceptions)):
+            return True
+        return False
+
+    async def __aenter__(self):
+        return self.__enter__()
+
+    async def __aexit__(self, *args):
+        return self.__exit__(*args)
 
 class Timer():
     """
@@ -54,33 +81,6 @@ class Timer():
 
     def __exit__(self, *args):
         self.time = timer() - self._start
-
-    async def __aenter__(self):
-        return self.__enter__()
-
-    async def __aexit__(self, *args):
-        return self.__exit__(*args)
-
-class Suppress():
-    """
-    with context.Suppress(discord.errors.HTTPException):
-	    await ctx.send(message)
-
-    # execution resumes here even if discord throws a HTTPException
-    """
-
-    def __init__(self, *exceptions):
-        self._exceptions = exceptions
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exception_type, exception_class, traceback):
-        if (not exception_type):
-            return True
-        elif (issubclass(exception_type, self._exceptions)):
-            return True
-        return False
 
     async def __aenter__(self):
         return self.__enter__()
