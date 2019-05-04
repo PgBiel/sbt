@@ -36,14 +36,23 @@ class Timer():
         ...
 
     time = t.time
+
+
+    with context.Timer(timer=time.perf_counter) as t:
+        ...
+
+    time = t.time
     """
 
+    def __init__(self, *, timer = time.clock):
+        self._timer = timer
+
     def __enter__(self):
-        self._start = time.perf_counter()
+        self._start = timer()
         return self
 
     def __exit__(self, *args):
-        self.time = time.perf_counter() - self._start
+        self.time = timer() - self._start
 
     async def __aenter__(self):
         return self.__enter__()
