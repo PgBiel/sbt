@@ -231,10 +231,10 @@ class Owner(commands.Cog, name="owner"):
         await ctx.send(message)
 
     @checks.is_supervisor()
-    @commands.command(name="evaluate", aliases=["eval", ">", ">>"])
-    async def _evaluate(self, ctx: commands.Context, *, shit: str):
+    @commands.command(name="eval", aliases=["evaluate", ">", ">>"])
+    async def _eval(self, ctx: commands.Context, *, shit: str):
         """
-        evaluate shit
+        eval shit
 
         there is no better explanation of what this command does
         """
@@ -255,7 +255,7 @@ class Owner(commands.Cog, name="owner"):
         if (hasattr(self, "_exception")):
             globals_["_x"] = self._exception
 
-        function = "async def _eval(self):\n{0}".format(
+        function = "async def _evaluate(self):\n{0}".format(
             format.indent(shit, amount=4)
         )
 
