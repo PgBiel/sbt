@@ -382,6 +382,7 @@ class Owner(commands.Cog, name="owner"):
         await message.edit(content="done.")
 
     @checks.is_owner()
+    @checks.is_debugging()
     @commands.command(name="repl")
     async def _repl(self, ctx: commands.Context):
         """
