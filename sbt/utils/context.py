@@ -71,7 +71,7 @@ class Suppress():
     # execution resumes here even if discord throws a HTTPException
     """
 
-    def __init__(self, *exceptions):
+    def __init__(self, *exceptions: Exception):
         self._exceptions = exceptions
 
     def __enter__(self):
