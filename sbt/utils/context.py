@@ -51,11 +51,12 @@ class Timer():
     async def __aexit__(self, *args):
         return self.__exit__(*args)
 
-class Catch():
+class Suppress():
     """
-    with context.Catch(OSError, ValueError):
-        raise ValueError
-        # exception is not raised
+    with context.Suppress(FileNotFoundError):
+        os.remove(file)
+
+    # execution resumes here even if the file was already removed
     """
 
     def __init__(self, *exceptions):
@@ -66,13 +67,9 @@ class Catch():
 
     def __exit__(self, exception_type, exception_class, traceback):
         if (not exception_type):
-            # no exception
             return True
         elif (issubclass(exception_type, self._exceptions)):
-            # caught exception
             return True
-
-        # uncaught exception
         return False
 
     async def __aenter__(self):
