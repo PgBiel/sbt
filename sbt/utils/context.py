@@ -34,14 +34,14 @@ import time
 
 class Stream():
     """
-    with context.Stream(s):
+    with context.Stream(target):
         ...
-        # redirects stdout
+        # redirects stdout to target
 
 
-    with context.Stream(s, stream="stderr"):
+    with context.Stream(target, stream="stderr"):
         ...
-        # redirects stderr
+        # redirects stderr to target
     """
 
     def __init__(self, target, stream: str = "stdout"):
