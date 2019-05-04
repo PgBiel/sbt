@@ -139,11 +139,11 @@ class Timer():
         self._timer = timer
 
     def __enter__(self):
-        self._start = timer()
+        self._start = self._timer()
         return self
 
     def __exit__(self, *args):
-        self.time = timer() - self._start
+        self.time = self._timer() - self._start
 
     async def __aenter__(self):
         return self.__enter__()
