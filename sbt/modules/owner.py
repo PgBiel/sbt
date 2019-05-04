@@ -132,7 +132,7 @@ class Owner(commands.Cog, name="owner"):
 
         super().__init__()
         
-    @checks.is_owner()
+    @checks.is_supervisor()
     @commands.command(name="debug", aliases=["?", ">?"])
     async def _debug(self, ctx: commands.Context, index: typing.Optional[int], *, shit: str):
         """
@@ -230,7 +230,7 @@ class Owner(commands.Cog, name="owner"):
         await ctx.message.delete()
         await ctx.send(message)
 
-    @checks.is_owner()
+    @checks.is_supervisor()
     @commands.command(name="evaluate", aliases=["eval", ">", ">>"])
     async def _evaluate(self, ctx: commands.Context, *, shit: str):
         """
@@ -386,7 +386,7 @@ class Owner(commands.Cog, name="owner"):
         
         await message.edit(content="done.")
 
-    @checks.is_owner()
+    @checks.is_supervisor()
     @checks.is_debugging()
     @commands.command(name="repl")
     async def _repl(self, ctx: commands.Context):
