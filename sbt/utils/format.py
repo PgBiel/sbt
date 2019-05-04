@@ -376,22 +376,15 @@ def humanize_seconds(seconds: float, *, long: bool = True) -> str:
 
     result = result[::-1]
 
-    if (len(result) >= 2):
-        if (long):
-            result.append("and")
-        else:
-            result.append("&")
+    final = "and" if (long) else "&"
+    delim = ", " if (long) else " "
 
-        result[-1], result[-2] = result[-2], result[-1]
-
-        if (long):
-            for (i) in range(0, len(result) - 3):
-                result[i] += ","
+    result = humanize_list(result, delim=delim, final=final)
 
     if (long and approximate):
-        result = ["approximately"] + result
+        result = "approximately " + result
 
-    return " ".join(result)
+    return result
 
 def humanize_datetime(datetime_: typing.Union[datetime.date, datetime.datetime, datetime.time] = datetime.datetime.utcnow):
     if (callable(datetime_)):
