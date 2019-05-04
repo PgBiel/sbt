@@ -44,7 +44,7 @@ class Stream():
         # redirects stderr to target
     """
 
-    def __init__(self, target, stream: str = "stdout"):
+    def __init__(self, target, *, stream: str = "stdout"):
         self._target = target
         self._stream = stream
 
