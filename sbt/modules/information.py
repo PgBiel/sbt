@@ -96,6 +96,7 @@ class Information(commands.Cog, name="information"):
 
         super().__init__()
 
+    @checks.is_guild()
     @commands.command(name="avatar", aliases=["icon"])
     async def _avatar(self, ctx: commands.Context, *, member: discord.Member = None):
         """
