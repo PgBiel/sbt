@@ -33,6 +33,35 @@ import sys
 import time
 
 
+class Null():
+    """
+    context_ = context.Stream if (condition) else context.Null
+    with context_(target):
+        ...
+        # redirects stdout to target if condition
+
+        
+    context_ = context.Stream if (condition) else context.Null
+    with context_(target, stream="stderr"):
+        ...
+        # redirects stderr to target if condition
+    """
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, *args):
+        pass
+
+    def __aenter__(self):
+        pass
+
+    def __aexit__(self, *args):
+        pass
+
 class Stream():
     """
     with context.Stream(target):
