@@ -69,7 +69,7 @@ class Owner(commands.Cog, name="owner"):
         "_debug",
         "_do",
         "_echo",
-        "_evaluate",
+        "_eval",
         "_leave",
         "_load",
         "_owner",
