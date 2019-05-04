@@ -37,6 +37,7 @@ class Regex:
         "DIGIT",
         "DIGITS",
         "VERSION",
+        "EMOJI",
         "ISSUE",
         "FLAG_TOKEN",
         "HEXADECIMAL",
