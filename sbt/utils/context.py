@@ -53,10 +53,10 @@ class Timer():
 
 class Suppress():
     """
-    with context.Suppress(FileNotFoundError):
-        os.remove(file)
+    with context.Suppress(discord.errors.HTTPException):
+	    await ctx.send(message)
 
-    # execution resumes here even if the file was already removed
+    # execution resumes here even if discord throws a HTTPException
     """
 
     def __init__(self, *exceptions):
