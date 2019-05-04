@@ -282,7 +282,7 @@ class Owner(commands.Cog, name="owner"):
                             .replace(ctx.bot._settings.secret, "[REDACTED]")
                             .replace(ctx.bot._settings.token, "[REDACTED]"))
 
-            for (page) in format.pagify(result, delims=["\n", " ", ","], shorten_by=8):
+            for (page) in format.pagify(result, delims=["\n", ",", " "], shorten_by=8):
                 if (page):
                     page = await ctx.send("```\n{0}```".format(page))
         
