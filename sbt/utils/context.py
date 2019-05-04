@@ -50,3 +50,33 @@ class Timer():
 
     async def __aexit__(self, *args):
         return self.__exit__(*args)
+
+class Catch():
+    """
+    with context.Catch(OSError, ValueError):
+        raise ValueError
+        # exception is not raised
+    """
+
+    def __init__(self, *exceptions):
+        self._exceptions = exceptions
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exception_type, exception_class, traceback):
+        if (not exception_type):
+            # no exception
+            return True
+        elif (issubclass(exception_type, self._exceptions)):
+            # caught exception
+            return True
+
+        # uncaught exception
+        return False
+
+    async def __aenter__(self):
+        pass
+
+    async def __aexit__(self, *args):
+        return self.__exit__(*args)
