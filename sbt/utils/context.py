@@ -56,10 +56,10 @@ class Null():
     def __exit__(self, *args):
         pass
 
-    def __aenter__(self):
+    async def __aenter__(self):
         pass
 
-    def __aexit__(self, *args):
+    async def __aexit__(self, *args):
         pass
 
 class Stream():
