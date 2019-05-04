@@ -96,6 +96,14 @@ class Information(commands.Cog, name="information"):
 
         super().__init__()
 
+    @commands.command(name="avatar", aliases=["icon"])
+    async def _avatar(self, ctx: commands.Context, *, member: discord.Member):
+        """
+        show a member's avatar
+        """
+
+        pass
+
     @commands.cooldown(1, 60, commands.cooldowns.BucketType.user)
     @commands.command(name="code", aliases=["lines"])
     async def _code(self, ctx: commands.Context):
