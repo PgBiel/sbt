@@ -73,6 +73,7 @@ class Owner(commands.Cog, name="owner"):
         "_load",
         "_owner",
         "_reload",
+        "_repl",
         "_restart",
         "_rift",
         "_send",
