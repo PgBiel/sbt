@@ -73,7 +73,7 @@ class Suppress():
         return False
 
     async def __aenter__(self):
-        pass
+        return self.__enter__()
 
     async def __aexit__(self, *args):
         return self.__exit__(*args)
