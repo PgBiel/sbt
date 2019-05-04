@@ -100,6 +100,16 @@ class Regex:
                            (?:\#\#)
                            (?P<number>\d+)
                         """, re.VERBOSE)
+
+    EMOJI = re.compile(r"""
+                           (?:<)
+                           (?P<animated>a)?
+                           (?::)
+                           (?P<name>[0-9A-Za-z_]+)
+                           (?::)
+                           (?P<id>[0-9]+)
+                           (?:>)
+                        """, re.VERBOSE)
     
     # --flag
     # --flag=value
