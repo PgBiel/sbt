@@ -87,6 +87,9 @@
     <Compile Include="utils\settings.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\context.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />
