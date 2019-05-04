@@ -48,6 +48,14 @@ class Null():
         # redirects stderr to target if condition
     """
 
+    __all__ = {
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "__aenter__",
+        "__aexit__",
+    }
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -75,6 +83,14 @@ class Stream():
         # redirects stderr to target
     """
 
+    __all__ = {
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "__aenter__",
+        "__aexit__",
+    }
+
     def __init__(self, target, *, stream: str = "stdout"):
         self._target = target
         self._stream = stream
@@ -101,6 +117,14 @@ class Suppress():
 
     # execution resumes here even if discord throws a HTTPException
     """
+
+    __all__ = {
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "__aenter__",
+        "__aexit__",
+    }
 
     def __init__(self, *exceptions: Exception):
         self._exceptions = exceptions
@@ -134,6 +158,14 @@ class Timer():
 
     time = t.time
     """
+
+    __all__ = {
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "__aenter__",
+        "__aexit__",
+    }
 
     def __init__(self, *, timer = time.clock):
         self._timer = timer
