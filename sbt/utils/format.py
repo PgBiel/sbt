@@ -31,6 +31,7 @@ __all__ = {
     "escape",
     "get_lines",
     "humanize_bytes",
+    "humanize_list",
     "humanize_percentage",
     "humanize_seconds",
     "humanize_datetime",
@@ -244,6 +245,17 @@ def humanize_bytes(bytes: int) -> str:
     if (str(bytes).endswith(".0")):
         return "{0:.0f}B".format(bytes)
     return "{0:.2f}B".format(bytes)
+
+def humanize_list(list_: list, *, delim: str = ", ", final: str = "or"):
+    if (len(list_) == 0):
+        return ""
+    elif (len(list_) == 1):
+        return list_[0]
+    elif (len(list_) == 2):
+        return "{0[0]} {1} {0[1]}".format(list_, final)
+    else:
+        return "{0} {1} {2}".format(delim.join(list_[:-1]),
+                                    final, list_[-1])
 
 def humanize_percentage(percent: float):
     if (str(percent).endswith(".0")):
