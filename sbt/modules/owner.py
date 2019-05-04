@@ -263,6 +263,9 @@ class Owner(commands.Cog, name="owner"):
             exec(function, globals_, locals())
             result = await locals()["_eval"](self)
         except (Exception) as e:
+            if (ctx.invoked_with == "repl"):
+                return
+
             message = await ctx.send("`{0}: {1}`".format(type(e).__name__, str(e)))
             await ctx.message.add_reaction("\U0000274e")
             self._exception = e
