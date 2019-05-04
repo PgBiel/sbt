@@ -96,6 +96,22 @@ class Information(commands.Cog, name="information"):
 
         super().__init__()
 
+    @commands.command(name="avatar", aliases=["icon"])
+    async def _avatar(self, ctx: commands.Context, *, member: discord.Member = None):
+        """
+        show a member's avatar
+
+        defaults to your own
+        """
+
+        if (not member):
+            member = ctx.author
+
+        e = discord.Embed(color=member.color)
+        e.set_author(name=member, url=member.avatar_url)
+        e.set_image(url=member.avatar_url)
+        await ctx.send(embed=e)
+
     @commands.cooldown(1, 60, commands.cooldowns.BucketType.user)
     @commands.command(name="code", aliases=["lines"])
     async def _code(self, ctx: commands.Context):
