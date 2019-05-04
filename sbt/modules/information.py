@@ -56,6 +56,7 @@ from utils import (
 class Information(commands.Cog, name="information"):
     __all__ = {
         "__init__",
+        "_avatar",
         "_code",
         "_color",
         "_contributors",
