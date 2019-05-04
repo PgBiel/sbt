@@ -56,11 +56,11 @@ def iso8601(string: str):
     if (not match):
         return None
 
-    year = match.group("year")
-    month = match.group("month")
-    day = match.group("day")
-    hour = match.group("hour")
-    minute = match.group("minute")
+    year = int(match.group("year"))
+    month = int(match.group("month"))
+    day = int(match.group("day"))
+    hour = int(match.group("hour"))
+    minute = int(match.group("minute"))
 
     return datetime.datetime(year, month, day, hour, minute, 0)
 
