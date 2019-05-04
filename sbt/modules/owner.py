@@ -451,12 +451,15 @@ class Owner(commands.Cog, name="owner"):
             "src-msgs": dict(),
         }
 
-    @checks.is_owner()
+    @checks.is_supervisor()
     @commands.command(name="send")
     async def _send(self, ctx: commands.Context, messageable: typing.Union[discord.Member, discord.User, discord.TextChannel], *, message: str):
         """
         send a message to a messageable
         """
+
+        if (not checks.is_owner_check(ctx)):
+            message = "{0}\n{1}".format(ctx.author, message)
 
         await messageable.send(message)
         await ctx.send("done.")
