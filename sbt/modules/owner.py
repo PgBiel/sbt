@@ -261,7 +261,7 @@ class Owner(commands.Cog, name="owner"):
 
         try:
             exec(function, globals_, locals())
-            result = await locals()["_evaluate"](self)
+            result = await locals()["_eval"](self)
         except (Exception) as e:
             if (ctx.invoked_with == "repl"):
                 return
@@ -417,7 +417,7 @@ class Owner(commands.Cog, name="owner"):
             ctx_ = copy.copy(ctx)
             ctx_.message = message
 
-            await ctx_.invoke(self._eval, shit=message.content)
+            await ctx_.invoke(self._evaluate, shit=message.content)
 
         self._repl_sessions.remove(ctx.channel.id)
         await ctx.send("closed repl session")
