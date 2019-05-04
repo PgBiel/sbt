@@ -28,8 +28,40 @@ __all__ = {
 }
 
 
+import sys
 import time
 
+
+class Stream():
+    """
+    with context.Stream(s):
+        ...
+        # redirects stdout
+
+
+    with context.Stream(s, stream="stderr"):
+        ...
+        # redirects stderr
+    """
+
+    def __init__(self, target, stream: str = "stdout"):
+        self._target = target
+        self._stream = stream
+
+        self._old_targets = list()
+
+    def __enter__(self):
+        self._old_targets.append(getattr(sys, self._stream))
+        setattr(sys, self._stream, self._target)
+    
+    def __exit__(self, *args):
+        setattr(sys, self._stream, self._old_targets.pop())
+
+    async def __aenter__(self):
+        return self.__enter__()
+
+    async def __aexit__(self, *args):
+        return self.__exit__(*args)
 
 class Suppress():
     """
