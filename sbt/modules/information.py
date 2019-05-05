@@ -694,7 +694,7 @@ class Information(commands.Cog, name="information"):
 
         await ctx.send(embed=e)
 
-    async def _commits(self, *, count: int):
+    async def _commits(self, *, count: int = None):
         # this is not ready
         return None
 
