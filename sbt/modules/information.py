@@ -857,7 +857,6 @@ class Information(commands.Cog, name="information"):
             (psutil.virtual_memory().total / 100)
             * process.memory_percent("private"))
 
-
         color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.set_author(name="System")
