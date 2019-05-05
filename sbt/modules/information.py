@@ -808,7 +808,7 @@ class Information(commands.Cog, name="information"):
         for (channel) in message.channel_mentions:
             mentions.append(channel.mention)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
 
         e = discord.Embed(title="Message Information", color=color)
         e.add_field(name="Content", value=message.content, inline=False)
@@ -851,11 +851,14 @@ class Information(commands.Cog, name="information"):
         threads = process.num_threads()
         handles = process.num_handles()
         connections = len(process.connections())
-        cpu = format.humanize_percentage(process.cpu_percent(interval=1) / psutil.cpu_count())
-        memory = format.humanize_bytes((psutil.virtual_memory().total / 100) * process.memory_percent("private"))
+        cpu = format.humanize_percentage(process.cpu_percent(interval=.5)
+                                         / psutil.cpu_count())
+        memory = format.humanize_bytes(
+            (psutil.virtual_memory().total / 100)
+            * process.memory_percent("private"))
 
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.set_author(name="System")
         e.add_field(name="Process Name", value=process.name())
