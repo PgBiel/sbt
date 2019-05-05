@@ -47,6 +47,7 @@ from discord.ext import commands
 
 from utils import (
     checks,
+    context,
     format,
     parse,
     regex,
@@ -366,19 +367,28 @@ class Information(commands.Cog, name="information"):
     @commands.command(name="latency", aliases=["ping"])
     async def _latency(self, ctx: commands.Context):
         """
-        display sbt's latency
-
-        examples:
-            `>latency` :: 111382 microseconds
-            `>ping`    :: pong! 111382μs
+        display sbt's api and websocket latency
         """
 
+        ws_latency = ctx.bot.latency
+
+        with context.Timer() as t:
+            await ctx.trigger_typing()
+
+        api_latency = t.time
+
         if (ctx.invoked_with == "ping"):
-            latency = format.humanize_seconds(ctx.bot.latency, long=False)
-            await ctx.send("pong! {0}".format(latency))
+            ws_latency = format.humanize_seconds(ws_latency, long=False)
+            api_latency = format.humanize_seconds(api_latency, long=False)
         else:
-            latency = format.humanize_seconds(ctx.bot.latency)
-            await ctx.send(latency)
+            ws_latency = format.humanize_seconds(ws_latency)
+            api_latency = format.humanize_seconds(api_latency)
+
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.add_field(name="WS Latency", value=ws_latency)
+        e.add_field(name="API Latency", value=api_latency)
+        await ctx.send(embed=e)
 
     @checks.is_guild()
     @commands.command(name="messages", aliases=["messagecount"])
@@ -685,6 +695,7 @@ class Information(commands.Cog, name="information"):
         await ctx.send(embed=e)
 
     async def _commits(self, *, count: int):
+        # this is not ready
         return None
 
         github = self.bot.get_cog("github")
@@ -709,7 +720,7 @@ class Information(commands.Cog, name="information"):
                 return None
             raise
 
-        # cont
+        ...
         
     @checks.is_guild()
     @_information.command(name="channel")
