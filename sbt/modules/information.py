@@ -732,6 +732,33 @@ class Information(commands.Cog, name="information"):
         """
 
         pass
+
+    @checks.is_guild()
+    @_information.command(name="emoji")
+    async def _information_emoji(self, ctx: commands.Context, emoji: typing.Union[discord.Emoji, str]):
+        """
+        display emoji information
+
+        if it is a unicode emoji it just invokes `>unicode`
+        """
+
+        if (isinstance(emoji, str)):
+            await ctx.invoke(self._unicode, characters=emoji)
+            return
+
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color, title="Emoji")
+        e.add_field(name="Name", value=emoji.name)
+        e.add_field(name="ID", value=emoji.id)
+        e.add_field(name="Created", value=format.humanize_datetime(emoji.created_at), inline=False)
+        e.add_field(name="Animated", value=emoji.animated)
+        e.add_field(name="Managed", value=emoji.managed)
+        
+        if (emoji.roles):
+            roles = [r.name for r in emoji.roles]
+            e.add_field(name="Roles", value=", ".join(roles))
+
+        await ctx.send(embed=e)
     
     @checks.is_guild()
     @_information.command(name="guild", aliases=["server"])
