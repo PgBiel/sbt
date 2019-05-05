@@ -85,6 +85,28 @@ class Regex:
                             (?P<digits>\d+)
                          """, re.VERBOSE)
 
+    #   .-https--.           .-shiney.dev-.                                                      .-/-.
+    #   .-https--.           .-shiney.dev-.  .-:80---.  .-/sbt----.               .-#test-3---.
+    #   .-https--.           .-google.com-.             .-/search-.  .-?q=test-.
+    # --+-scheme-+--+-://-+--+---domain---+--+-------+--+---------+--+---------+--+-----------+--+---+--
+    #                        '-ip_address-'  '-:port-'  '-path----'  '-?query--'  '-#fragment-'  '-/-'
+    #
+    # https://shiney.dev/
+    # https://shiney.dev:80/sbt#test-3
+    # https://google.com/search?q=test
+    #
+    # https://regex101.com/r/jcbBIX/5/tests
+    URL = re.compile(r"""
+                         (?P<scheme>[a-z]+)
+                         (?::\/\/)
+                         (?P<domain>[^.-](?:[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+\.?)+[^.-])
+                         (?::(?P<port>[0-9]+))?
+                         (?P<path>\/(?:[a-zA-Z0-9]+\/?)+[^\/])?
+                         (?:\?(?P<parameters>(?:[a-z]+=[a-z]+&?)+))?
+                         (?:\#(?P<fragment>.+))?
+                         (?:\/)?
+                      """, re.VERBOSE)
+
     # modified regex from PEP 440 (Version Identification and
     # Dependency Specification)
     # https://www.python.org/dev/peps/pep-0440/#public-version-identifiers
