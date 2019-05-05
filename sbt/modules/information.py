@@ -79,6 +79,7 @@ class Information(commands.Cog, name="information"):
         "_information",
         "_information_bot",
         "_information_channel",
+        "_information_emoji",
         "_information_guild",
         "_information_member",
         "_information_message",
@@ -138,7 +139,7 @@ class Information(commands.Cog, name="information"):
                 lines += 1
                 characters += len(line)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.set_author(name="Code")
         e.add_field(name="Files", value=str(files))
@@ -262,8 +263,7 @@ class Information(commands.Cog, name="information"):
         for (member) in members:
             message += "{0}\n".format(member)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.add_field(name="Members", value=message)
         e.set_footer(
@@ -326,8 +326,7 @@ class Information(commands.Cog, name="information"):
 
         message = ", ".join(flags)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.add_field(name="Flags for {0}".format(ctx.author), value=message)
         e.set_footer(
@@ -349,8 +348,7 @@ class Information(commands.Cog, name="information"):
         sbt_guild = "not yet"
         sbt_oauth = ctx.bot._settings.oauth
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.add_field(name="SBT Support Guild", value=sbt_guild)
         e.add_field(name="SBT OAuth Invite", value=sbt_oauth)
@@ -547,9 +545,8 @@ class Information(commands.Cog, name="information"):
 
         guilds = len(ctx.bot.guilds)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
-        e = discord.Embed(color=color)
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color, title="Statistics")
         e.add_field(name="Uptime", value=uptime)
         e.add_field(name="Latency", value=latency)
         e.add_field(name="Version", value=version)
@@ -572,7 +569,7 @@ class Information(commands.Cog, name="information"):
         show unicode information on a character
 
         example:
-            `>unicode :zero:`   :: \\U00000030\\U000020e3
+            `>unicode :zero:` :: \\U00000030\\U000020e3
         """
 
         message = ""
@@ -636,8 +633,7 @@ class Information(commands.Cog, name="information"):
         sbt_version = format._version(ctx.bot.__version__)
         dpy_version = format._version(discord.__version__)
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
         e.add_field(name="SBT Version", value=sbt_version)
         e.add_field(name="discord.py Version", value=dpy_version)
@@ -672,9 +668,8 @@ class Information(commands.Cog, name="information"):
         maintainers = ", ".join([n for (n, u) in maintainers])
         version = ctx.bot.__version__
 
-        color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-
-        e = discord.Embed(title="Bot Information", color=color)
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color, title="Bot Information")
 
         changes = await self._commits(count=3)
         if (changes):
@@ -747,7 +742,7 @@ class Information(commands.Cog, name="information"):
             return
 
         color = ctx.me.color if ctx.guild else discord.Color.blurple()
-        e = discord.Embed(color=color, title="Emoji")
+        e = discord.Embed(color=color, title="Emoji Information")
         e.add_field(name="Name", value=emoji.name)
         e.add_field(name="ID", value=emoji.id)
         e.add_field(name="Created", value=format.humanize_datetime(emoji.created_at), inline=False)
@@ -809,8 +804,7 @@ class Information(commands.Cog, name="information"):
             mentions.append(channel.mention)
 
         color = ctx.me.color if ctx.guild else discord.Color.blurple()
-
-        e = discord.Embed(title="Message Information", color=color)
+        e = discord.Embed(color=color, title="Message Information")
         e.add_field(name="Content", value=message.content, inline=False)
         e.add_field(name="ID", value="{0.id}".format(message))
         e.add_field(name="Author", value="{0.name} ({0.id})".format(message.author))
@@ -858,8 +852,7 @@ class Information(commands.Cog, name="information"):
             * process.memory_percent("private"))
 
         color = ctx.me.color if ctx.guild else discord.Color.blurple()
-        e = discord.Embed(color=color)
-        e.set_author(name="System")
+        e = discord.Embed(color=color, title="System Information")
         e.add_field(name="Process Name", value=process.name())
         e.add_field(name="Process ID", value=process.pid)
         e.add_field(name="\u200b", value="\u200b")
