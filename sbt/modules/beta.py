@@ -57,7 +57,6 @@ class Beta(commands.Cog, name="beta"):
         "_parse_futuredatetime",
         "_parse_pastdatetime",
         "_parse_flags",
-        "_parse_iso8601",
     }
 
     def __init__(self, bot: commands.Bot):
@@ -284,23 +283,6 @@ class Beta(commands.Cog, name="beta"):
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(flags))
-
-    @checks.is_beta()
-    @checks.is_debugging()
-    @_parse.command(name="iso8601")
-    async def _parse_iso8601(self, ctx:commands.Context, *, iso: str):
-        """
-        ison8601 parser
-        """
-
-        try:
-            iso = parse.iso8601(iso)
-        except (error.ParserError) as e:
-            await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e.original))
-        else:
-            await ctx.message.add_reaction("\U00002705")
-            await ctx.send(format.inline(format.humanize_datetime(iso)))
 
 
 def setup(bot: commands.Bot):
