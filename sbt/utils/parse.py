@@ -63,12 +63,12 @@ def boolean(string: str):
     elif (string in false):
         return False
     
-    raise error.ParserError(self, "couldn't parse bool from '{0}'".format(string))
+    raise error.ParserError(None, "couldn't parse bool from '{0}'".format(string))
 
 def iso8601(string: str):
     match = re.fullmatch(regex.Regex.ISO8601, string)
     if (not match):
-        raise error.ParserError(self, "invalid ISO8601 string '{0}'".format(string))
+        raise error.ParserError(None, "invalid ISO8601 string '{0}'".format(string))
 
     year = int(match.group("year"))
     month = int(match.group("month"))
