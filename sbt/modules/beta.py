@@ -300,7 +300,7 @@ class Beta(commands.Cog, name="beta"):
             await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
-            await ctx.send(format.inline(iso))
+            await ctx.send(format.inline(format.humanize_datetime(iso)))
 
 
 def setup(bot: commands.Bot):
