@@ -35,6 +35,7 @@ from discord.ext import commands
 
 from utils import (
     checks,
+    error,
     format,
     parse,
 )
@@ -88,9 +89,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             boolean = parse.boolean(boolean)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(boolean))
@@ -105,9 +106,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             color = parse.Color.parse(color)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(color))
@@ -122,9 +123,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             date = parse.Date.parse(date)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(date)))
@@ -139,9 +140,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             date = parse.FutureDate.parse(date)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(date)))
@@ -156,9 +157,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             date = parse.PastDate.parse(date)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(date)))
@@ -173,9 +174,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             time = parse.Time.parse(time)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(time)))
@@ -190,9 +191,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             time = parse.FutureTime.parse(time)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(time)))
@@ -207,9 +208,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             time = parse.PastTime.parse(time)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(time)))
@@ -224,9 +225,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             datetime = parse.DateTime.parse(datetime)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(datetime)))
@@ -241,9 +242,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             datetime = parse.FutureDateTime.parse(datetime)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(datetime)))
@@ -258,9 +259,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             datetime = parse.PastDateTime.parse(datetime)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(format.humanize_datetime(datetime)))
@@ -275,9 +276,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             flags = parse.Flags.parse(flags)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(flags))
@@ -292,9 +293,9 @@ class Beta(commands.Cog, name="beta"):
 
         try:
             iso = parse.iso8601(iso)
-        except (commands.BadArgument) as e:
+        except (error.ParserError) as e:
             await ctx.message.add_reaction("\U0000274e")
-            await ctx.send(format.inline(e))
+            await ctx.send(format.inline(e.original))
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(iso))
