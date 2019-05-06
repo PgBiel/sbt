@@ -36,6 +36,7 @@ class Regex:
         "WORDS",
         "DIGIT",
         "DIGITS",
+        "MENTION",
         "URL",
         "VERSION",
         "EMOJI",
@@ -85,6 +86,17 @@ class Regex:
     DIGITS = re.compile(r"""
                             (?P<digits>\d+)
                          """, re.VERBOSE)
+
+    # <@310418322384748544>  # member
+    # <@!310418322384748544> # member
+    # <@&310418322384748544> # role
+    # <@#310418322384748544> # channel
+    MENTION = re.compile(r"""
+                             (?:<@)
+                             (?:(?P<member>!?)|(?P<role>&)|(?P<channel>\#))
+                             (?P<id>[0-9]+)
+                             (?:>)
+                          """, re.VERBOSE)
     
     # https://shiney.dev/
     # https://shiney.dev:80/sbt#test-3
