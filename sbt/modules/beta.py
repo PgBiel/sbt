@@ -57,6 +57,10 @@ class Beta(commands.Cog, name="beta"):
         "_parse_futuredatetime",
         "_parse_pastdatetime",
         "_parse_flags",
+        "_parse_mention",
+        "_parse_snowflake",
+        "_parse_url",
+        "_parse_version",
     }
 
     def __init__(self, bot: commands.Bot):
@@ -283,6 +287,74 @@ class Beta(commands.Cog, name="beta"):
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(flags))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="mention")
+    async def _parse_mention(self, ctx: commands.Context, mention: str):
+        """
+        mention parser
+        """
+
+        try:
+            mention = parse.mention(mention)
+        except (error.ParserError) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e.original))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(mention))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="snowflake")
+    async def _parse_snowflake(self, ctx: commands.Context, snowflake: str):
+        """
+        snowflake parser
+        """
+
+        try:
+            snowflake = parse.snowflake(snowflake)
+        except (error.ParserError) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e.original))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(snowflake))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="url")
+    async def _parse_url(self, ctx: commands.Context, *, url: str):
+        """
+        url parser
+        """
+
+        try:
+            url = parse.url(url)
+        except (error.ParserError) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e.original))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(url))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="version")
+    async def _parse_version(self, ctx: commands.Context, version: str):
+        """
+        version parser
+        """
+
+        try:
+            version = parse.version(version)
+        except (error.ParserError) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e.original))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(version))
 
 
 def setup(bot: commands.Bot):
