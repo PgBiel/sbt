@@ -71,6 +71,27 @@ def boolean(string: str) -> bool:
     
     raise error.ParserError(None, "couldn't parse bool from '{0}'".format(string))
 
+def mention(mention_: str):
+    match = re.fullmatch(regex.Regex.MENTION, mention_)
+    if (not match):
+        raise error.ParserError(None, "couldn't parse mention '{0}'".format(mention_))
+
+    member = match.group("member")
+    role = match.group("role")
+    channel = match.group("channel")
+    id = int(match.group("id"))
+
+    if (member != None):
+        # member can be an empty string
+        # yet still be a member mention
+        type = "member"
+    elif (role):
+        type = "role"
+    elif (channel):
+        type = "channel"
+
+    return (type, id)
+
 def snowflake(snowflake_: int):
     timestamp = ((snowflake_ >> 22) + DISCORD_EPOCH) / 1000
     return datetime.datetime.utcfromtimestamp(timestamp)
