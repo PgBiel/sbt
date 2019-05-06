@@ -85,16 +85,16 @@ class Regex:
     DIGITS = re.compile(r"""
                             (?P<digits>\d+)
                          """, re.VERBOSE)
-
+    
+    # https://shiney.dev/
+    # https://shiney.dev:80/sbt#test-3
+    # https://google.com/search?q=test
+    #
     #   .-https--.           .-shiney.dev-.                                                      .-/-.
     #   .-https--.           .-shiney.dev-.  .-:80---.  .-/sbt----.               .-#test-3---.
     #   .-https--.           .-google.com-.             .-/search-.  .-?q=test-.
     # --+-scheme-+--+-://-+--+---domain---+--+-------+--+---------+--+---------+--+-----------+--+---+--
     #                        '-ip_address-'  '-:port-'  '-path----'  '-?query--'  '-#fragment-'  '-/-'
-    #
-    # https://shiney.dev/
-    # https://shiney.dev:80/sbt#test-3
-    # https://google.com/search?q=test
     #
     # https://regex101.com/r/jcbBIX/5/tests
     URL = re.compile(r"""
