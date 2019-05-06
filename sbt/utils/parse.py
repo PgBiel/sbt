@@ -1062,13 +1062,13 @@ class Flags(commands.Converter):
         for (token) in argument.split(" "):
             match = re.fullmatch(regex.Regex.FLAG_TOKEN, token)
             if (not match):
-                raise error.ParserError(self, "invalid token '{0}'".format(token))
+                raise error.ParserError(cls, "invalid token '{0}'".format(token))
 
             flag = match.group("flag")
             value = match.group("value")
 
             if (flag in cls.tokens.keys()):
-                raise error.ParserError(self, "duplicate token '{0}'".format(token))
+                raise error.ParserError(cls, "duplicate token '{0}'".format(token))
 
             if (value):
                 cls.tokens[flag] = value
