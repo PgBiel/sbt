@@ -1030,11 +1030,10 @@ class Flag():
         "__init__",
     }
 
-    def __init__(self, name: str, *, required: bool = False, value: bool = False, value_type: type = None, converter: commands.Converter = None):
+    def __init__(self, name: str, *, required: bool = False, value: bool = False, converter: commands.Converter = None):
         self.name = name
         self.required = required
         self.value = value
-        self.value_type = value_type
         self.converter = converter
 
 class Flags(commands.Converter):
@@ -1099,16 +1098,17 @@ class Flags(commands.Converter):
             if (flag.name in self.tokens.keys()):
                 value = self.tokens[flag.name]
 
-                if (flag.value_type):
-                    try:
-                        value = flag.value_type(value)
-                    except (Exception) as e:
-                        raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.value_type))
-                elif (flag.converter):
-                    try:
-                        value = await flag.converter().convert(ctx, value)
-                    except (Exception) as e:
-                        raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.converter))
+                if (flag.converter):
+                    if (issubclass(flag.converter, commands.Converter)):
+                        try:
+                            value = await flag.converter().convert(ctx, value)
+                        except (Exception) as e:
+                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.converter))
+                    else:
+                        try:
+                            value = flag.converter(value)
+                        except (Exception) as e:
+                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.converter))
                 else:
                     value = True
 
