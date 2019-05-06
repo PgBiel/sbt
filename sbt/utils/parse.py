@@ -51,6 +51,19 @@ from utils import (
 )
 
 
+def boolean(string: str):
+    string = string.lower()
+
+    true = ["yes", "y", "true", "t", "enable", "on", "1"]
+    false = ["no", "n", "false", "f", "disable", "off", "0"]
+
+    if (string in true):
+        return True
+    elif (string in false):
+        return False
+    
+    raise commands.BadArgument("couldn't parse bool from '{0}'".format(string))
+
 def iso8601(string: str):
     match = re.fullmatch(regex.Regex.ISO8601, string)
     if (not match):
