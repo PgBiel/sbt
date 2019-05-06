@@ -28,8 +28,9 @@ __all__ = {
 }
 
 
-class SBTError(Exception):
-    pass
+import discord
+from discord.ext import commands
 
-class ParserError(SBTError):
+
+class ParserError(commands.ConversionError):
     pass
