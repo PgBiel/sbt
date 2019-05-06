@@ -45,6 +45,7 @@ class Beta(commands.Cog, name="beta"):
     __all__ = {
         "__init__",
         "_parse",
+        "_parse_boolean",
         "_parse_color",
         "_parse_date",
         "_parse_futuredate",
@@ -56,6 +57,7 @@ class Beta(commands.Cog, name="beta"):
         "_parse_futuredatetime",
         "_parse_pastdatetime",
         "_parse_flags",
+        "_parse_iso8601",
     }
 
     def __init__(self, bot: commands.Bot):
