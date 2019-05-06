@@ -276,7 +276,7 @@ class Moderation(commands.Cog, name="moderation"):
                 parse.Flag("attachments"),
                 parse.Flag("bots"),
                 parse.Flag("embeds"),
-                parse.Flag("member", value=True, converter=commands.converter.MemberConverter),
+                parse.Flag("member", value=True, converter=discord.Member),
                 parse.Flag("members"),
                 parse.Flag("mentions"),
                 parse.Flag("not"),
