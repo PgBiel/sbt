@@ -473,7 +473,7 @@ class Time(commands.Converter):
         if (match):
             # 0+
 
-            minutes = int(match.group(digits))
+            minutes = int(match.group("digits"))
             if (minutes):
                 new = self.now + datetime.timedelta(minutes=minutes)
                 return datetime.time(new.hour, new.minute, new.second)
