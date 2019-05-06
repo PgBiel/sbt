@@ -232,7 +232,7 @@ class Regex:
                              (?:T)
                              (?P<hour>[0-9]{1,2})
                              (?::)
-                             (?P<minute>[0-9]{1,2})
+                             (?P<minute>[0-9]{2})
                              (?:Z)?
                           """, re.VERBOSE)
     
