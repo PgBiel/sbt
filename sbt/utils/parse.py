@@ -68,29 +68,6 @@ def boolean(string: str) -> bool:
     
     raise error.ParserError(None, "couldn't parse bool from '{0}'".format(string))
 
-def iso8601(string: str) -> datetime.datetime:
-    match = re.fullmatch(regex.Regex.ISO8601, string)
-    if (not match):
-        raise error.ParserError(None, "invalid ISO8601 string '{0}'".format(string))
-
-    year = int(match.group("year"))
-    month = int(match.group("month"))
-    day = int(match.group("day"))
-    hour = int(match.group("hour"))
-    minute = int(match.group("minute"))
-
-    if (not year):
-        raise error.ParserError(None, "year '{0}' is out of range".format(year))
-    elif (hour not in range(0, 24)):
-        raise error.ParserError(None, "hour '{0}' is out of range".format(hour))
-    elif (minute not in range(0, 60)):
-        raise error.ParserError(None, "minute '{0}' is out of range".format(minute))
-    
-    try:
-        return datetime.datetime(year, month, day, hour, minute, 0)
-    except (ValueError) as e:
-        raise error.ParserError(None, "day '{0}' is out of range".format(day))
-
 def snowflake(snowflake_: int):
     timestamp = ((snowflake_ >> 22) + DISCORD_EPOCH) / 1000
     return datetime.datetime.utcfromtimestamp(timestamp)
@@ -727,11 +704,6 @@ class DateTime(commands.Converter):
         except (error.ParserError) as e:
             pass
 
-        try:
-            return iso8601(argument)
-        except (error.ParserError) as e:
-            pass
-
         match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
         if (match):
             # tomorrow at 0
@@ -947,6 +919,26 @@ class DateTime(commands.Converter):
                 return datetime.datetime(year, month, day, hour, minute, second)
             except (ValueError) as e:
                 raise error.ParserError(self, "day '{0}' is out of range".format(day))
+
+        match = re.fullmatch(regex.Regex.ISO8601, argument)
+        if (match):
+            year = int(match.group("year"))
+            month = int(match.group("month"))
+            day = int(match.group("day"))
+            hour = int(match.group("hour"))
+            minute = int(match.group("minute"))
+
+            if (not year):
+                raise error.ParserError(None, "year '{0}' is out of range".format(year))
+            elif (hour not in range(0, 24)):
+                raise error.ParserError(None, "hour '{0}' is out of range".format(hour))
+            elif (minute not in range(0, 60)):
+                raise error.ParserError(None, "minute '{0}' is out of range".format(minute))
+    
+            try:
+                return datetime.datetime(year, month, day, hour, minute, 0)
+            except (ValueError) as e:
+                raise error.ParserError(None, "day '{0}' is out of range".format(day))
 
         match = re.fullmatch(regex.Regex.ANY_HUMANIZED_TIME, argument)
         if (match):
