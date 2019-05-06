@@ -68,6 +68,9 @@
     <Compile Include="utils\enumerators.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\error.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="utils\extensions_.py">
       <SubType>Code</SubType>
     </Compile>
