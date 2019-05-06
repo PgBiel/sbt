@@ -48,6 +48,7 @@ import pyfiglet
 from utils import (
     channels,
     checks,
+    error,
     format,
     settings,
 )
@@ -237,6 +238,10 @@ def init() -> commands.Bot:
             if (isinstance(exception.original, aiohttp.client_exceptions.ClientOSError)):
                 await ctx.bot.invoke(ctx)
                 return
+
+        if (isinstance(exception, error.ParserError)):
+            await ctx.send(exception.message)
+            return
 
         if (isinstance(exception, commands.errors.CheckFailure)):
             if (isinstance(exception, commands.errors.BotMissingPermissions)):

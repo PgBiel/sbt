@@ -47,6 +47,7 @@ import discord
 from discord.ext import commands
 
 from utils import (
+    error,
     regex,
 )
 
@@ -62,12 +63,12 @@ def boolean(string: str):
     elif (string in false):
         return False
     
-    raise commands.BadArgument("couldn't parse bool from '{0}'".format(string))
+    raise error.ParserError("couldn't parse bool from '{0}'".format(string))
 
 def iso8601(string: str):
     match = re.fullmatch(regex.Regex.ISO8601, string)
     if (not match):
-        return None
+        raise error.ParserError("invalid ISO8601 string '{0}'".format(string))
 
     year = int(match.group("year"))
     month = int(match.group("month"))
@@ -145,9 +146,13 @@ class Color(commands.Converter):
             r = int(match.group("r"))
             g = int(match.group("g"))
             b = int(match.group("b"))
-            
-            if (any([(i > 255) for (i) in [r, g, b]])):
-                raise commands.BadArgument(argument)
+
+            if (r > 255):
+                raise error.ParserError("red out of range 0-255: '{0}'".format(r))
+            elif (g > 255):
+                raise error.ParserError("green out of range 0-255: '{0}'".format(g))
+            elif (b > 255):
+                raise error.ParserError("blue out of range 0-255: '{0}'".format(b))
 
             hexadecimal = self.rgb_to_hexadecimal(r, g, b)
             int_ = self.hexadecimal_to_int(hexadecimal)
@@ -167,8 +172,14 @@ class Color(commands.Converter):
             y = int(match.group("y"))
             k = int(match.group("k"))
 
-            if (any([(i > 100) for (i) in [c, m, y, k]])):
-                raise commands.BadArgument(argument)
+            if (c > 255):
+                raise error.ParserError("cyan out of range 0-100: '{0}'".format(c))
+            elif (m > 255):
+                raise error.ParserError("magenta out of range 0-100: '{0}'".format(m))
+            elif (y > 255):
+                raise error.ParserError("yellow out of range 0-100: '{0}'".format(y))
+            elif (k > 255):
+                raise error.ParserError("key out of range 0-100: '{0}'".format(k))
 
             rgb = self.cmyk_to_rgb(c, m, y, k)
             hexadecimal = self.rgb_to_hexadecimal(*rgb)
@@ -183,15 +194,14 @@ class Color(commands.Converter):
             try:
                 hexadecimal = self.int_to_hexadecimal(int_)
             except (ValueError) as e:
-                # integer was too large
-                raise commands.BadArgument(argument)
+                raise error.ParserError("integer '{0}' too large to convert to hexadecimal".format(argument))
 
             rgb = self.hexadecimal_to_rgb(hexadecimal)
             cmyk = self.rgb_to_cmyk(*rgb)
 
             return (int_, hexadecimal, rgb, cmyk)
 
-        raise commands.BadArgument(argument)
+        raise error.ParserError("couldn't parse color from '{0}'".format(argument))
 
     @classmethod
     def cmyk_to_hexadecimal(self, c: int, m: int, y: int, k: int) -> str:
@@ -321,11 +331,13 @@ class Date(commands.Converter):
 
             year = int(year)
 
+            if (not year):
+                raise error.ParserError("year '{0}' is out of range".format(year))
+
             try:
                 return datetime.date(year, month, day)
             except (ValueError) as e:
-                # year or day is out of range
-                raise commands.BadArgument(argument)
+                raise error.ParserError("day '{0}' is out of range".format(day))
 
         match = re.fullmatch(regex.Regex.EU_DATE, argument)
         if (match):
@@ -351,11 +363,13 @@ class Date(commands.Converter):
 
             year = int(year)
 
+            if (not year):
+                raise error.ParserError("year '{0}' is out of range".format(year))
+
             try:
                 return datetime.date(year, month, day)
             except (ValueError) as e:
-                # year or day is out of range
-                raise commands.BadArgument(argument)
+                raise error.ParserError("day '{0}' is out of range".format(day))
 
         match = re.fullmatch(regex.Regex.DAYS, argument)
         if (match):
@@ -374,7 +388,7 @@ class Date(commands.Converter):
                 new = self.now + datetime.timedelta(days=days)
                 return datetime.date(new.year, new.month, new.day)
 
-        raise commands.BadArgument(argument)
+        raise error.ParserError("couldn't parse date from '{0}'".format(argument))
 
 class FutureDate(Date, commands.Converter):
     __all__ = {
@@ -400,7 +414,7 @@ class FutureDate(Date, commands.Converter):
 
         now = datetime.date(self.now.year, self.now.month, self.now.day)
         if (result <= now):
-            raise commands.BadArgument("date is not in the future")
+            raise error.ParserError("date is not in the future")
 
         return result
 
@@ -428,7 +442,7 @@ class PastDate(Date, commands.Converter):
 
         now = datetime.date(self.now.year, self.now.month, self.now.day)
         if (result >= now):
-            raise commands.BadArgument("date is not in the past")
+            raise error.ParserError("date is not in the past")
 
         return result
                 
@@ -504,7 +518,7 @@ class Time(commands.Converter):
                 hour += 12
 
             if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
+                raise error.ParserError("hour '{0}' is out of range".format(hour))
 
             return datetime.time(hour, 0, 0)
 
@@ -538,7 +552,7 @@ class Time(commands.Converter):
                 hour += 12
 
             if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
+                raise error.ParserError("hour '{0}' is out of range".format(hour))
 
             return datetime.time(hour, 0, 0)
 
@@ -580,7 +594,7 @@ class Time(commands.Converter):
 
             return datetime.time(hour, minute, second)
 
-        raise commands.BadArgument(argument)
+        raise error.ParserError("couldn't parse time from '{0}'".format(argument))
 
 class FutureTime(Time, commands.Converter):
     __all__ = {
@@ -606,7 +620,7 @@ class FutureTime(Time, commands.Converter):
 
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
         if (result <= now):
-            raise commands.BadArgument("time is not in the future")
+            raise error.ParserError("time is not in the future")
 
         return result
 
@@ -634,7 +648,7 @@ class PastTime(Time, commands.Converter):
 
         now = datetime.time(self.now.hour, self.now.minute, self.now.second)
         if (result >= now):
-            raise commands.BadArgument("time is not in the past")
+            raise error.ParserError("time is not in the past")
 
         return result
 
@@ -664,13 +678,13 @@ class DateTime(commands.Converter):
         try:
             date = Date.parse(argument)
             return datetime.datetime(date.year, date.month, date.day, 0, 0, 0)
-        except (Exception) as e:
+        except (error.ParserError) as e:
             pass
 
         try:
             time = Time.parse(argument)
             return datetime.datetime(self.now.year, self.now.month, self.now.day, time.hour, time.minute, time.second)
-        except (Exception) as e:
+        except (error.ParserError) as e:
             pass
 
         match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
@@ -703,7 +717,7 @@ class DateTime(commands.Converter):
                 hour += 12
 
             if (hour not in range(0, 24)):
-                raise commands.BadArgument("invalid hour")
+                raise error.ParserError("hour '{0}' is out of range".format(hour))
 
             tomorrow = self.now + datetime.timedelta(days=1)
             return datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour, 0, 0)
@@ -906,7 +920,7 @@ class DateTime(commands.Converter):
             if (new > datetime.timedelta()):
                 return self.now + new
 
-        raise commands.BadArgument(argument)
+        raise error.ParserError("couldn't parse datetime from '{0}'".format(argument))
 
 class FutureDateTime(DateTime, commands.Converter):
     __all__ = {
@@ -931,7 +945,7 @@ class FutureDateTime(DateTime, commands.Converter):
         result = super().parse(argument)
 
         if (result <= self.now):
-            raise commands.BadArgument("datetime is not in the future")
+            raise error.ParserError("datetime is not in the future")
 
         return result
 
@@ -958,7 +972,7 @@ class PastDateTime(DateTime, commands.Converter):
         result = super().parse(argument)
 
         if (result >= self.now):
-            raise commands.BadArgument("datetime is not in the past")
+            raise error.ParserError("datetime is not in the past")
 
         return result
 
@@ -1000,13 +1014,13 @@ class Flags(commands.Converter):
         for (token) in argument.split(" "):
             match = re.fullmatch(regex.Regex.FLAG_TOKEN, token)
             if (not match):
-                raise commands.BadArgument(token)
+                raise error.ParserError("invalid token '{0}'".format(token))
 
             flag = match.group("flag")
             value = match.group("value")
 
             if (flag in cls.tokens.keys()):
-                raise commands.BadArgument("duplicate token '{0}'".format(token))
+                raise error.ParserError("duplicate token '{0}'".format(token))
 
             if (value):
                 cls.tokens[flag] = value
@@ -1022,16 +1036,16 @@ class Flags(commands.Converter):
         for (flag) in flags:
             if (flag.required):
                 if (flag.name not in self.tokens.keys()):
-                    raise commands.BadArgument("missing required flag '{0}'".format(flag.name))
+                    raise error.ParserError("missing required flag '{0}'".format(flag.name))
 
             if (flag.value):
                 if (flag.name in self.tokens.keys()):
                     if (not self.tokens[flag.name]):
-                        raise commands.BadArgument("missing value for flag '{0}'".format(flag.name))
+                        raise error.ParserError("missing value for flag '{0}'".format(flag.name))
             else:
                 if (flag.name in self.tokens.keys()):
                     if (self.tokens[flag.name]):
-                        raise commands.BadArgument("was given an extraneous value for flag '{0}'".format(flag.name))
+                        raise error.ParserError("was given an extraneous value for flag '{0}'".format(flag.name))
 
             if (flag.name in self.tokens.keys()):
                 value = self.tokens[flag.name]
@@ -1040,12 +1054,12 @@ class Flags(commands.Converter):
                     try:
                         value = flag.value_type(value)
                     except (Exception) as e:
-                        raise commands.BadArgument("failed to convert value '{0}' to {1}".format(value, flag.value_type))
+                        raise error.ParserError("failed to convert value '{0}' to {1}".format(value, flag.value_type))
                 elif (flag.converter):
                     try:
                         value = await flag.converter().convert(ctx, value)
                     except (Exception) as e:
-                        raise commands.BadArgument("failed to convert value '{0}' to {1}".format(value, flag.converter))
+                        raise error.ParserError("failed to convert value '{0}' to {1}".format(value, flag.converter))
                 else:
                     value = True
 
