@@ -1057,6 +1057,7 @@ class Flags(commands.Converter):
         the `resolve` method to resolve
         """
 
+        argument = argument.lower()
         cls.tokens = dict()
 
         for (token) in argument.split(" "):
