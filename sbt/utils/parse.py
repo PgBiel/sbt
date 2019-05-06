@@ -574,6 +574,13 @@ class Time(commands.Converter):
             else:
                 second = 0
 
+            if (hour not in range(0, 24)):
+                raise error.ParserError(self, "hour '{0}' is out of range".format(hour))
+            elif (minute not in range(0, 60)):
+                raise error.ParserError(self, "minute '{0}' is out of range".format(minute))
+            elif (second not in range(0, 60)):
+                raise error.ParserError(self, "second '{0}' is out of range".format(second))
+
             return datetime.time(hour, minute, second)
 
         match = re.fullmatch(regex.Regex.TODAY_AT_TIME, argument)
@@ -591,6 +598,13 @@ class Time(commands.Converter):
                 second = int(second)
             else:
                 second = 0
+
+            if (hour not in range(0, 24)):
+                raise error.ParserError(self, "hour '{0}' is out of range".format(hour))
+            elif (minute not in range(0, 60)):
+                raise error.ParserError(self, "minute '{0}' is out of range".format(minute))
+            elif (second not in range(0, 60)):
+                raise error.ParserError(self, "second '{0}' is out of range".format(second))
 
             return datetime.time(hour, minute, second)
 
@@ -737,6 +751,13 @@ class DateTime(commands.Converter):
                 second = int(second)
             else:
                 second = 0
+
+            if (hour not in range(0, 24)):
+                raise error.ParserError(self, "hour '{0}' is out of range".format(hour))
+            elif (minute not in range(0, 60)):
+                raise error.ParserError(self, "minute '{0}' is out of range".format(minute))
+            elif (second not in range(0, 60)):
+                raise error.ParserError(self, "second '{0}' is out of range".format(second))
                 
             tomorrow = self.now + datetime.timedelta(days=1)
             return datetime.datetime(tomorrow.year, tomorrow.month, tomorrow.day, hour, minute, second)
@@ -872,6 +893,9 @@ class DateTime(commands.Converter):
 
             year = int(year)
 
+            if (not year):
+                raise error.ParserError(self, "year '{0}' is out of range".format(year))
+
             hour = int(match.group("hour"))
             minute = int(match.group("minute"))
 
@@ -880,8 +904,18 @@ class DateTime(commands.Converter):
                 second = int(second)
             else:
                 second = 0
+
+            if (hour not in range(0, 24)):
+                raise error.ParserError(self, "hour '{0}' is out of range".format(hour))
+            elif (minute not in range(0, 60)):
+                raise error.ParserError(self, "minute '{0}' is out of range".format(minute))
+            elif (second not in range(0, 60)):
+                raise error.ParserError(self, "second '{0}' is out of range".format(second))
                 
-            return datetime.datetime(year, month, day, hour, minute, second)
+            try:
+                return datetime.datetime(year, month, day, hour, minute, second)
+            except (ValueError) as e:
+                raise error.ParserError(self, "day '{0}' is out of range".format(day))
 
         match = re.fullmatch(regex.Regex.ANY_HUMANIZED_TIME, argument)
         if (match):
