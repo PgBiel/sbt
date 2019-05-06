@@ -153,7 +153,7 @@ class Timer():
     time = t.time
 
 
-    with context.Timer(timer=time.perf_counter) as t:
+    with context.Timer(timer=time.perf_counter_ns) as t:
         ...
 
     time = t.time
@@ -167,7 +167,7 @@ class Timer():
         "__aexit__",
     }
 
-    def __init__(self, *, timer = time.clock):
+    def __init__(self, *, timer = time.perf_counter):
         self._timer = timer
 
     def __enter__(self):
