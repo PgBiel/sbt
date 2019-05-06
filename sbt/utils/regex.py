@@ -90,9 +90,9 @@ class Regex:
     # https://shiney.dev:80/sbt#test-3
     # https://google.com/search?q=test
     #
-    #   .-https--.           .-shiney.dev-.                                                      .-/-.
-    #   .-https--.           .-shiney.dev-.  .-:80---.  .-/sbt----.               .-#test-3---.
-    #   .-https--.           .-google.com-.             .-/search-.  .-?q=test-.
+    #   .-https--.  .-://-.  .-shiney.dev-.                                                      .-/-.
+    #   .-https--.  .-://-.  .-shiney.dev-.  .-:80---.  .-/sbt----.               .-#test-3---.
+    #   .-https--.  .-://-.  .-google.com-.             .-/search-.  .-?q=test-.
     # --+-scheme-+--+-://-+--+---domain---+--+-------+--+---------+--+---------+--+-----------+--+---+--
     #                                        '-:port-'  '-path----'  '-?query--'  '-#fragment-'  '-/-'
     #
