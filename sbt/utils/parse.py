@@ -1055,6 +1055,9 @@ class Flags(commands.Converter):
 
     @classmethod
     def _get_converter(self, converter):
+        if (converter == bool):
+            return boolean
+
         try:
             module = converter.__module__
         except (AttributeError) as e:
