@@ -92,8 +92,8 @@ class Regex:
     # <@&310418322384748544> # role
     # <@#310418322384748544> # channel
     MENTION = re.compile(r"""
-                             (?:<@)
-                             (?:(?P<member>!?)|(?P<role>&)|(?P<channel>\#))
+                             (?:<)
+                             (?:(?P<member>@!?)|(?P<role>&)|(?P<channel>\#))
                              (?P<id>[0-9]+)
                              (?:>)
                           """, re.VERBOSE)
