@@ -335,7 +335,7 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
+                                  (?P<hour>[0-9]{1,2})
                                   (?::)
                                   (?P<minute>[0-9]{2})
                                   (?::)?
@@ -399,7 +399,7 @@ class Regex:
                                   (?P<year>(?:[0-9]{4}|[0-9]{2}))
                                   (?:\ )
                                   (?:at\ )?
-                                  (?P<hour>[0-9]{2}|[0-9])
+                                  (?P<hour>[0-9]{1,2})
                                   (?::)
                                   (?P<minute>[0-9]{2})
                                   (?::)?
@@ -505,7 +505,7 @@ class Regex:
     # until 00:00:00
     TIME = re.compile(r"""
                           (?:at\ |until\ )?
-                          (?P<hour>[0-9]{2}|[0-9])
+                          (?P<hour>[0-9]{1,2})
                           (?::)
                           (?P<minute>[0-9]{2})
                           (?::)?
@@ -519,7 +519,7 @@ class Regex:
     TODAY_AT_TIME = re.compile(r"""
                                    (?:until\ )?
                                    (?:today\ at\ )
-                                   (?P<hour>[0-9]{2}|[0-9])
+                                   (?P<hour>[0-9]{1,2})
                                    (?::)
                                    (?P<minute>[0-9]{2})
                                    (?::)?
@@ -533,7 +533,7 @@ class Regex:
     TOMORROW_AT_TIME = re.compile(r"""
                                       (?:until\ )?
                                       (?:tomorrow\ at\ )
-                                      (?P<hour>[0-9]{2}|[0-9])
+                                      (?P<hour>[0-9]{1,2})
                                       (?::)
                                       (?P<minute>[0-9]{2})
                                       (?::)?
