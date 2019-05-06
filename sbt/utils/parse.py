@@ -52,6 +52,9 @@ from utils import (
 )
 
 
+DISCORD_EPOCH = 1420070400000
+
+
 def boolean(string: str) -> bool:
     string = string.lower()
 
@@ -87,6 +90,10 @@ def iso8601(string: str) -> datetime.datetime:
         return datetime.datetime(year, month, day, hour, minute, 0)
     except (ValueError) as e:
         raise error.ParserError(None, "day '{0}' is out of range".format(day))
+
+def snowflake(snowflake_: int):
+    timestamp = ((snowflake_ >> 22) + DISCORD_EPOCH) / 1000
+    return datetime.datetime.utcfromtimestamp(timestamp)
 
 
 class Color(commands.Converter):
