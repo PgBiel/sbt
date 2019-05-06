@@ -94,7 +94,7 @@ class Regex:
     #   .-https--.           .-shiney.dev-.  .-:80---.  .-/sbt----.               .-#test-3---.
     #   .-https--.           .-google.com-.             .-/search-.  .-?q=test-.
     # --+-scheme-+--+-://-+--+---domain---+--+-------+--+---------+--+---------+--+-----------+--+---+--
-    #                        '-ip_address-'  '-:port-'  '-path----'  '-?query--'  '-#fragment-'  '-/-'
+    #                                        '-:port-'  '-path----'  '-?query--'  '-#fragment-'  '-/-'
     #
     # https://regex101.com/r/jcbBIX/5/tests
     URL = re.compile(r"""
@@ -103,7 +103,7 @@ class Regex:
                          (?P<domain>[^.-](?:[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+\.?)+[^.-])
                          (?::(?P<port>[0-9]+))?
                          (?P<path>\/(?:[a-zA-Z0-9]+\/?)+[^\/])?
-                         (?:\?(?P<parameters>(?:[a-z]+=[a-z]+&?)+))?
+                         (?:\?(?P<query>(?:[a-z]+=[a-z]+&?)+))?
                          (?:\#(?P<fragment>.+))?
                          (?:\/)?
                       """, re.VERBOSE)
