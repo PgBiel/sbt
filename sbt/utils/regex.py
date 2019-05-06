@@ -115,7 +115,7 @@ class Regex:
                              (?P<major>[0-9]+)
                              (?:\.(?P<minor>[0-9]+))
                              (?:\.(?P<micro>[0-9]+))?
-                             (?:(?P<release_id>a|b|rc|f)(?P<release_number>[0-9]+))?
+                             (?:(?P<release>a|b|rc|f)(?P<serial>[0-9]+))?
                              (?:\.post(?P<post>[0-9]+)|\.dev(?P<dev>[0-9]+))?
                           """, re.VERBOSE)
 

@@ -512,7 +512,7 @@ def _version(version_: str):
 
 def version(epoch: typing.Optional[str],
             major: str, minor: str, micro: typing.Optional[str],
-            release_id: typing.Optional[str], release_number: typing.Optional[str],
+            release: typing.Optional[str], serial: typing.Optional[str],
             post: typing.Optional[str], dev: typing.Optional[str]):
     if (not epoch):
         epoch = "0"
@@ -520,8 +520,8 @@ def version(epoch: typing.Optional[str],
     if (not micro):
         micro = "0"
 
-    if (not (release_id or release_number)):
-        release_id = release_number = ""
+    if (not (release or serial)):
+        release = serial = ""
 
     if (post):
         ext = ".post{0}".format(post)
@@ -531,7 +531,7 @@ def version(epoch: typing.Optional[str],
         ext = ""
 
     return "{0}!{1}.{2}.{3}{4}{5}{6}".format(
-        epoch, major, minor, micro, release_id, release_number, ext)
+        epoch, major, minor, micro, release, serial, ext)
 
 def wrap_url(text: str):
     return "<{0}>".format(text)
