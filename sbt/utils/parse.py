@@ -182,13 +182,13 @@ class Color(commands.Converter):
             y = int(match.group("y"))
             k = int(match.group("k"))
 
-            if (c > 255):
+            if (c > 100):
                 raise error.ParserError(self, "cyan is out of range '{0}'".format(c))
-            elif (m > 255):
+            elif (m > 100):
                 raise error.ParserError(self, "magenta out of range '{0}'".format(m))
-            elif (y > 255):
+            elif (y > 100):
                 raise error.ParserError(self, "yellow out of range '{0}'".format(y))
-            elif (k > 255):
+            elif (k > 100):
                 raise error.ParserError(self, "key out of range '{0}'".format(k))
 
             rgb = self.cmyk_to_rgb(c, m, y, k)
