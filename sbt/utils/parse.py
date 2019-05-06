@@ -75,6 +75,13 @@ def snowflake(snowflake_: int):
     timestamp = ((snowflake_ >> 22) + DISCORD_EPOCH) / 1000
     return datetime.datetime.utcfromtimestamp(timestamp)
 
+def url(url_: str):
+    match = re.fullmatch(regex.Regex.URL, url_)
+    if (not match):
+        raise error.ParserError(None, "couldn't parse url '{0}'".format(url_))
+
+    return match.groups()
+
 
 class Color(commands.Converter):
     __all__ = {
