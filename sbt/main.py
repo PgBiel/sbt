@@ -240,7 +240,7 @@ def init() -> commands.Bot:
                 return
 
             if (isinstance(exception, error.ParserError)):
-                await ctx.send(exception.message)
+                await ctx.send(exception.original)
                 return
 
         if (isinstance(exception, commands.errors.CheckFailure)):
