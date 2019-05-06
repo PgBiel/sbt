@@ -76,7 +76,17 @@ def iso8601(string: str):
     hour = int(match.group("hour"))
     minute = int(match.group("minute"))
 
-    return datetime.datetime(year, month, day, hour, minute, 0)
+    if (not year):
+        raise error.ParserError(None, "year '{0}' is out of range".format(year))
+    elif (hour not in range(0, 24)):
+        raise error.ParserError(None, "hour '{0}' is out of range".format(hour))
+    elif (minute not in range(0, 60)):
+        raise error.ParserError(None, "minute '{0}' is out of range".format(minute))
+    
+    try:
+        return datetime.datetime(year, month, day, hour, minute, 0)
+    except (ValueError) as e:
+        raise error.ParserError(None, "day '{0}' is out of range".format(day))
 
 
 class Color(commands.Converter):
