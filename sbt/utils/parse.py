@@ -103,6 +103,13 @@ def url(url_: str):
 
     return match.groups()
 
+def version(version_: str):
+    match = re.fullmatch(regex.Regex.VERSION, verions_)
+    if (not match):
+        raise error.ParserError(None, "couldn't parse version from '{0}'".format(version_))
+
+    return match.groups()
+
 
 class Color(commands.Converter):
     __all__ = {
