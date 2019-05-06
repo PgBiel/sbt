@@ -239,9 +239,9 @@ def init() -> commands.Bot:
                 await ctx.bot.invoke(ctx)
                 return
 
-        if (isinstance(exception, error.ParserError)):
-            await ctx.send(exception.message)
-            return
+            if (isinstance(exception, error.ParserError)):
+                await ctx.send(exception.message)
+                return
 
         if (isinstance(exception, commands.errors.CheckFailure)):
             if (isinstance(exception, commands.errors.BotMissingPermissions)):
