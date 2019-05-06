@@ -398,6 +398,15 @@ class Date(commands.Converter):
                 new = self.now + datetime.timedelta(days=days)
                 return datetime.date(new.year, new.month, new.day)
 
+        if (argument == "yesterday"):
+            new = self.now - datetime.timedelta(days=1)
+            return datetime.date(new.year, new.month, new.day)
+        elif (argument == "today"):
+            return datetime.date(self.now.year, self.now.month, self.now.day)
+        elif (argument == "tomorrow"):
+            new = self.now + datetime.timedelta(days=1)
+            return datetime.date(new.year, new.month, new.day)
+
         raise error.ParserError(self, "couldn't parse date from '{0}'".format(argument))
 
 class FutureDate(Date, commands.Converter):
