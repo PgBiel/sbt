@@ -25,7 +25,10 @@ __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n
 __all__ = {
     "DISCORD_EPOCH",
     "boolean",
+    "mention",
     "snowflake",
+    "url",
+    "version",
     "Color",
     "Date",
     "FutureDate",
@@ -104,7 +107,7 @@ def url(url_: str):
     return match.groups()
 
 def version(version_: str):
-    match = re.fullmatch(regex.Regex.VERSION, verions_)
+    match = re.fullmatch(regex.Regex.VERSION, version_)
     if (not match):
         raise error.ParserError(None, "couldn't parse version from '{0}'".format(version_))
 
