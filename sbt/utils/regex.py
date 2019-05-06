@@ -36,6 +36,7 @@ class Regex:
         "WORDS",
         "DIGIT",
         "DIGITS",
+        "URL",
         "VERSION",
         "EMOJI",
         "ISSUE",
