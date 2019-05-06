@@ -80,6 +80,23 @@ class Beta(commands.Cog, name="beta"):
 
     @checks.is_beta()
     @checks.is_debugging()
+    @_parse.command(name="boolean")
+    async def _parse_boolean(self, ctx: commands.Context, *, boolean: str):
+        """
+        boolean parser
+        """
+
+        try:
+            boolean = parse.boolean(boolean)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(boolean))
+
+    @checks.is_beta()
+    @checks.is_debugging()
     @_parse.command(name="color")
     async def _parse_color(self, ctx: commands.Context, *, color: str):
         """
@@ -264,6 +281,23 @@ class Beta(commands.Cog, name="beta"):
         else:
             await ctx.message.add_reaction("\U00002705")
             await ctx.send(format.inline(flags))
+
+    @checks.is_beta()
+    @checks.is_debugging()
+    @_parse.command(name="iso8601")
+    async def _parse_iso8601(self, ctx:commands.Context, *, iso: str):
+        """
+        ison8601 parser
+        """
+
+        try:
+            iso = parse.iso8601(iso)
+        except (commands.BadArgument) as e:
+            await ctx.message.add_reaction("\U0000274e")
+            await ctx.send(format.inline(e))
+        else:
+            await ctx.message.add_reaction("\U00002705")
+            await ctx.send(format.inline(iso))
 
 
 def setup(bot: commands.Bot):
