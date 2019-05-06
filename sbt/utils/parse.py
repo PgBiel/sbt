@@ -52,7 +52,7 @@ from utils import (
 )
 
 
-def boolean(string: str):
+def boolean(string: str) -> bool:
     string = string.lower()
 
     true = ["yes", "y", "true", "t", "enable", "on", "1"]
@@ -65,7 +65,7 @@ def boolean(string: str):
     
     raise error.ParserError(None, "couldn't parse bool from '{0}'".format(string))
 
-def iso8601(string: str):
+def iso8601(string: str) -> datetime.datetime:
     match = re.fullmatch(regex.Regex.ISO8601, string)
     if (not match):
         raise error.ParserError(None, "invalid ISO8601 string '{0}'".format(string))
