@@ -1047,10 +1047,30 @@ class Flag():
 
 class Flags(commands.Converter):
     __all__ = {
+        "_get_converter",
         "convert",
         "parse",
         "resolve",
     }
+
+    @classmethod
+    def _get_converter(self, converter):
+        try:
+            module = converter.__module__
+        except (AttributeError) as e:
+            return converter
+        else:
+            if (not module):
+                return converter
+
+            if (module.startswith("discord.")):
+                if (not module.endswith("converter")):
+                    converter_ = getattr(commands.converter, "{0}Converter".format(converter.__name__), None)
+                    if (converter_):
+                        return converter_
+
+            return converter
+
 
     async def convert(self, ctx: commands.Context, argument: str):
         """
@@ -1109,16 +1129,22 @@ class Flags(commands.Converter):
                 value = self.tokens[flag.name]
 
                 if (flag.converter):
+                    flag.converter = self._get_converter(flag.converter)
+                    converter_name = flag.converter.__name__.lower()
+
                     if (issubclass(flag.converter, commands.Converter)):
                         try:
                             value = await flag.converter().convert(ctx, value)
                         except (Exception) as e:
-                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.converter))
+                            if (converter_name.endswith("converter")):
+                                converter_name = converter_name[:-9]
+
+                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, converter_name))
                     else:
                         try:
                             value = flag.converter(value)
                         except (Exception) as e:
-                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, flag.converter))
+                            raise error.ParserError(self, "failed to convert value '{0}' to {1}".format(value, converter_name))
                 else:
                     value = True
 
