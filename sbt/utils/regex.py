@@ -139,7 +139,7 @@ class Regex:
     # --flag=value
     FLAG_TOKEN = re.compile(r"""
                                 (?:--)
-                                (?P<flag>[a-z]+)
+                                (?P<flag>[a-z0-9\-_]+)
                                 (?:=(?P<value>.+))?
                              """, re.VERBOSE)
     
