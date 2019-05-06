@@ -711,6 +711,11 @@ class DateTime(commands.Converter):
         except (error.ParserError) as e:
             pass
 
+        try:
+            return iso8601(argument)
+        except (error.ParserError) as e:
+            pass
+
         match = re.fullmatch(regex.Regex.TOMORROW_AT_HOUR, argument)
         if (match):
             # tomorrow at 0
