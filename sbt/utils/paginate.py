@@ -153,6 +153,11 @@ class Menu():
         content = page.get("content", None)
         embed = page.get("embed", None)
 
+        if (not isinstance(content, str)):
+            raise RuntimeError("content should be of type 'str'")
+        elif (not isinstance(embed, discord.Embed)):
+            raise RuntimeError("embed should be of type 'discord.Embed'")
+
         await self.ctx.send(content=content, embed=embed)
 
     async def register_buttons(self):
