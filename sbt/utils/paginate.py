@@ -22,7 +22,11 @@ __maintainers__  = [("shineydev", "contact@shiney.dev")]
 __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
-__all__ = {}
+__all__ = {
+    "Button",
+    "Menu",
+    "LongMenu",
+}
 
 
 import asyncio
@@ -38,11 +42,33 @@ from utils import (
 
 
 class Button():
+    __all__ = {
+        "__init__",
+    }
+
     def __init__(self, callback: typing.Callable, *, emoji: str):
         self.callback = callback
         self.emoji = emoji
 
 class Menu():
+    __all__ = {
+        "__init__",
+        "append",
+        "appendleft",
+        "pop",
+        "popleft",
+        "start",
+        "stop",
+        "register_buttons",
+        "_check_buttons",
+        "_add_buttons",
+        "_remove_buttons",
+        "_back",
+        "_choose",
+        "_forward",
+        "_close",
+    }
+
     def __init__(self, ctx: commands.Context):
         self.ctx = ctx
         self._pages = collections.deque()
@@ -144,6 +170,18 @@ class Menu():
         await self.stop()
 
 class LongMenu(Menu):
+    __all__ = {
+        "register_buttons",
+        "_back_all",
+        "_back_5",
+        "_back",
+        "_choose",
+        "_forward",
+        "_forward_5",
+        "_forward_all",
+        "_close",
+    }
+
     async def register_buttons(self):
         self._buttons = [
             Button(self._back_all, emoji="\U000023ee"),
