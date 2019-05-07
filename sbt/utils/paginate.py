@@ -79,14 +79,24 @@ class Menu():
         self._pages = collections.deque()
         self._index = 0
 
-    def append(self, page: dict):
+    def append(self, page: dict or str or discord.Embed):
+        if (isinstance(page, str)):
+            page = {"content": page}
+        elif (isinstance(page, discord.Embed)):
+            page = {"embed": page}
+
         self._pages.append(page)
 
     def appends(self, pages: list):
         for (page) in pages:
             self.append(page)
 
-    def appendleft(self, page: dict):
+    def appendleft(self, page: dict or str or discord.Embed):
+        if (isinstance(page, str)):
+            page = {"content": page}
+        elif (isinstance(page, discord.Embed)):
+            page = {"embed": page}
+
         self._pages.appendleft(page)
 
     def appendlefts(self, pages: list):
