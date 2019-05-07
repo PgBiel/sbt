@@ -77,6 +77,7 @@ class Menu():
     def __init__(self, ctx: commands.Context):
         self.ctx = ctx
         self._pages = collections.deque()
+        self._index = 0
 
     def append(self, page: dict):
         self._pages.append(page)
@@ -120,7 +121,7 @@ class Menu():
         if (not self._pages):
             raise RuntimeError("this menu contains no pages")
 
-        await self.send(self._pages[0])
+        await self.send(self._pages[self._index])
 
         if (len(self._pages) == 1):
             return
