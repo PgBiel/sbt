@@ -76,8 +76,16 @@ class Menu():
     def append(self, page: dict):
         self._pages.append(page)
 
+    def appends(self, pages: list):
+        for (page) in pages:
+            self.append(page)
+
     def appendleft(self, page: dict):
         self._pages.appendleft(page)
+
+    def appendlefts(self, pages: list):
+        for (page) in pages:
+            self.appendleft(page)
 
     def pop(self, index: int):
         if (not self._pages):
@@ -87,6 +95,10 @@ class Menu():
 
         self._pages.pop(index)
 
+    def pops(self, pages: list):
+        for (page) in pages:
+            self.pop(page)
+
     def popleft(self, index: int):
         if (not self._pages):
             raise RuntimeError("this menu contains no pages")
@@ -94,6 +106,10 @@ class Menu():
             raise IndexError("index out of range")
 
         self._pages.popleft(index)
+
+    def poplefts(self, pages: list):
+        for (page) in pages:
+            self.popleft(page)
 
     async def start(self):
         if (not self._pages):
