@@ -64,6 +64,7 @@ class Menu():
         "start",
         "stop",
         "send",
+        "edit",
         "register_buttons",
         "_check_buttons",
         "_add_buttons",
