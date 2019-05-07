@@ -161,7 +161,35 @@ class Menu():
 
         self._stopped = False
         while (not self._stopped):
-            ...
+            tasks = {
+                asyncio.create_task(self.ctx.bot.wait_for("reaction_add", check=reaction_check)),
+                asyncio.create_task(self.ctx.bot.wait_for("reaction_remove", check=reaction_check)),
+            }
+
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED, timeout=120)
+
+            try:
+                reaction, _ = done.pop().result()
+            except (asyncio.TimeoutError):
+                await self.stop()
+                break
+
+            for (task) in pending:
+                task.cancel()
+
+            dict_ = {
+                button.emoji: button.callback
+                for button in self._buttons
+            }
+
+            callback = dict_[str(reaction.emoji)]
+            page = await callback()
+
+            with context.Suppress(discord.Forbidden):
+                await self.ctx.message.remove_reaction(str(reaction.emoji), self.ctx.author)
+
+            if (page):
+                await self.edit(page)
 
         await self._remove_buttons()
 
@@ -178,6 +206,20 @@ class Menu():
             raise RuntimeError("embed should be of type 'discord.Embed'")
 
         await self.ctx.send(content=content, embed=embed)
+
+    async def edit(self, page: dict):
+        if (not hasattr(self, "_message")):
+            raise RuntimeError("menu has no message to update")
+
+        content = page.get("content", None)
+        embed = page.get("embed", None)
+
+        if (not isinstance(content, str)):
+            raise RuntimeError("content should be of type 'str'")
+        elif (not isinstance(embed, discord.Embed)):
+            raise RuntimeError("embed should be of type 'discord.Embed'")
+
+        await self._message.edit(content=content, embed=embed)
 
     async def register_buttons(self):
         """
