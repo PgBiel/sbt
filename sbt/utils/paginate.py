@@ -23,3 +23,163 @@ __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {}
+
+
+import asyncio
+import collections
+import typing
+
+import discord
+from discord.ext import commands
+
+from utils import (
+    context,
+)
+
+
+class Button():
+    def __init__(self, callback: typing.Callable, *, emoji: str):
+        self.callback = callback
+        self.emoji = emoji
+
+class Menu():
+    def __init__(self, ctx: commands.Context):
+        self.ctx = ctx
+        self._pages = collections.deque()
+
+    def append(self, page: dict):
+        self._pages.append(page)
+
+    def appendleft(self, page: dict):
+        self._pages.appendleft(page)
+
+    def pop(self, index: int):
+        if (not self._pages):
+            raise RuntimeError("this menu contains no pages")
+        elif (index not in range(len(self._pages) - 1)):
+            raise IndexError("index out of range")
+
+        self._pages.pop(index)
+
+    def popleft(self, index: int):
+        if (not self._pages):
+            raise RuntimeError("this menu contains no pages")
+        elif (index not in range(len(self._pages) - 1)):
+            raise IndexError("index out of range")
+
+        self._pages.popleft(index)
+
+    async def start(self):
+        if (not self._pages):
+            raise RuntimeError("this menu contains no pages")
+
+        await self.send(self._pages[0])
+
+        if (len(self._pages) == 1):
+            return
+
+        await self.register_buttons()
+        await self._check_buttons()
+        await self._add_buttons()
+
+        self._stopped = False
+        while (not self._stopped):
+            ...
+
+        await self._remove_buttons()
+
+    async def stop(self):
+        self._stopped = True
+
+    async def register_buttons(self):
+        """
+        this method should be overridden in subclasses and defines the
+        buttons that will be used by the menu
+        """
+
+        self._buttons = [
+            Button(self._back, emoji="\U000025c0"),
+            Button(self._choose, emoji="\U00000023\U000020e3"),
+            Button(self._forward, emoji="\U000025b6"),
+            Button(self._close, emoji="\U0001f5d1"),
+        ]
+
+    async def _check_buttons(self):
+        for (button) in self.buttons:
+            if (not callable(button.callback)):
+                raise RuntimeError("button.callback should be a callable")
+            elif (not asyncio.iscoroutine(button.callback)):
+                raise RuntimeError("button.callback should be a coroutine")
+
+    async def _add_buttons(self):
+        try:
+            for (button) in self._buttons:
+                await self.ctx.message.add_reaction(button.emoji)
+        except (discord.Forbidden):
+            await self.stop()
+            raise
+
+    async def _remove_buttons(self):
+        try:
+            await self.ctx.message.clear_reactions()
+        except (discord.Forbidden) as e:
+            for (button) in self._buttons:
+                with context.Suppress(discord.Forbidden):
+                    await self.ctx.message.remove_reaction(button.emoji)
+
+    """
+    all methods from this point are button methods
+    """
+
+    async def _back(self):
+        ...
+        
+    async def _choose(self):
+        ...
+        
+    async def _forward(self):
+        ...
+        
+    async def _close(self):
+        await self.stop()
+
+class LongMenu(Menu):
+    async def register_buttons(self):
+        self._buttons = [
+            Button(self._back_all, emoji="\U000023ee"),
+            Button(self._back_5, emoji="\U000023ea"),
+            Button(self._back, emoji="\U000025c0"),
+            Button(self._choose, emoji="\U00000023\U000020e3"),
+            Button(self._forward, emoji="\U000025b6"),
+            Button(self._forward_5, emoji="\U000023e9"),
+            Button(self._forward_all, emoji="\U000023ed"),
+            Button(self._close, emoji="\U0001f5d1"),
+        ]
+
+    """
+    all methods from this point are button methods
+    """
+
+    async def _back_all(self):
+        ...
+
+    async def _back_5(self):
+        ...
+
+    async def _back(self):
+        await super()._back()
+        
+    async def _choose(self):
+        await super()._choose()
+        
+    async def _forward(self):
+        await super()._forward()
+        
+    async def _forward_5(self):
+        ...
+        
+    async def _forward_all(self):
+        ...
+        
+    async def _close(self):
+         await super()._close()
