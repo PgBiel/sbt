@@ -97,7 +97,11 @@ def mention(mention_: str):
 
 def snowflake(snowflake_: int):
     timestamp = ((snowflake_ >> 22) + DISCORD_EPOCH) / 1000
-    return datetime.datetime.utcfromtimestamp(timestamp)
+
+    try:
+        return datetime.datetime.utcfromtimestamp(timestamp)
+    except (OSError) as e:
+        raise error.ParserError(None, "invalid snowflake '{0}'".format(snowflake_))
 
 def url(url_: str):
     match = re.fullmatch(regex.Regex.URL, url_)

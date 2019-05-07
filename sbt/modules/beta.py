@@ -308,7 +308,7 @@ class Beta(commands.Cog, name="beta"):
     @checks.is_beta()
     @checks.is_debugging()
     @_parse.command(name="snowflake")
-    async def _parse_snowflake(self, ctx: commands.Context, snowflake: str):
+    async def _parse_snowflake(self, ctx: commands.Context, snowflake: int):
         """
         snowflake parser
         """
