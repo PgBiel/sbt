@@ -131,7 +131,7 @@ class Menu():
         if (not self._pages):
             raise RuntimeError("this menu contains no pages")
 
-        await self.send(self._pages[self._index])
+        self._message = await self.send(self._pages[self._index])
 
         if (len(self._pages) == 1):
             return
@@ -139,6 +139,25 @@ class Menu():
         await self.register_buttons()
         await self._check_buttons()
         await self._add_buttons()
+
+        def message_check(message: discord.Message):
+            if (message.author.id == self.ctx.bot._settings.owner):
+                return True
+            elif (message.author.id in self.ctx.bot._settings.supervisors):
+                return True
+            elif (message.author == self.ctx.author):
+                if (message.channel == self.ctx.channel):
+                    return True
+
+        def reaction_check(reaction: discord.Reaction, user: discord.User):
+            if (user.id == self.ctx.bot._settings.owner):
+                return True
+            elif (message.author.id in self.ctx.bot._settings.supervisors):
+                return True
+            elif (user == self.ctx.author):
+                if (reaction.message == self._message):
+                    if (str(reaction.emoji) in [b.emoji for b in self._buttons]):
+                        return True
 
         self._stopped = False
         while (not self._stopped):
