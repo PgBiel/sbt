@@ -117,6 +117,12 @@ class Menu():
     async def stop(self):
         self._stopped = True
 
+    async def send(self, page: dict):
+        content = page.get("content", None)
+        embed = page.get("embed", None)
+
+        await self.ctx.send(content=content, embed=embed)
+
     async def register_buttons(self):
         """
         this method should be overridden in subclasses and defines the
