@@ -80,6 +80,9 @@
     <Compile Include="utils\fuzzywuzzy.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\paginate.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="utils\parse.py" />
     <Compile Include="utils\regex.py">
       <SubType>Code</SubType>
