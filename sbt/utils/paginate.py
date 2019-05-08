@@ -195,7 +195,7 @@ class Menu():
             #
             # i will consider this my warning not to bring this back
 
-            if (index):
+            if (index != None):
                 if (index != self._index):
                     self._index = index
                     await self.edit(self._pages[index])
@@ -375,13 +375,16 @@ class LongMenu(Menu):
         return index
 
     async def _back(self) -> int:
-        await super()._back()
+        index = await super()._back()
+        return index
         
     async def _choose(self) -> int:
-        await super()._choose()
+        index = await super()._choose()
+        return index
         
     async def _forward(self) -> int:
-        await super()._forward()
+        index = await super()._forward()
+        return index
         
     async def _forward_5(self) -> int:
         index = self._index
@@ -398,4 +401,5 @@ class LongMenu(Menu):
         return len(self._pages) - 1
         
     async def _close(self) -> int:
-         await super()._close()
+        index = await super()._close()
+        return index
