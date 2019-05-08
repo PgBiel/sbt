@@ -59,44 +59,90 @@ def _chunk(iterable: typing.Iterable, chunk_size: int):
     for (i) in range(0, len(iterable), chunk_size):
         yield iterable[i:i + chunk_size]
 
-def _signature(ctx: commands.Context, command: commands.Command):
-    if (command.aliases):
+def _signature(ctx: commands.Context, command: commands.Command, *, ignore_aliases: bool = False):
+    if (command.aliases and (not ignore_aliases)):
         aliases = [command.name]
         aliases.extend(command.aliases)
         aliases = "|".join(aliases)
 
         if (not command.full_parent_name):
-            return "{0}[{1}] {2}".format(
+            signature = "{0}[{1}] {2}".format(
                 ctx.prefix, aliases, command.signature)
         else:
-            return "{0}{1} [{2}] {3}".format(
+            signature = "{0}{1} [{2}] {3}".format(
                 ctx.prefix, command.full_parent_name, aliases, command.signature)
     else:
         if (not command.full_parent_name):
-            return "{0}{1} {2}".format(
+            signature = "{0}{1} {2}".format(
                 ctx.prefix, command.name, command.signature)
         else:
-            return "{0}{1} {2} {3}".format(
+            signature = "{0}{1} {2} {3}".format(
                 ctx.prefix, command.full_parent_name, command.name, command.signature)
 
-def _cog_sort(cog: tuple) -> str:
-    return cog[0]
-
-def _command_sort(command: commands.Command) -> tuple:
-    return (isinstance(comamnd, commands.Group), command.name)
+    return signature.strip()
 
 def _cog_commands_embedinator(ctx, cog: commands.Cog, commands_: list) -> list:
     embeds = list()
 
-    ...
+    for (i, chunk) in enumerate(_chunk(commands_, COMMANDS_PER_PAGE), 1):
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.set_author(name="{0} ({1}-{2} / {3})".format(
+            "{0} commands".format(cog.qualified_name),
+            (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
+            min([i * COMMANDS_PER_PAGE, len(commands_)]),
+            len(commands_)))
+
+        if (cog.__doc__):
+            e.description = cog.__doc__
+
+        for (command_) in chunk:
+            e.add_field(name=_signature(ctx, command_, ignore_aliases=True),
+                        value=command_.short_doc or "no description",
+                        inline=False)
+
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author,
+                format.humanize_datetime(),
+            ),
+            icon_url = ctx.author.avatar_url,
+        )
+
+        embeds.append(e)
 
     return embeds
 
 def _command_commands_embedinator(ctx, command: commands.Command, commands_: list) -> list:
     embeds = list()
 
-    ...
+    for (i, chunk) in enumerate(_chunk(commands_, COMMANDS_PER_PAGE), 1):
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.set_author(name="{0} ({1}-{2} / {3})".format(
+            _signature(ctx, command),
+            (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
+            min([i * COMMANDS_PER_PAGE, len(commands_)]),
+            len(commands_)))
 
+        if (command.help):
+            e.description = command.help
+
+        for (command_) in chunk:
+            e.add_field(name=_signature(ctx, command_, ignore_aliases=True),
+                        value=command_.short_doc or "no description",
+                        inline=False)
+
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author,
+                format.humanize_datetime(),
+            ),
+            icon_url = ctx.author.avatar_url,
+        )
+
+        embeds.append(e)
+        
     return embeds
 
 def _command_embedinator(ctx, command: commands.command) -> list:
@@ -117,11 +163,19 @@ def _command_embedinator(ctx, command: commands.command) -> list:
 
     return [e]
 
+def _cog_sort(cog: tuple) -> str:
+    return cog[0]
+
+def _command_sort(command: commands.Command) -> tuple:
+    return (isinstance(command, commands.Group), command.name)
+
 async def help(ctx: commands.Context) -> list:
     embeds = list()
 
-    cogs = dict()
-    for (_, cog) in ctx.bot.cogs.items():
+    # for some reason this kept breaking when i had the sort after this
+    # block so i moved it here :)
+    cogs = dict(sorted(ctx.bot.cogs.items(), key=_cog_sort))
+    for (cog_name, cog) in cogs.items():
         commands_ = list()
         for (command) in cog.get_commands():
             if (not await command.can_run(ctx)):
@@ -130,18 +184,15 @@ async def help(ctx: commands.Context) -> list:
                 continue
 
             commands_.append(command)
-        if (commands_):
-            # just don't add the cog if it's empty
-            commands_.sort(key=_command_sort)
-            cogs[cog.__cog_name__] = (cog, commands_)
 
-    cogs = dict(sorted(cogs, key=_cog_sort))
+        commands_.sort(key=_command_sort)
+        cogs[cog_name] = (cog, commands_)
 
     # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
     # which has 'cogs' sorted 0-9a-z by name and commands sorted by
     # command type and then 0-9a-z by name
     
-    for (_, (cog, commands_)) in cogs:
+    for (_, (cog, commands_)) in cogs.items():
         embeds.extend(_cog_commands_embedinator(ctx, cog, commands_))
 
     return embeds
