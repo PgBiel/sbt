@@ -44,8 +44,57 @@ from utils import (
 )
 
 
+def _command_sort(command: commands.Command) -> tuple:
+    return (isinstance(comamnd, commands.Group), command.name)
+
+def _cog_sort(cog: tuple) -> str:
+    return cog[0]
+
 async def help(ctx: commands.Context) -> list:
     _embeds = list()
+
+    _cogs = dict()
+    for (_, cog) in ctx.bot.cogs.items():
+        _commands = list()
+        for (command) in cog.get_commands():
+            if (not await command.can_run(ctx)):
+                continue
+            elif (command.hidden):
+                continue
+
+            _commands.append(command)
+        if (_commands):
+            # just don't add the cog if it's empty
+            _commands.sort(key=_command_sort)
+            _cogs[cog.__cog_name__] = (cog, _commands)
+
+    _cogs = dict(sorted(_cogs, key=_cog_sort))
+
+    # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
+    # which has 'cogs' sorted 0-9a-z by name and commands sorted by
+    # command type and then 0-9a-z by name
+    
+    ...
+
+    return _embeds
+
+async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
+    _embeds = list()
+
+    _commands = list()
+    for (command) in cog.get_commands():
+        if (not await command.can_run(ctx)):
+            continue
+        elif (command.hidden):
+            continue
+
+        _commands.append(command)
+
+    if (_commands):
+        _commands.sort(key=_command_sort)
+
+    # at this point we have List<commands.Command, ...> which has
+    # commands sorted by command type and then 0-9a-z
 
     ...
 
@@ -54,14 +103,25 @@ async def help(ctx: commands.Context) -> list:
 async def command_help(ctx: commands.Context, command: commands.Command) -> list:
     _embeds = list()
 
-    ...
+    if (isinstance(command, commands.Group)):
+        _commands = list()
+        for (command_) in command.commands:
+            if (not await command_.can_run(ctx)):
+                continue
+            elif (command_.hidden):
+                continue
 
-    return _embeds
+            _commands.append(command_)
 
-async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
-    _embeds = list()
+        if (_commands):
+            _commands.sort(key=_command_sort)
 
-    ...
+        # at this point we have List<commands.Command, ...> which has
+        # commands sorted by command type and then 0-9a-z
+
+        ...
+    else:
+        ...
 
     return _embeds
 
