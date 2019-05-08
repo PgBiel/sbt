@@ -161,8 +161,8 @@ class Menu():
                 return True
             elif (message.author.id in self.ctx.bot._settings.supervisors):
                 return True
-            elif (message.author == self.ctx.author):
-                if (message.channel == self.ctx.channel):
+            elif (message.author.id == self.ctx.author.id):
+                if (message.channel.id == self.ctx.channel.id):
                     return True
 
         def reaction_check(reaction: discord.Reaction, user: discord.User):
@@ -170,8 +170,8 @@ class Menu():
                 return True
             elif (user.id in self.ctx.bot._settings.supervisors):
                 return True
-            elif (user == self.ctx.author):
-                if (reaction.message == self._message):
+            elif (user.id == self.ctx.author.id):
+                if (reaction.message.id == self._message.id):
                     if (str(reaction.emoji) in [b.emoji for b in self._buttons]):
                         return True
 
