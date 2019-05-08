@@ -45,13 +45,25 @@ from utils import (
 
 
 async def help(ctx: commands.Context) -> list:
+    _embeds = list()
+
     ...
+
+    return _embeds
 
 async def command_help(ctx: commands.Context, command: commands.Command) -> list:
+    _embeds = list()
+
     ...
 
+    return _embeds
+
 async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
+    _embeds = list()
+
     ...
+
+    return _embeds
 
 
 class Button():
