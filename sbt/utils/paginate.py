@@ -152,32 +152,11 @@ class Menu():
         if (len(self._pages) == 1):
             return
 
+        await self.register_checks()
+        await self._check_checks()
         await self.register_buttons()
         await self._check_buttons()
         await self._add_buttons()
-
-        def message_check(message: discord.Message):
-            if (message.author.id == self.ctx.bot._settings.owner):
-                return True
-            elif (message.author.id in self.ctx.bot._settings.supervisors):
-                return True
-            elif (message.author.id == self.ctx.author.id):
-                if (message.channel.id == self.ctx.channel.id):
-                    return True
-
-        self._message_check = message_check
-
-        def reaction_check(reaction: discord.Reaction, user: discord.User):
-            if (user.id == self.ctx.bot._settings.owner):
-                return True
-            elif (user.id in self.ctx.bot._settings.supervisors):
-                return True
-            elif (user.id == self.ctx.author.id):
-                if (reaction.message.id == self._message.id):
-                    if (str(reaction.emoji) in [b.emoji for b in self._buttons]):
-                        return True
-
-        self._reaction_check = reaction_check
 
         self._stopped = False
         while (not self._stopped):
@@ -247,6 +226,40 @@ class Menu():
             raise RuntimeError("embed should be of type 'discord.Embed'")
 
         await self._message.edit(content=content, embed=embed)
+
+    async def register_checks(self):
+        def message_check(message: discord.Message):
+            if (message.author.id == self.ctx.bot._settings.owner):
+                return True
+            elif (message.author.id in self.ctx.bot._settings.supervisors):
+                return True
+            elif (message.author.id == self.ctx.author.id):
+                if (message.channel.id == self.ctx.channel.id):
+                    return True
+
+        self._message_check = message_check
+
+        def reaction_check(reaction: discord.Reaction, user: discord.User):
+            if (user.id == self.ctx.bot._settings.owner):
+                return True
+            elif (user.id in self.ctx.bot._settings.supervisors):
+                return True
+            elif (user.id == self.ctx.author.id):
+                if (reaction.message.id == self._message.id):
+                    if (str(reaction.emoji) in [b.emoji for b in self._buttons]):
+                        return True
+
+        self._reaction_check = reaction_check
+
+    async def _check_checks(self):
+        if (not hasattr(self, "_message_check")):
+            raise RuntimeError("missing self._message_check")
+        elif (not callable(self._message_check)):
+            raise RuntimeError("self._reaction_check must be a callable")
+        elif (not hasattr(self, "_reaction_check")):
+            raise RuntimeError("missing self._reaction_check")
+        elif (not callable(self._reaction_check)):
+            raise RuntimeError("self._reaction_check must be a callable")
 
     async def register_buttons(self):
         """
