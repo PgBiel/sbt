@@ -140,6 +140,9 @@ async def command_help(ctx: commands.Context, command: commands.Command) -> list
 
         return _command_commands_embedinator(command, commands_)
     else:
+        if (not await command.can_run(ctx)):
+            return list()
+
         return _command_embedinator(command)
 
 
