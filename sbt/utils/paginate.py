@@ -56,25 +56,25 @@ def _command_sort(command: commands.Command) -> tuple:
     return (isinstance(comamnd, commands.Group), command.name)
 
 def _cog_commands_embedinator(cog: commands.Cog, commands_: list) -> list:
-    _embeds = list()
+    embeds = list()
 
     ...
 
-    return _embeds
+    return embeds
 
 def _command_commands_embedinator(command: commands.Command, commands_: list) -> list:
-    _embeds = list()
+    embeds = list()
 
     ...
 
-    return _embeds
+    return embeds
 
 def _command_embedinator(command: commands.command) -> list:
-    _embeds = list()
+    embeds = list()
 
     ...
 
-    return _embeds
+    return embeds
 
 async def help(ctx: commands.Context) -> list:
     embeds = list()
