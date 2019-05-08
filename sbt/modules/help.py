@@ -54,10 +54,17 @@ class Help(commands.Cog, name="help"):
         "_help_cog",
         "_help_command",
         "_help_old",
+        "paginate",
+        "_format_signature",
+        "_cog_commands_embedinator",
+        "_command_commands_embedinator",
+        "_command_embedinator",
+        "_cog_sort",
+        "_command_sort",
         "help",
         "cog_help",
         "command_help",
-        "paginate",
+        "_paginate",
         "send_old_help",
     }
 
