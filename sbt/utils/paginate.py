@@ -114,29 +114,37 @@ class Menu():
         for (page) in pages:
             self.appendleft(page)
 
-    def pop(self, index: int):
+    def pop(self, index: int) -> dict:
         if (not self._pages):
             raise RuntimeError("this menu contains no pages")
         elif (index not in range(len(self._pages) - 1)):
             raise IndexError("index out of range")
 
-        self._pages.pop(index)
+        return self._pages.pop(index)
 
-    def pops(self, pages: list):
+    def pops(self, indexes: list) -> list:
+        popped = list()
+
         for (page) in pages:
-            self.pop(page)
+            popped.append(self.pop(page))
 
-    def popleft(self, index: int):
+        return popped
+
+    def popleft(self, index: int) -> dict:
         if (not self._pages):
             raise RuntimeError("this menu contains no pages")
         elif (index not in range(len(self._pages) - 1)):
             raise IndexError("index out of range")
 
-        self._pages.popleft(index)
+        return self._pages.popleft(index)
 
-    def poplefts(self, pages: list):
+    def poplefts(self, indexes: list) -> list:
+        popped = list()
+
         for (page) in pages:
-            self.popleft(page)
+            popped.append(self.popleft(page))
+
+        return popped
 
     async def start(self):
         if (not self._pages):
@@ -272,16 +280,16 @@ class Menu():
     all methods from this point are button methods
     """
 
-    async def _back(self):
+    async def _back(self) -> int:
         ...
         
-    async def _choose(self):
+    async def _choose(self) -> int:
         ...
         
-    async def _forward(self):
+    async def _forward(self) -> int:
         ...
         
-    async def _close(self):
+    async def _close(self) -> int:
         await self.stop()
 
 class LongMenu(Menu):
@@ -313,26 +321,26 @@ class LongMenu(Menu):
     all methods from this point are button methods
     """
 
-    async def _back_all(self):
+    async def _back_all(self) -> int:
         ...
 
-    async def _back_5(self):
+    async def _back_5(self) -> int:
         ...
 
-    async def _back(self):
+    async def _back(self) -> int:
         await super()._back()
         
-    async def _choose(self):
+    async def _choose(self) -> int:
         await super()._choose()
         
-    async def _forward(self):
+    async def _forward(self) -> int:
         await super()._forward()
         
-    async def _forward_5(self):
+    async def _forward_5(self) -> int:
         ...
         
-    async def _forward_all(self):
+    async def _forward_all(self) -> int:
         ...
         
-    async def _close(self):
+    async def _close(self) -> int:
          await super()._close()
