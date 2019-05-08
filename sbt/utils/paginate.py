@@ -55,21 +55,21 @@ def _cog_sort(cog: tuple) -> str:
 def _command_sort(command: commands.Command) -> tuple:
     return (isinstance(comamnd, commands.Group), command.name)
 
-def _cog_commands_embedinator(cog: commands.Cog, commands_: list) -> list:
+def _cog_commands_embedinator(ctx, cog: commands.Cog, commands_: list) -> list:
     embeds = list()
 
     ...
 
     return embeds
 
-def _command_commands_embedinator(command: commands.Command, commands_: list) -> list:
+def _command_commands_embedinator(ctx, command: commands.Command, commands_: list) -> list:
     embeds = list()
 
     ...
 
     return embeds
 
-def _command_embedinator(command: commands.command) -> list:
+def _command_embedinator(ctx, command: commands.command) -> list:
     ...
 
     return [e]
@@ -99,7 +99,7 @@ async def help(ctx: commands.Context) -> list:
     # command type and then 0-9a-z by name
     
     for (_, (cog, commands_)) in cogs:
-        embeds.extend(_cog_commands_embedinator(cog, commands_))
+        embeds.extend(_cog_commands_embedinator(ctx, cog, commands_))
 
     return embeds
 
@@ -119,7 +119,7 @@ async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
     # at this point we have List<commands.Command, ...> which has
     # commands sorted by command type and then 0-9a-z
 
-    return _cog_commands_embedinator(cog, commands_)
+    return _cog_commands_embedinator(ctx, cog, commands_)
 
 async def command_help(ctx: commands.Context, command: commands.Command) -> list:
     if (isinstance(command, commands.Group)):
@@ -138,12 +138,12 @@ async def command_help(ctx: commands.Context, command: commands.Command) -> list
         # at this point we have List<commands.Command, ...> which has
         # commands sorted by command type and then 0-9a-z
 
-        return _command_commands_embedinator(command, commands_)
+        return _command_commands_embedinator(ctx, command, commands_)
     else:
         if (not await command.can_run(ctx)):
             return list()
 
-        return _command_embedinator(command)
+        return _command_embedinator(ctx, command)
 
 
 class Button():
