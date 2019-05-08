@@ -270,7 +270,7 @@ class Menu():
 
     async def _remove_buttons(self):
         try:
-            await self.ctx.message.clear_reactions()
+            await self._message.clear_reactions()
         except (discord.Forbidden) as e:
             for (button) in self._buttons:
                 with context.Suppress(discord.Forbidden):
