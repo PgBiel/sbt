@@ -41,6 +41,16 @@ from utils import (
 )
 
 
+async def help(ctx: commands.Context) -> list:
+    ...
+
+async def command_help(ctx: commands.Context, command: commands.Command) -> list:
+    ...
+
+async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
+    ...
+
+
 class Button():
     __all__ = {
         "__init__",
@@ -80,7 +90,7 @@ class Menu():
         self._pages = collections.deque()
         self._index = 0
 
-    def append(self, page: dict or str or discord.Embed):
+    def append(self, page: typing.Union[dict, str, discord.Embed]):
         if (isinstance(page, str)):
             page = {"content": page}
         elif (isinstance(page, discord.Embed)):
@@ -92,7 +102,7 @@ class Menu():
         for (page) in pages:
             self.append(page)
 
-    def appendleft(self, page: dict or str or discord.Embed):
+    def appendleft(self, page: typing.Union[dict, str, discord.Embed]):
         if (isinstance(page, str)):
             page = {"content": page}
         elif (isinstance(page, discord.Embed)):
@@ -153,7 +163,7 @@ class Menu():
         def reaction_check(reaction: discord.Reaction, user: discord.User):
             if (user.id == self.ctx.bot._settings.owner):
                 return True
-            elif (message.author.id in self.ctx.bot._settings.supervisors):
+            elif (user.id in self.ctx.bot._settings.supervisors):
                 return True
             elif (user == self.ctx.author):
                 if (reaction.message == self._message):
