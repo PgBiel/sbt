@@ -165,6 +165,8 @@ class Menu():
                 if (message.channel.id == self.ctx.channel.id):
                     return True
 
+        self._message_check = message_check
+
         def reaction_check(reaction: discord.Reaction, user: discord.User):
             if (user.id == self.ctx.bot._settings.owner):
                 return True
@@ -174,6 +176,8 @@ class Menu():
                 if (reaction.message.id == self._message.id):
                     if (str(reaction.emoji) in [b.emoji for b in self._buttons]):
                         return True
+
+        self._reaction_check = reaction_check
 
         self._stopped = False
         while (not self._stopped):
@@ -199,7 +203,7 @@ class Menu():
             }
 
             callback = dict_[str(reaction.emoji)]
-            page = await callback()
+            index = await callback()
 
             # with context.Suppress(discord.Forbidden):
             #     await self.ctx.message.remove_reaction(str(reaction.emoji), self.ctx.author)
@@ -210,8 +214,10 @@ class Menu():
             #
             # i will consider this my warning not to bring this back
 
-            if (page):
-                await self.edit(page)
+            if (index):
+                if (index != self._index):
+                    self._index = index
+                    await self.edit(self._pages[index])
 
         await self._remove_buttons()
 
@@ -281,13 +287,33 @@ class Menu():
     """
 
     async def _back(self) -> int:
-        ...
+        index = self._index - 1
+        if (index in range(0, len(self._pages))):
+            return index
+        return len(self._pages) - 1
         
     async def _choose(self) -> int:
-        ...
+        message = await ctx.send("choose a page (1-{0})".format(len(self._pages)))
+
+        try:
+            page = await ctx.bot.wait_for("message", check=self._message_check, timeout=30)
+        except (asyncio.TimeoutError) as e:
+            await message.delete()
+        else:
+            await message.delete()
+            await page.delete()
+
+            page = page.content
+            if (page.isdigit()):
+                page = int(page) - 1
+                if (page in range(0, len(self._pages))):
+                    return page
         
     async def _forward(self) -> int:
-        ...
+        index = self._index + 1
+        if (index in range(0, len(self._pages))):
+            return index
+        return 0
         
     async def _close(self) -> int:
         await self.stop()
