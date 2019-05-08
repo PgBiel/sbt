@@ -58,8 +58,8 @@ class Help(commands.Cog, name="help"):
         "_cog_commands_embedinator",
         "_command_commands_embedinator",
         "_command_embedinator",
-        "_cog_sort",
-        "_command_sort",
+        "_cog_sorter",
+        "_command_sorter",
         "help",
         "cog_help",
         "command_help",
@@ -300,10 +300,10 @@ class Help(commands.Cog, name="help"):
 
         return [e]
 
-    def _cog_sort(self, cog: tuple) -> str:
+    def _cog_sorter(self, cog: tuple) -> str:
         return cog[0]
 
-    def _command_sort(self, command: commands.Command) -> tuple:
+    def _command_sorter(self, command: commands.Command) -> tuple:
         return (isinstance(command, commands.Group), command.name)
 
     async def help(self, ctx: commands.Context) -> list:
@@ -311,7 +311,7 @@ class Help(commands.Cog, name="help"):
 
         # for some reason this kept breaking when i had the sort after this
         # block so i moved it here :)
-        cogs = dict(sorted(ctx.bot.cogs.items(), key=self._cog_sort))
+        cogs = dict(sorted(ctx.bot.cogs.items(), key=self._cog_sorter))
         for (cog_name, cog) in cogs.items():
             commands_ = list()
             for (command) in cog.get_commands():
@@ -322,7 +322,7 @@ class Help(commands.Cog, name="help"):
 
                 commands_.append(command)
 
-            commands_.sort(key=self._command_sort)
+            commands_.sort(key=self._command_sorter)
             cogs[cog_name] = (cog, commands_)
 
         # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
@@ -345,7 +345,7 @@ class Help(commands.Cog, name="help"):
             commands_.append(command)
 
         if (commands_):
-            commands_.sort(key=self._command_sort)
+            commands_.sort(key=self._command_sorter)
 
         # at this point we have List<commands.Command, ...> which has
         # commands sorted by command type and then 0-9a-z
@@ -364,7 +364,7 @@ class Help(commands.Cog, name="help"):
                 commands_.append(command_)
 
             if (commands_):
-                commands_.sort(key=self._command_sort)
+                commands_.sort(key=self._command_sorter)
 
             # at this point we have List<commands.Command, ...> which has
             # commands sorted by command type and then 0-9a-z
