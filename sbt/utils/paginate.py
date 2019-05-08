@@ -70,11 +70,9 @@ def _command_commands_embedinator(command: commands.Command, commands_: list) ->
     return embeds
 
 def _command_embedinator(command: commands.command) -> list:
-    embeds = list()
-
     ...
 
-    return embeds
+    return [embed]
 
 async def help(ctx: commands.Context) -> list:
     embeds = list()
