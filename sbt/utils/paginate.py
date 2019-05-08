@@ -23,6 +23,8 @@ __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
+    "_chunk",
+    "_signature",
     "cog_sort",
     "command_sort",
     "_cog_commands_embedinator",
@@ -50,6 +52,33 @@ from utils import (
 )
 
 
+COMMANDS_PER_PAGE = 6
+
+
+def _chunk(iterable: typing.Iterable, chunk_size: int):
+    for (i) in range(0, len(iterable), chunk_size):
+        yield iterable[i:i + chunk_size]
+
+def _signature(ctx: commands.Context, command: commands.Command):
+    if (command.aliases):
+        aliases = [command.name]
+        aliases.extend(command.aliases)
+        aliases = "|".join(aliases)
+
+        if (not command.full_parent_name):
+            return "{0}[{1}] {2}".format(
+                ctx.prefix, aliases, command.signature)
+        else:
+            return "{0}{1} [{2}] {3}".format(
+                ctx.prefix, command.full_parent_name, aliases, command.signature)
+    else:
+        if (not command.full_parent_name):
+            return "{0}{1} {2}".format(
+                ctx.prefix, command.name, command.signature)
+        else:
+            return "{0}{1} {2} {3}".format(
+                ctx.prefix, command.full_parent_name, command.name, command.signature)
+
 def _cog_sort(cog: tuple) -> str:
     return cog[0]
 
@@ -73,26 +102,8 @@ def _command_commands_embedinator(ctx, command: commands.Command, commands_: lis
 def _command_embedinator(ctx, command: commands.command) -> list:
     color = ctx.me.color if ctx.guild else discord.Color.blurple()
     e = discord.Embed(color=color)
-
-    if (command.aliases):
-        aliases = [command.name]
-        aliases.extend(command.aliases)
-        aliases = "|".join(aliases)
-
-        if (not command.full_parent_name):
-            e.set_author(name="{0}[{1}] {2}".format(
-                ctx.prefix, aliases, command.signature))
-        else:
-            e.set_author(name="{0}{1} [{2}] {3}".format(
-                ctx.prefix, command.full_parent_name, aliases, command.signature))
-    else:
-        if (not command.full_parent_name):
-            e.set_author(name="{0}{1} {2}".format(
-                ctx.prefix, command.name, command.signature))
-        else:
-            e.set_author(name="{0}{1} {2} {3}".format(
-                ctx.prefix, command.full_parent_name, command.name, command.signature))
-
+    e.set_author(name=_signature(ctx, command))
+    
     if (command.help):
         e.description = command.help
 
