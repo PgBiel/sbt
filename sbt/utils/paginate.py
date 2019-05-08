@@ -219,8 +219,14 @@ class Menu():
             callback = dict_[str(reaction.emoji)]
             page = await callback()
 
-            with context.Suppress(discord.Forbidden):
-                await self.ctx.message.remove_reaction(str(reaction.emoji), self.ctx.author)
+            #with context.Suppress(discord.Forbidden):
+            #    await self.ctx.message.remove_reaction(str(reaction.emoji), self.ctx.author)
+            #
+            # i'm removing this with indirect advice from Danny,
+            # removing the reaction here and then waiting for removed
+            # reactions later on causes unnecessary race conditions
+            #
+            # i will consider this my warning not to bring this back
 
             if (page):
                 await self.edit(page)
