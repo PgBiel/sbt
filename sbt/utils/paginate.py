@@ -72,6 +72,8 @@ class Menu():
         "stop",
         "send",
         "edit",
+        "register_checks",
+        "_check_checks",
         "register_buttons",
         "_check_buttons",
         "_add_buttons",
@@ -361,10 +363,18 @@ class LongMenu(Menu):
     """
 
     async def _back_all(self) -> int:
-        ...
+        return 0
 
     async def _back_5(self) -> int:
-        ...
+        index = self._index
+
+        for (_) in range(5):
+            index -= 1
+
+            if (index not in range(0, len(self._pages))):
+                index = len(self._pages) - 1
+
+        return index
 
     async def _back(self) -> int:
         await super()._back()
@@ -376,10 +386,18 @@ class LongMenu(Menu):
         await super()._forward()
         
     async def _forward_5(self) -> int:
-        ...
+        index = self._index
+
+        for (_) in range(5):
+            index += 1
+
+            if (index not in range(0, len(self._pages))):
+                index = 0
+
+        return index
         
     async def _forward_all(self) -> int:
-        ...
+        return len(self._pages) - 1
         
     async def _close(self) -> int:
          await super()._close()
