@@ -104,17 +104,17 @@ class Help(commands.Cog, name="help"):
             cog = ctx.bot.get_cog(thing)
             if (cog):
                 embeds = await self.cog_help(ctx, cog)
-                await self.paginate(embeds)
+                await self.paginate(ctx, embeds)
                 return
 
             command = ctx.bot.get_command(thing)
             if (command):
                 embeds = await self.command_help(ctx, command)
-                await self.paginate(embeds)
+                await self.paginate(ctx, embeds)
                 return
 
         embeds = await self.help(ctx)
-        await self.paginate(embeds)
+        await self.paginate(ctx, embeds)
 
     @_help.command(name="cog", aliases=["extension", "module"])
     async def _help_cog(self, ctx: commands.Context, *, cog: str):
@@ -135,10 +135,11 @@ class Help(commands.Cog, name="help"):
         cog = ctx.bot.get_cog(cog)
         if (cog):
             embeds = await self.cog_help(ctx, cog)
-            await self.paginate(embeds)
+            await self.paginate(ctx, embeds)
             return
 
-        await self.paginate(ctx, await self.all_help(ctx))
+        embeds = await self.help(ctx)
+        await self.paginate(ctx, embeds)
 
     @_help.command(name="command")
     async def _help_command(self, ctx: commands.Context, *, command: str):
@@ -159,10 +160,11 @@ class Help(commands.Cog, name="help"):
         command = ctx.bot.get_command(command)
         if (command):
             embeds = await self.command_help(ctx, command)
-            await self.paginate(embeds)
+            await self.paginate(ctx, embeds)
             return
 
-        await self.paginate(ctx, await self.all_help(ctx))
+        embeds = await self.help(ctx)
+        await self.paginate(ctx, embeds)
 
     @_help.command(name="old")
     async def _help_old(self, ctx: commands.Context, *, thing: str):
@@ -178,7 +180,7 @@ class Help(commands.Cog, name="help"):
         await self.send_old_help(ctx, thing)
         ctx.command.reset_cooldown(ctx)
 
-    async def paginate(embeds: list):
+    async def paginate(self, ctx: commands.Context, embeds: list):
         if (len(embeds) > 5):
             menu = paginate.LongMenu
         else:
@@ -188,7 +190,7 @@ class Help(commands.Cog, name="help"):
         menu.appends(embeds)
         await menu.start()
 
-    def _format_signature(ctx: commands.Context, command: commands.Command, *, ignore_aliases: bool = False):
+    def _format_signature(self, ctx: commands.Context, command: commands.Command, *, ignore_aliases: bool = False):
         if (command.aliases and (not ignore_aliases)):
             aliases = [command.name]
             aliases.extend(command.aliases)
@@ -210,10 +212,10 @@ class Help(commands.Cog, name="help"):
 
         return signature.strip()
 
-    def _cog_commands_embedinator(ctx, cog: commands.Cog, commands_: list) -> list:
+    def _cog_commands_embedinator(self, ctx, cog: commands.Cog, commands_: list) -> list:
         embeds = list()
 
-        for (i, chunk) in enumerate(_chunk(commands_, COMMANDS_PER_PAGE), 1):
+        for (i, chunk) in enumerate(paginate._chunk(commands_, COMMANDS_PER_PAGE), 1):
             color = ctx.me.color if ctx.guild else discord.Color.blurple()
             e = discord.Embed(color=color)
             e.set_author(name="{0} ({1}-{2} / {3})".format(
@@ -226,7 +228,7 @@ class Help(commands.Cog, name="help"):
                 e.description = cog.__doc__
 
             for (command_) in chunk:
-                e.add_field(name=_format_signature(ctx, command_, ignore_aliases=True),
+                e.add_field(name=self._format_signature(ctx, command_, ignore_aliases=True),
                             value=command_.short_doc or "no description",
                             inline=False)
 
@@ -242,14 +244,14 @@ class Help(commands.Cog, name="help"):
 
         return embeds
 
-    def _command_commands_embedinator(ctx, command: commands.Command, commands_: list) -> list:
+    def _command_commands_embedinator(self, ctx, command: commands.Command, commands_: list) -> list:
         embeds = list()
 
         for (i, chunk) in enumerate(paginate._chunk(commands_, COMMANDS_PER_PAGE), 1):
             color = ctx.me.color if ctx.guild else discord.Color.blurple()
             e = discord.Embed(color=color)
             e.set_author(name="{0} ({1}-{2} / {3})".format(
-                _format_signature(ctx, command),
+                self._format_signature(ctx, command),
                 (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
                 min([i * COMMANDS_PER_PAGE, len(commands_)]),
                 len(commands_)))
@@ -258,7 +260,7 @@ class Help(commands.Cog, name="help"):
                 e.description = command.help
 
             for (command_) in chunk:
-                e.add_field(name=_format_signature(ctx, command_, ignore_aliases=True),
+                e.add_field(name=self._format_signature(ctx, command_, ignore_aliases=True),
                             value=command_.short_doc or "no description",
                             inline=False)
 
@@ -274,10 +276,10 @@ class Help(commands.Cog, name="help"):
         
         return embeds
 
-    def _command_embedinator(ctx, command: commands.command) -> list:
+    def _command_embedinator(self, ctx, command: commands.command) -> list:
         color = ctx.me.color if ctx.guild else discord.Color.blurple()
         e = discord.Embed(color=color)
-        e.set_author(name=_format_signature(ctx, command))
+        e.set_author(name=self._format_signature(ctx, command))
     
         if (command.help):
             e.description = command.help
@@ -292,18 +294,18 @@ class Help(commands.Cog, name="help"):
 
         return [e]
 
-    def _cog_sort(cog: tuple) -> str:
+    def _cog_sort(self, cog: tuple) -> str:
         return cog[0]
 
-    def _command_sort(command: commands.Command) -> tuple:
+    def _command_sort(self, command: commands.Command) -> tuple:
         return (isinstance(command, commands.Group), command.name)
 
-    async def help(ctx: commands.Context) -> list:
+    async def help(self, ctx: commands.Context) -> list:
         embeds = list()
 
         # for some reason this kept breaking when i had the sort after this
         # block so i moved it here :)
-        cogs = dict(sorted(ctx.bot.cogs.items(), key=_cog_sort))
+        cogs = dict(sorted(ctx.bot.cogs.items(), key=self._cog_sort))
         for (cog_name, cog) in cogs.items():
             commands_ = list()
             for (command) in cog.get_commands():
@@ -314,7 +316,7 @@ class Help(commands.Cog, name="help"):
 
                 commands_.append(command)
 
-            commands_.sort(key=_command_sort)
+            commands_.sort(key=self._command_sort)
             cogs[cog_name] = (cog, commands_)
 
         # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
@@ -322,11 +324,11 @@ class Help(commands.Cog, name="help"):
         # command type and then 0-9a-z by name
     
         for (_, (cog, commands_)) in cogs.items():
-            embeds.extend(_cog_commands_embedinator(ctx, cog, commands_))
+            embeds.extend(self._cog_commands_embedinator(ctx, cog, commands_))
 
         return embeds
 
-    async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
+    async def cog_help(self, ctx: commands.Context, cog: commands.Cog) -> list:
         commands_ = list()
         for (command) in cog.get_commands():
             if (not await command.can_run(ctx)):
@@ -337,14 +339,14 @@ class Help(commands.Cog, name="help"):
             commands_.append(command)
 
         if (commands_):
-            commands_.sort(key=_command_sort)
+            commands_.sort(key=self._command_sort)
 
         # at this point we have List<commands.Command, ...> which has
         # commands sorted by command type and then 0-9a-z
 
-        return _cog_commands_embedinator(ctx, cog, commands_)
+        return self._cog_commands_embedinator(ctx, cog, commands_)
 
-    async def command_help(ctx: commands.Context, command: commands.Command) -> list:
+    async def command_help(self, ctx: commands.Context, command: commands.Command) -> list:
         if (isinstance(command, commands.Group)):
             commands_ = list()
             for (command_) in command.commands:
@@ -356,17 +358,17 @@ class Help(commands.Cog, name="help"):
                 commands_.append(command_)
 
             if (commands_):
-                commands_.sort(key=_command_sort)
+                commands_.sort(key=self._command_sort)
 
             # at this point we have List<commands.Command, ...> which has
             # commands sorted by command type and then 0-9a-z
 
-            return _command_commands_embedinator(ctx, command, commands_)
+            return self._command_commands_embedinator(ctx, command, commands_)
         else:
             if (not await command.can_run(ctx)):
                 return list()
 
-            return _command_embedinator(ctx, command)
+            return self._command_embedinator(ctx, command)
 
     async def _paginate(self, ctx: commands.Context, input_: list):
         if (len(input_) == 0):
