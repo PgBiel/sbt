@@ -46,6 +46,7 @@ from discord.ext import commands
 
 from utils import (
     context,
+    format,
 )
 
 
@@ -70,7 +71,38 @@ def _command_commands_embedinator(ctx, command: commands.Command, commands_: lis
     return embeds
 
 def _command_embedinator(ctx, command: commands.command) -> list:
-    ...
+    color = ctx.me.color if ctx.guild else discord.Color.blurple()
+    e = discord.Embed(color=color)
+
+    if (command.aliases):
+        aliases = [command.name]
+        aliases.extend(command.aliases)
+        aliases = "|".join(aliases)
+
+        if (not command.full_parent_name):
+            e.set_author(name="{0}[{1}] {2}".format(
+                ctx.prefix, aliases, command.signature))
+        else:
+            e.set_author(name="{0}{1} [{2}] {3}".format(
+                ctx.prefix, command.full_parent_name, aliases, command.signature))
+    else:
+        if (not command.full_parent_name):
+            e.set_author(name="{0}{1} {2}".format(
+                ctx.prefix, command.name, command.signature))
+        else:
+            e.set_author(name="{0}{1} {2} {3}".format(
+                ctx.prefix, command.full_parent_name, command.name, command.signature))
+
+    if (command.help):
+        e.description = command.help
+
+    e.set_footer(
+        text = "{0} | {1}".format(
+            ctx.author,
+            format.humanize_datetime(),
+        ),
+        icon_url = ctx.author.avatar_url,
+    )
 
     return [e]
 
