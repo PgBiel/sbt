@@ -39,15 +39,11 @@ from discord.ext import commands
 
 from utils import (
     format,
+    paginate,
 )
 
 
-COMMANDS_PER_PAGE = 8
-
-
-def _chunks(list_: list, number: int):
-    for (i) in range(0, len(list_), number):
-        yield list_[i:i + number]
+COMMANDS_PER_PAGE = 6
 
 
 class Help(commands.Cog, name="help"):
@@ -58,7 +54,7 @@ class Help(commands.Cog, name="help"):
         "_help_cog",
         "_help_command",
         "_help_old",
-        "all_help",
+        "help",
         "cog_help",
         "command_help",
         "paginate",
@@ -97,27 +93,28 @@ class Help(commands.Cog, name="help"):
             `>help general`
         """
 
-        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+        if (ctx.guild and (not ctx.me.guild_permissions.embed_links)
+                      and (not ctx.me.guild_permissions.administrator)):
             # we don't have permission to send embeds,
             # send old help instead of raising exceptions
             await self.send_old_help(ctx, thing)
             return
 
-        if (not thing):
-            await self.paginate(ctx, await self.all_help(ctx))
-            return
+        if (thing):
+            cog = ctx.bot.get_cog(thing)
+            if (cog):
+                embeds = await self.cog_help(ctx, cog)
+                await self.paginate(embeds)
+                return
 
-        cog = ctx.bot.get_cog(thing)
-        if (cog):
-            await self.paginate(ctx, await self.cog_help(ctx, cog))
-            return
+            command = ctx.bot.get_command(thing)
+            if (command):
+                embeds = await self.command_help(ctx, command)
+                await self.paginate(embeds)
+                return
 
-        command = ctx.bot.get_command(thing)
-        if (command):
-            await self.paginate(ctx, await self.command_help(ctx, command))
-            return
-
-        await self.paginate(ctx, await self.all_help(ctx))
+        embeds = await self.help(ctx)
+        await self.paginate(embeds)
 
     @_help.command(name="cog", aliases=["extension", "module"])
     async def _help_cog(self, ctx: commands.Context, *, cog: str):
@@ -128,7 +125,8 @@ class Help(commands.Cog, name="help"):
             `>help cog general`
         """
 
-        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)
+                      and (not ctx.me.guild_permissions.administrator)):
             # we don't have permission to send embeds,
             # send old help instead of raising exceptions
             await self.send_old_help(ctx, cog)
@@ -136,7 +134,8 @@ class Help(commands.Cog, name="help"):
 
         cog = ctx.bot.get_cog(cog)
         if (cog):
-            await self.paginate(ctx, await self.cog_help(ctx, cog))
+            embeds = await self.cog_help(ctx, cog)
+            await self.paginate(embeds)
             return
 
         await self.paginate(ctx, await self.all_help(ctx))
@@ -150,7 +149,8 @@ class Help(commands.Cog, name="help"):
             `>help command roll`
         """
 
-        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)):
+        if (ctx.guild and (not ctx.guild.me.guild_permissions.embed_links)
+                      and (not ctx.me.guild_permissions.administrator)):
             # we don't have permission to send embeds,
             # send old help instead of raising exceptions
             await self.send_old_help(ctx, command)
@@ -158,7 +158,8 @@ class Help(commands.Cog, name="help"):
 
         command = ctx.bot.get_command(command)
         if (command):
-            await self.paginate(ctx, await self.command_help(ctx, command))
+            embeds = await self.command_help(ctx, command)
+            await self.paginate(embeds)
             return
 
         await self.paginate(ctx, await self.all_help(ctx))
@@ -177,200 +178,197 @@ class Help(commands.Cog, name="help"):
         await self.send_old_help(ctx, thing)
         ctx.command.reset_cooldown(ctx)
 
-    async def all_help(self, ctx: commands.Context) -> list:
+    async def paginate(embeds: list):
+        if (len(embeds) > 5):
+            menu = paginate.LongMenu
+        else:
+            menu = paginate.Menu
+
+        menu = menu(ctx)
+        menu.appends(embeds)
+        await menu.start()
+
+    def _format_signature(ctx: commands.Context, command: commands.Command, *, ignore_aliases: bool = False):
+        if (command.aliases and (not ignore_aliases)):
+            aliases = [command.name]
+            aliases.extend(command.aliases)
+            aliases = "|".join(aliases)
+
+            if (not command.full_parent_name):
+                signature = "{0}[{1}] {2}".format(
+                    ctx.prefix, aliases, command.signature)
+            else:
+                signature = "{0}{1} [{2}] {3}".format(
+                    ctx.prefix, command.full_parent_name, aliases, command.signature)
+        else:
+            if (not command.full_parent_name):
+                signature = "{0}{1} {2}".format(
+                    ctx.prefix, command.name, command.signature)
+            else:
+                signature = "{0}{1} {2} {3}".format(
+                    ctx.prefix, command.full_parent_name, command.name, command.signature)
+
+        return signature.strip()
+
+    def _cog_commands_embedinator(ctx, cog: commands.Cog, commands_: list) -> list:
         embeds = list()
 
-        for (cog) in ctx.bot.cogs:
-            cog = ctx.bot.get_cog(cog)
-
-            commands = list()
-            for (command) in cog.get_commands():
-                if (not await command.can_run(ctx)):
-                    continue
-
-                if (not ctx.author.id == ctx.bot._settings.owner):
-                    if (command.hidden):
-                        continue
-
-                commands.append(command)
-
-            for (j, chunk) in enumerate(_chunks(commands, COMMANDS_PER_PAGE), 1):
-                color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-                e = discord.Embed(color = color)
-
-                e.set_author(
-                    name="{0} ({1}-{2} / {3})".format(
-                        cog.qualified_name,
-                        (j * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
-                        min([j * COMMANDS_PER_PAGE, len(commands)]),
-                        len(commands)
-                    )
-                )
-
-                if (cog.__doc__):
-                    e.description = cog.__doc__
-
-                for (command) in chunk:
-                    signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-
-                    help = command.short_doc
-                    if (not help):
-                        help = "no description"
-
-                    e.add_field(name=signature, value=help, inline=False)
-
-                e.set_footer(
-                    text = "{0} | {1}".format(
-                        ctx.author.name,
-                        format.humanize_datetime()
-                    ),
-                    icon_url = ctx.author.avatar_url
-                )
-            
-                embeds.append(e)
-
-        return embeds
-
-    async def cog_help(self, ctx: commands.Context, cog: commands.Cog) -> list:
-        embeds = list()
-
-        commands = list()
-        for (command) in cog.get_commands():
-            if (not await command.can_run(ctx)):
-                continue
-
-            if (not ctx.author.id == ctx.bot._settings.owner):
-                if (command.hidden):
-                    continue
-
-            commands.append(command)
-
-        for (i, chunk) in enumerate(_chunks(commands, COMMANDS_PER_PAGE), 1):
-            color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-            e = discord.Embed(color = color)
-
-            e.set_author(
-                name="{0} ({1}-{2} / {3})".format(
-                    cog.qualified_name,
-                    (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
-                    min([i * COMMANDS_PER_PAGE, len(commands)]),
-                    len(commands)
-                )
-            )
+        for (i, chunk) in enumerate(_chunk(commands_, COMMANDS_PER_PAGE), 1):
+            color = ctx.me.color if ctx.guild else discord.Color.blurple()
+            e = discord.Embed(color=color)
+            e.set_author(name="{0} ({1}-{2} / {3})".format(
+                "{0} commands".format(cog.qualified_name),
+                (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
+                min([i * COMMANDS_PER_PAGE, len(commands_)]),
+                len(commands_)))
 
             if (cog.__doc__):
                 e.description = cog.__doc__
 
-            for (command) in chunk:
-                signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-
-                help = command.short_doc
-                if (not help):
-                    help = "no description"
-
-                e.add_field(name=signature, value=help, inline=False)
+            for (command_) in chunk:
+                e.add_field(name=_format_signature(ctx, command_, ignore_aliases=True),
+                            value=command_.short_doc or "no description",
+                            inline=False)
 
             e.set_footer(
                 text = "{0} | {1}".format(
-                    ctx.author.name,
-                    format.humanize_datetime()
+                    ctx.author,
+                    format.humanize_datetime(),
                 ),
-                icon_url = ctx.author.avatar_url
+                icon_url = ctx.author.avatar_url,
             )
-            
+
             embeds.append(e)
 
         return embeds
 
-    async def command_help(self, ctx: commands.Context, command: commands.Command) -> list:
+    def _command_commands_embedinator(ctx, command: commands.Command, commands_: list) -> list:
         embeds = list()
 
-        if (hasattr(command, "commands")):
-            commands = list()
-            for (command_) in command.commands:
-                if (not await command_.can_run(ctx)):
-                    continue
-
-                if (not ctx.author.id == ctx.bot._settings.owner):
-                    if (command_.hidden):
-                        continue
-
-                commands.append(command_)
-
-            for (i, chunk) in enumerate(_chunks(commands, COMMANDS_PER_PAGE), 1):
-                color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-                e = discord.Embed(color = color)
-
-                if (command.aliases):
-                    if (len(command.qualified_name.split(" ")) != 1):
-                        command_ = "{0} ".format(" ".join(command.qualified_name.split(" ")[:-1]))
-                    else:
-                        command_ = ""
-
-                    aliases = "|".join(command.aliases)
-                    signature = "{0}{1}[{2}|{3}] {4}".format(ctx.prefix, command_, command.name, aliases, command.signature)
-                else:
-                    signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-
-                e.set_author(
-                    name="{0} ({1}-{2} / {3})".format(
-                        signature,
-                        (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
-                        min([i * COMMANDS_PER_PAGE, len(commands)]),
-                        len(commands)
-                    )
-                )
-
-                if (command.short_doc):
-                    e.description = command.short_doc
-
-                for (command) in chunk:
-                    signature = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature)
-
-                    help = command.short_doc
-                    if (not help):
-                        help = "no description"
-
-                    e.add_field(name=signature, value=help, inline=False)
-
-                e.set_footer(
-                    text = "{0} | {1}".format(
-                        ctx.author.name,
-                        format.humanize_datetime()
-                    ),
-                    icon_url = ctx.author.avatar_url
-                )
-            
-                embeds.append(e)
-        else:
-            if (not await command.can_run(ctx)):
-                return list()
-        
-            if (not ctx.author.id == ctx.bot._settings.owner):
-                if (command.hidden):
-                    return list()
-
-            color = ctx.guild.me.color if ctx.guild else discord.Color.blurple()
-            e = discord.Embed(color = color)
-
-            e.set_author(name = "{0}{1} {2}".format(ctx.prefix, command.qualified_name, command.signature))
+        for (i, chunk) in enumerate(paginate._chunk(commands_, COMMANDS_PER_PAGE), 1):
+            color = ctx.me.color if ctx.guild else discord.Color.blurple()
+            e = discord.Embed(color=color)
+            e.set_author(name="{0} ({1}-{2} / {3})".format(
+                _format_signature(ctx, command),
+                (i * COMMANDS_PER_PAGE) - (COMMANDS_PER_PAGE - 1),
+                min([i * COMMANDS_PER_PAGE, len(commands_)]),
+                len(commands_)))
 
             if (command.help):
                 e.description = command.help
 
+            for (command_) in chunk:
+                e.add_field(name=_format_signature(ctx, command_, ignore_aliases=True),
+                            value=command_.short_doc or "no description",
+                            inline=False)
+
             e.set_footer(
                 text = "{0} | {1}".format(
-                    ctx.author.name,
-                    format.humanize_datetime()
+                    ctx.author,
+                    format.humanize_datetime(),
                 ),
-                icon_url = ctx.author.avatar_url
+                icon_url = ctx.author.avatar_url,
             )
 
             embeds.append(e)
+        
+        return embeds
+
+    def _command_embedinator(ctx, command: commands.command) -> list:
+        color = ctx.me.color if ctx.guild else discord.Color.blurple()
+        e = discord.Embed(color=color)
+        e.set_author(name=_format_signature(ctx, command))
+    
+        if (command.help):
+            e.description = command.help
+
+        e.set_footer(
+            text = "{0} | {1}".format(
+                ctx.author,
+                format.humanize_datetime(),
+            ),
+            icon_url = ctx.author.avatar_url,
+        )
+
+        return [e]
+
+    def _cog_sort(cog: tuple) -> str:
+        return cog[0]
+
+    def _command_sort(command: commands.Command) -> tuple:
+        return (isinstance(command, commands.Group), command.name)
+
+    async def help(ctx: commands.Context) -> list:
+        embeds = list()
+
+        # for some reason this kept breaking when i had the sort after this
+        # block so i moved it here :)
+        cogs = dict(sorted(ctx.bot.cogs.items(), key=_cog_sort))
+        for (cog_name, cog) in cogs.items():
+            commands_ = list()
+            for (command) in cog.get_commands():
+                if (not await command.can_run(ctx)):
+                    continue
+                elif (command.hidden):
+                    continue
+
+                commands_.append(command)
+
+            commands_.sort(key=_command_sort)
+            cogs[cog_name] = (cog, commands_)
+
+        # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
+        # which has 'cogs' sorted 0-9a-z by name and commands sorted by
+        # command type and then 0-9a-z by name
+    
+        for (_, (cog, commands_)) in cogs.items():
+            embeds.extend(_cog_commands_embedinator(ctx, cog, commands_))
 
         return embeds
 
-    async def paginate(self, ctx: commands.Context, input_: list):
+    async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
+        commands_ = list()
+        for (command) in cog.get_commands():
+            if (not await command.can_run(ctx)):
+                continue
+            elif (command.hidden):
+                continue
+
+            commands_.append(command)
+
+        if (commands_):
+            commands_.sort(key=_command_sort)
+
+        # at this point we have List<commands.Command, ...> which has
+        # commands sorted by command type and then 0-9a-z
+
+        return _cog_commands_embedinator(ctx, cog, commands_)
+
+    async def command_help(ctx: commands.Context, command: commands.Command) -> list:
+        if (isinstance(command, commands.Group)):
+            commands_ = list()
+            for (command_) in command.commands:
+                if (not await command_.can_run(ctx)):
+                    continue
+                elif (command_.hidden):
+                    continue
+
+                commands_.append(command_)
+
+            if (commands_):
+                commands_.sort(key=_command_sort)
+
+            # at this point we have List<commands.Command, ...> which has
+            # commands sorted by command type and then 0-9a-z
+
+            return _command_commands_embedinator(ctx, command, commands_)
+        else:
+            if (not await command.can_run(ctx)):
+                return list()
+
+            return _command_embedinator(ctx, command)
+
+    async def _paginate(self, ctx: commands.Context, input_: list):
         if (len(input_) == 0):
             await self.paginate(ctx, await self.all_help(ctx))
             return
