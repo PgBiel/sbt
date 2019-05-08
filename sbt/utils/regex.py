@@ -71,6 +71,21 @@ class Regex:
         "ANY_HUMANIZED_TIME",
     }
 
+    FUNCTION_SIGNATURE = re.compile(r"""
+                                        (?:\()
+                                        (?P<arguments>.+)
+                                        (?:\))
+                                        (?:\ ?->\ ?(?P<returns>.+))?
+                                     """, re.VERBOSE)
+
+    FUNCTION_ARGUMENT = re.compile(r"""
+                                       (?P<dictionary>\*\*)?
+                                       (?P<tuple>\*)?
+                                       (?P<name>[0-9a-zA-Z]+)
+                                       (?::(?P<type>[0-9a-zA-Z]+))?
+                                       (?:=(?P<default>[0-9a-zA-Z]))?
+                                    """, re.VERBOSE)
+    
     WORD = re.compile(r"""
                           (?P<word>\W)
                        """, re.IGNORECASE | re.VERBOSE)
