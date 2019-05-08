@@ -26,7 +26,6 @@ __level__        = 2
 
 __all__ = {
     "COMMANDS_PER_PAGE",
-    "_chunks",
     "Help",
     "setup",
 }
