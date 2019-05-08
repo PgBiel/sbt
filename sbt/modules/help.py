@@ -187,7 +187,7 @@ class Help(commands.Cog, name="help"):
         ctx.command.reset_cooldown(ctx)
 
     async def paginate(self, ctx: commands.Context, embeds: list):
-        if (len(embeds) > 5):
+        if (len(embeds) >= 10):
             menu = paginate.LongMenu
         else:
             menu = paginate.Menu
