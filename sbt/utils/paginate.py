@@ -222,12 +222,11 @@ class Menu():
         content = page.get("content", None)
         embed = page.get("embed", None)
 
-        if (not isinstance(content, str)):
-            raise RuntimeError("content should be of type 'str'")
-        elif (not isinstance(embed, discord.Embed)):
-            raise RuntimeError("embed should be of type 'discord.Embed'")
+        if (not isinstance(embed, (discord.Embed, None))):
+            raise RuntimeError("embed should be of type 'discord.Embed' or None")
 
-        await self.ctx.send(content=content, embed=embed)
+        message = await self.ctx.send(content=content, embed=embed)
+        return message
 
     async def edit(self, page: dict):
         if (not hasattr(self, "_message")):
@@ -257,16 +256,14 @@ class Menu():
         ]
 
     async def _check_buttons(self):
-        for (button) in self.buttons:
+        for (button) in self._buttons:
             if (not callable(button.callback)):
                 raise RuntimeError("button.callback should be a callable")
-            elif (not asyncio.iscoroutine(button.callback)):
-                raise RuntimeError("button.callback should be a coroutine")
 
     async def _add_buttons(self):
         try:
             for (button) in self._buttons:
-                await self.ctx.message.add_reaction(button.emoji)
+                await self._message.add_reaction(button.emoji)
         except (discord.Forbidden):
             await self.stop()
             raise
@@ -277,7 +274,7 @@ class Menu():
         except (discord.Forbidden) as e:
             for (button) in self._buttons:
                 with context.Suppress(discord.Forbidden):
-                    await self.ctx.message.remove_reaction(button.emoji)
+                    await self._message.remove_reaction(button.emoji, ctx.bot.user)
 
     """
     all methods from this point are button methods
