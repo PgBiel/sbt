@@ -163,8 +163,8 @@ class Menu():
         self._stopped = False
         while (not self._stopped):
             tasks = {
-                asyncio.create_task(self.ctx.bot.wait_for("reaction_add", check=reaction_check)),
-                asyncio.create_task(self.ctx.bot.wait_for("reaction_remove", check=reaction_check)),
+                asyncio.create_task(self.ctx.bot.wait_for("reaction_add", check=self._reaction_check)),
+                asyncio.create_task(self.ctx.bot.wait_for("reaction_remove", check=self._reaction_check)),
             }
 
             done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED, timeout=120)
@@ -222,10 +222,8 @@ class Menu():
         content = page.get("content", None)
         embed = page.get("embed", None)
 
-        if (not isinstance(content, str)):
-            raise RuntimeError("content should be of type 'str'")
-        elif (not isinstance(embed, discord.Embed)):
-            raise RuntimeError("embed should be of type 'discord.Embed'")
+        if (not isinstance(embed, (discord.Embed, None))):
+            raise RuntimeError("embed should be of type 'discord.Embed' or None")
 
         await self._message.edit(content=content, embed=embed)
 
@@ -308,10 +306,10 @@ class Menu():
         return len(self._pages) - 1
         
     async def _choose(self) -> int:
-        message = await ctx.send("choose a page (1-{0})".format(len(self._pages)))
+        message = await self.ctx.send("choose a page (1-{0})".format(len(self._pages)))
 
         try:
-            page = await ctx.bot.wait_for("message", check=self._message_check, timeout=30)
+            page = await self.ctx.bot.wait_for("message", check=self._message_check, timeout=30)
         except (asyncio.TimeoutError) as e:
             await message.delete()
         else:
