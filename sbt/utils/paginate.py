@@ -23,9 +23,14 @@ __version_info__ = (2, 0, 0, "alpha", 0)
 __version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
 
 __all__ = {
+    "cog_sort",
+    "command_sort",
+    "_cog_commands_embedinator",
+    "_command_commands_embedinator",
+    "_command_embedinator",
     "help",
-    "command_help",
     "cog_help",
+    "command_help",
     "Button",
     "Menu",
     "LongMenu",
@@ -44,86 +49,100 @@ from utils import (
 )
 
 
-def _command_sort(command: commands.Command) -> tuple:
-    return (isinstance(comamnd, commands.Group), command.name)
-
 def _cog_sort(cog: tuple) -> str:
     return cog[0]
 
-async def help(ctx: commands.Context) -> list:
+def _command_sort(command: commands.Command) -> tuple:
+    return (isinstance(comamnd, commands.Group), command.name)
+
+def _cog_commands_embedinator(cog: commands.Cog, commands_: list) -> list:
     _embeds = list()
 
-    _cogs = dict()
+    ...
+
+    return _embeds
+
+def _command_commands_embedinator(command: commands.Command, commands_: list) -> list:
+    _embeds = list()
+
+    ...
+
+    return _embeds
+
+def _command_embedinator(command: commands.command) -> list:
+    _embeds = list()
+
+    ...
+
+    return _embeds
+
+async def help(ctx: commands.Context) -> list:
+    embeds = list()
+
+    cogs = dict()
     for (_, cog) in ctx.bot.cogs.items():
-        _commands = list()
+        commands_ = list()
         for (command) in cog.get_commands():
             if (not await command.can_run(ctx)):
                 continue
             elif (command.hidden):
                 continue
 
-            _commands.append(command)
-        if (_commands):
+            commands_.append(command)
+        if (commands_):
             # just don't add the cog if it's empty
-            _commands.sort(key=_command_sort)
-            _cogs[cog.__cog_name__] = (cog, _commands)
+            commands_.sort(key=_command_sort)
+            cogs[cog.__cog_name__] = (cog, commands_)
 
-    _cogs = dict(sorted(_cogs, key=_cog_sort))
+    cogs = dict(sorted(cogs, key=_cog_sort))
 
     # at this point we have Dict<cog_name, (cog, List<commands.Command, ...>)>
     # which has 'cogs' sorted 0-9a-z by name and commands sorted by
     # command type and then 0-9a-z by name
     
-    ...
+    for (_, (cog, commands_)) in cogs:
+        embeds.extend(_cog_commands_embedinator(cog, commands_))
 
-    return _embeds
+    return embeds
 
 async def cog_help(ctx: commands.Context, cog: commands.Cog) -> list:
-    _embeds = list()
-
-    _commands = list()
+    commands_ = list()
     for (command) in cog.get_commands():
         if (not await command.can_run(ctx)):
             continue
         elif (command.hidden):
             continue
 
-        _commands.append(command)
+        commands_.append(command)
 
-    if (_commands):
-        _commands.sort(key=_command_sort)
+    if (commands_):
+        commands_.sort(key=_command_sort)
 
     # at this point we have List<commands.Command, ...> which has
     # commands sorted by command type and then 0-9a-z
 
-    ...
-
-    return _embeds
+    return _cog_commands_embedinator(cog, commands_)
 
 async def command_help(ctx: commands.Context, command: commands.Command) -> list:
-    _embeds = list()
-
     if (isinstance(command, commands.Group)):
-        _commands = list()
+        commands_ = list()
         for (command_) in command.commands:
             if (not await command_.can_run(ctx)):
                 continue
             elif (command_.hidden):
                 continue
 
-            _commands.append(command_)
+            commands_.append(command_)
 
-        if (_commands):
-            _commands.sort(key=_command_sort)
+        if (commands_):
+            commands_.sort(key=_command_sort)
 
         # at this point we have List<commands.Command, ...> which has
         # commands sorted by command type and then 0-9a-z
 
-        ...
+        return _command_commands_embedinator(command, commands_)
     else:
-        ...
-
-    return _embeds
+        return _command_embedinator(command)
 
 
 class Button():
