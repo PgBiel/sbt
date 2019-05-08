@@ -171,7 +171,7 @@ class Menu():
 
             try:
                 reaction, _ = done.pop().result()
-            except (asyncio.TimeoutError):
+            except (Exception) as e:
                 await self.stop()
                 break
 
