@@ -521,31 +521,6 @@ class General(commands.Cog, name="general"):
         menu.appends(self._google_embedinator(ctx, url, footer, results[:9]))
         await menu.start()
 
-    def _google_embedinator(self, ctx: commands.Context, url: str, footer: str, results: list):
-        embeds = list()
-
-        color = random.choice([0xDB4437, 0x0F9D58, 0x4285F4, 0xF4B400])
-
-        for (chunk) in paginate._chunk(results, search.RESULTS_PER_PAGE):
-            e = discord.Embed(color=color)
-            e.set_author(name="Google", url=url, icon_url=search.GOOGLE_ICON)
-
-            for (result) in chunk:
-                value = "{0}\n{1}".format(result.url, result.description)
-                e.add_field(name=result.title, value=value, inline=False)
-
-            e.set_footer(
-                text = "{0} | {1}".format(
-                    ctx.author,
-                    footer,
-                ),
-                icon_url = ctx.author.avatar_url,
-            )
-
-            embeds.append(e)
-
-        return embeds
-
     @commands.command(name="hoi", hidden=True)
     async def _hoi(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
         if (not member):
@@ -1080,6 +1055,31 @@ class General(commands.Cog, name="general"):
             pass
 
         # cont
+
+    def _google_embedinator(self, ctx: commands.Context, url: str, footer: str, results: list):
+        embeds = list()
+
+        color = random.choice([0xDB4437, 0x0F9D58, 0x4285F4, 0xF4B400])
+
+        for (chunk) in paginate._chunk(results, search.RESULTS_PER_PAGE):
+            e = discord.Embed(color=color)
+            e.set_author(name="Google", url=url, icon_url=search.GOOGLE_ICON)
+
+            for (result) in chunk:
+                value = "{0}\n{1}".format(result.url, result.description)
+                e.add_field(name=result.title, value=value, inline=False)
+
+            e.set_footer(
+                text = "{0} | {1}".format(
+                    ctx.author,
+                    footer,
+                ),
+                icon_url = ctx.author.avatar_url,
+            )
+
+            embeds.append(e)
+
+        return embeds
                 
 
 def setup(bot: commands.Bot):
