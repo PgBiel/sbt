@@ -482,7 +482,7 @@ class General(commands.Cog, name="general"):
         choice = random.choice(choices)
         await ctx.send(choice)
 
-    @commands.cooldown(1, 10, commands.cooldowns.BucketType.user)
+    @commands.cooldown(1, 30, commands.cooldowns.BucketType.user)
     @commands.command(name="google", aliases=["g"])
     async def _google(self, ctx: commands.Context, *, query: str):
         """
@@ -847,7 +847,7 @@ class General(commands.Cog, name="general"):
 
         await ctx.send(channel.topic)
 
-    @commands.cooldown(1, 300, commands.cooldowns.BucketType.user)
+    @commands.cooldown(1, 30, commands.cooldowns.BucketType.user)
     @commands.command(name="urban")
     async def _urban(self, ctx: commands.Context, *, search: str):
         """
