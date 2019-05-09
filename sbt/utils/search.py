@@ -36,6 +36,10 @@ import aiohttp
 import urllib
 
 
+GOOGLE_ICON = "https://image.flaticon.com/teams/slug/google.jpg"
+RESULTS_PER_PAGE = 3
+
+
 class SearchBaseException(Exception):
     pass
 

@@ -48,6 +48,7 @@ from utils import (
     enumerators,
     checks,
     format,
+    paginate,
     parse,
     search,
 )
@@ -512,30 +513,38 @@ class General(commands.Cog, name="general"):
         except (search.APIError) as e:
             await ctx.send("api error ;(")
             return
+
+        footer = "safe={0} results={1} time={2}".format(
+            "on" if safe else "off", results[0].results, results[0].time)
         
+        menu = paginate.Menu(ctx)
+        menu.appends(self._google_embedinator(ctx, url, footer, results[:9]))
+        await menu.start()
+
+    def _google_embedinator(self, ctx: commands.Context, url: str, footer: str, results: list):
+        embeds = list()
+
         color = random.choice([0xDB4437, 0x0F9D58, 0x4285F4, 0xF4B400])
-        e = discord.Embed(color=color)
-        e.set_author(name="Google", url=url, icon_url="https://image.flaticon.com/teams/slug/google.jpg")
 
-        for (result) in results[:3]:
-            title = result.title
-            if (len(title) > 256):
-                title = "{0}...".format(title[:253])
+        for (chunk) in paginate._chunk(results, search.RESULTS_PER_PAGE):
+            e = discord.Embed(color=color)
+            e.set_author(name="Google", url=url, icon_url=search.GOOGLE_ICON)
 
-            description = result.description
-            if (len(description) > 1024):
-                description = "{0}...".format(description[:1021])
+            for (result) in chunk:
+                value = "{0}\n{1}".format(result.url, result.description)
+                e.add_field(name=result.title, value=value, inline=False)
 
-            e.add_field(name=title, value=description, inline=False)
+            e.set_footer(
+                text = "{0} | {1}".format(
+                    ctx.author,
+                    footer,
+                ),
+                icon_url = ctx.author.avatar_url,
+            )
 
-        e.set_footer(text="{0} | safe={1} results={2} time={3}".format(
-                     ctx.author,
-                     "on" if safe else "off",
-                     results[0].results,
-                     results[0].time),
-                     icon_url=ctx.author.avatar_url)
+            embeds.append(e)
 
-        await ctx.send(embed=e)
+        return embeds
 
     @commands.command(name="hoi", hidden=True)
     async def _hoi(self, ctx: commands.Context, member: typing.Optional[discord.Member]):
