@@ -197,29 +197,54 @@ def init() -> commands.Bot:
         """
         An error handler that is called when an error is raised inside a command either through user input error, check failure, or an error in your own code.
 
-        the exception tree is as follows:
+        the exception trees are as follows:
 
+        # /discord/errors.py
+        DiscordException
+         +-- ClientException
+         |    +-- ConnectionClosed
+         |    +-- InvalidArgument
+         |    +-- LoginFailure
+         +-- GatewayNotFound
+         +-- HTTPException
+         |    +-- Forbidden
+         |    +-- NotFound
+         +-- NoMoreItems
+
+        # /discord/ext/commands/errors.py
         DiscordException
          +-- CommandError
-              +-- CheckFailure
-              |    +-- BotMissingPermissions
-              |    +-- MissingPermissions
-              |    +-- NotOwner
-              |    +-- NoPrivateMessage
-              +-- CommandInvokeError
-              +-- CommandNotFound
-              +-- CommandOnCooldown
-              +-- ConversionError
-              +-- DisabledCommand
-              +-- UserInputError
-                   +-- ArgumentParsingError
-                   |    +-- ExpectedClosingQuoteError
-                   |    +-- InvalidEndOfQuotedStringError
-                   |    +-- UnexpectedQuoteError
-                   +-- BadArgument
-                   +-- BadUnionArgument
-                   +-- MissingRequiredArgument
-                   +-- TooManyArguments
+         |    +-- CheckFailure
+         |    |    +-- BotMissingAnyRole
+         |    |    +-- BotMissingPermissions
+         |    |    +-- BotMissingRole
+         |    |    +-- MissingAnyRole
+         |    |    +-- MissingPermissions
+         |    |    +-- MissingRole
+         |    |    +-- NoPrivateMessage
+         |    |    +-- NotOwner
+         |    |    +-- NSFWChannelRequired
+         |    |    +-- PrivateMessageOnly
+         |    +-- CommandInvokeError
+         |    +-- CommandNotFound
+         |    +-- CommandOnCooldown
+         |    +-- ConversionError
+         |    +-- DisabledCommand
+         |    +-- UserInputError
+         |         +-- ArgumentParsingError
+         |         |    +-- ExpectedClosingQuoteError
+         |         |    +-- InvalidEndOfQuotedStringError
+         |         |    +-- UnexpectedQuoteError
+         |         +-- BadArgument
+         |         +-- BadUnionArgument
+         |         +-- MissingRequiredArgument
+         |         +-- TooManyArguments
+         +-- ExtensionError
+              +-- ExtensionAlreadyLoaded
+              +-- ExtensionFailed
+              +-- ExtensionNotFound
+              +-- ExtensionNotLoaded
+              +-- NoEntryPointError
         """
 
         if (hasattr(exception, "original")):
