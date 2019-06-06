@@ -16,39 +16,23 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 6
-
-__all__ = {
-    "Alpha",
-    "setup",
-}
+__level__ = 6
 
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class Alpha(commands.Cog, name="alpha"):
-    __all__ = {
-        "__init__",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
-
-        super().__init__()
 
 
 def setup(bot: commands.Bot):

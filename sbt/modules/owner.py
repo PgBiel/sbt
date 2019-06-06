@@ -16,18 +16,10 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 1
-
-__all__ = {
-    "Owner",
-    "setup",
-}
+__level__ = 1
 
 
 import asyncio
@@ -45,7 +37,7 @@ import traceback
 import typing
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
     channels,
@@ -53,8 +45,8 @@ from utils import (
     context,
     dataio,
     enumerators,
-    error,
     extensions_,
+    error,
     format,
     fuzzywuzzy,
     paginate,
@@ -66,73 +58,15 @@ from utils import (
 
 
 class Owner(commands.Cog, name="owner"):
-    __all__ = {
-        "__init__",
-        "_debug",
-        "_do",
-        "_echo",
-        "_eval",
-        "_leave",
-        "_load",
-        "_owner",
-        "_reload",
-        "_repl",
-        "_restart",
-        "_rift",
-        "_send",
-        "_shutdown",
-        "_sudo",
-        "_unload",
-        "_walk",
-        "_blacklist",
-        "_blacklist_add",
-        "_blacklist_remove",
-        "_command",
-        "_command_disable",
-        "_command_disable_all",
-        "_command_enable",
-        "_command_enable_all",
-        "_command_hide",
-        "_command_unhide",
-        "_contact",
-        "_contact_close",
-        "_contact_respond",
-        "_loaded",
-        "_loaded_extensions",
-        "_loaded_imports",
-        "_settings",
-        "_settings_globalprefixes",
-        "_settings_load",
-        "_settings_muterole",
-        "_settings_prefix",
-        "_settings_presence",
-        "_settings_save",
-        "_settings_username",
-        "_whitelist",
-        "_whitelist_add",
-        "_whitelist_remove",
-        "on_message",
-        "on_message_edit",
-        "on_typing",
-        "disable_commands",
-        "disable_commands_all",
-        "enable_commands_all",
-        "hide_commands",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
 
         self._results = collections.deque(maxlen=10)
         self._repl_sessions = set()
-
-        super().__init__()
         
     @checks.is_supervisor()
     @commands.command(name="debug", aliases=["?", ">?"])

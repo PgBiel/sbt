@@ -16,31 +16,32 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 1
-
-__all__ = {
-    "VALID_PERMISSIONS",
-    "Moderation",
-    "setup",
-}
+__level__ = 1
 
 
 import asyncio
 import typing
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
+    channels,
+    context,
+    dataio,
+    enumerators,
+    error,
     checks,
     format,
+    fuzzywuzzy,
+    paginate,
     parse,
+    regex,
+    search,
+    settings,
 )
 
 
@@ -79,43 +80,12 @@ VALID_PERMISSIONS = [
 
 
 class Moderation(commands.Cog, name="moderation"):
-    __all__ = {
-        "__init__",
-        "_ban",
-        "_hackban",
-        "_kick",
-        "_mute",
-        "_names",
-        "_prune",
-        "_rename",
-        "_softban",
-        "_unban",
-        "_unmute",
-        "_role",
-        "_role_add",
-        "_role_edit",
-        "_role_edit_color",
-        "_role_edit_hoist",
-        "_role_edit_mentionable",
-        "_role_edit_name",
-        "_role_edit_permissions",
-        "_role_edit_permissions_add",
-        "_role_edit_permissions_remove",
-        "_role_members",
-        "_role_permissions",
-        "_role_remove",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
-
-        super().__init__()
         
     @checks.is_guild()
     @checks.moderator_or_permissions(ban_members=True)

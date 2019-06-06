@@ -16,18 +16,10 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 3
-
-__all__ = {
-    "Audio",
-    "setup",
-}
+__level__ = 3
 
 
 import asyncio
@@ -36,16 +28,28 @@ import typing
 import youtube_dl
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
-    checks,
+    channels,
+    context,
     dataio,
+    enumerators,
+    error,
+    checks,
+    format,
+    fuzzywuzzy,
+    paginate,
+    parse,
+    regex,
+    search,
+    settings,
 )
 
 
 # silence youtube_dl ;(
 youtube_dl.utils.bug_reports_message = lambda: ""
+
 
 YOUTUBE_DL_FORMAT_OPTIONS = {
     "format": "bestaudio/best",
@@ -91,27 +95,14 @@ class YoutubeDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS), data=data)
 
 class Audio(commands.Cog, name="audio"):
-    __all__ = {
-        "__init__",
-        "_join",
-        "_play",
-        "_stop",
-        "_stream",
-        "_volume",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
 
         self.settings = dataio.load("data/audio/settings.json")
-
-        super().__init__()
 
     def save(self):
         return dataio.save("data/audio/settings.json", self.settings)

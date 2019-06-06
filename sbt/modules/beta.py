@@ -16,63 +16,39 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 6
-
-__all__ = {
-    "Beta",
-    "setup",
-}
+__level__ = 6
 
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
-    checks,
+    channels,
+    context,
+    dataio,
+    enumerators,
     error,
+    checks,
     format,
+    fuzzywuzzy,
+    paginate,
     parse,
+    regex,
+    search,
+    settings,
 )
 
 
 class Beta(commands.Cog, name="beta"):
-    __all__ = {
-        "__init__",
-        "_parse",
-        "_parse_boolean",
-        "_parse_color",
-        "_parse_date",
-        "_parse_futuredate",
-        "_parse_pastdate",
-        "_parse_time",
-        "_parse_futuretime",
-        "_parse_pasttime",
-        "_parse_datetime",
-        "_parse_futuredatetime",
-        "_parse_pastdatetime",
-        "_parse_flags",
-        "_parse_mention",
-        "_parse_snowflake",
-        "_parse_url",
-        "_parse_version",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
-
-        super().__init__()
 
     @checks.is_beta()
     @checks.is_debugging()

@@ -53,9 +53,6 @@
     <Compile Include="modules\owner.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modules\reminder.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="utils\channels.py">
       <SubType>Code</SubType>
     </Compile>
@@ -105,7 +102,6 @@
   <ItemGroup>
     <Folder Include="data\" />
     <Folder Include="data\audio\cache\" />
-    <Folder Include="data\general\" />
     <Folder Include="data\audio\" />
     <Folder Include="data\sbt\" />
     <Folder Include="ffmpeg\" />
@@ -116,7 +112,6 @@
     <Content Include="data\audio\settings.json">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="data\general\reminder.json" />
     <Content Include="data\sbt\settings.json" />
     <Content Include="utils\bytecode_instructions.txt" />
   </ItemGroup>

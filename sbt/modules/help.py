@@ -16,29 +16,31 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 2
-
-__all__ = {
-    "COMMANDS_PER_PAGE",
-    "Help",
-    "setup",
-}
+__level__ = 2
 
 
 import asyncio
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
+    channels,
+    context,
+    dataio,
+    enumerators,
+    error,
+    checks,
     format,
+    fuzzywuzzy,
     paginate,
+    parse,
+    regex,
+    search,
+    settings,
 )
 
 
@@ -46,42 +48,17 @@ COMMANDS_PER_PAGE = 6
 
 
 class Help(commands.Cog, name="help"):
-    __all__ = {
-        "__init__",
-        "cog_unload",
-        "_help",
-        "_help_cog",
-        "_help_command",
-        "_help_old",
-        "paginate",
-        "_format_signature",
-        "_cog_commands_embedinator",
-        "_command_commands_embedinator",
-        "_command_embedinator",
-        "_cog_sorter",
-        "_command_sorter",
-        "help",
-        "cog_help",
-        "command_help",
-        "_paginate",
-        "send_old_help",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
 
         command = bot.get_command("help")
         self.old_help = commands.Command(command.callback, name="help", hidden=True)
 
         bot.remove_command("help")
-
-        super().__init__()
 
     def cog_unload(self):
         self.bot.remove_command("help")

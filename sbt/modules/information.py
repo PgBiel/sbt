@@ -16,18 +16,10 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 3
-
-__all__ = {
-    "Information",
-    "setup",
-}
+__level__ = 3
 
 
 import copy
@@ -43,61 +35,32 @@ import typing
 import unicodedata
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from utils import (
-    checks,
+    channels,
     context,
+    dataio,
+    enumerators,
+    error,
+    checks,
     format,
+    fuzzywuzzy,
+    paginate,
     parse,
     regex,
+    search,
+    settings,
 )
 
 
 class Information(commands.Cog, name="information"):
-    __all__ = {
-        "__init__",
-        "_avatar",
-        "_code",
-        "_color",
-        "_contributors",
-        "_dis",
-        "_discriminator",
-        "_flags",
-        "_invite",
-        "_latency",
-        "_messages",
-        "_now",
-        "_permissions",
-        "_since",
-        "_source",
-        "_statistics",
-        "_unicode",
-        "_until",
-        "_uptime",
-        "_version",
-        "_information",
-        "_information_bot",
-        "_information_channel",
-        "_information_emoji",
-        "_information_guild",
-        "_information_member",
-        "_information_message",
-        "_information_role",
-        "_information_system",
-        "_information_user",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
-
-        super().__init__()
 
     @checks.is_guild()
     @commands.command(name="avatar", aliases=["icon"])

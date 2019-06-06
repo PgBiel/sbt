@@ -16,18 +16,10 @@
     limitations under the License.
 """
 
-__authors__      = [("shineydev", "contact@shiney.dev")]
-__maintainers__  = [("shineydev", "contact@shiney.dev")]
+__authors__     = [("shineydev", "contact@shiney.dev")]
+__maintainers__ = [("shineydev", "contact@shiney.dev")]
 
-__version_info__ = (2, 0, 0, "alpha", 0)
-__version__      = "{0}.{1}.{2}{3}{4}".format(*[str(n)[0] if (i == 3) else str(n) for (i, n) in enumerate(__version_info__)])
-
-__level__        = 3
-
-__all__ = {
-    "General",
-    "setup",
-}
+__level__ = 3
 
 
 import aiohttp
@@ -41,60 +33,34 @@ import typing
 import urllib
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
+
 import pyfiglet
 
 from utils import (
+    channels,
+    context,
+    dataio,
     enumerators,
+    error,
     checks,
     format,
+    fuzzywuzzy,
     paginate,
     parse,
+    regex,
     search,
+    settings,
 )
 
 
 class General(commands.Cog, name="general"):
-    __all__ = {
-        "__init__",
-        "_2D",
-        "_3D",
-        "_choose",
-        "_eightball",
-        "_embed",
-        "_figlet",
-        "_flip",
-        "_google",
-        "_hoi",
-        "_intellect",
-        "_morse",
-        "_pigeonify",
-        "_reminder",
-        "_reverse",
-        "_roll",
-        "_rps",
-        "_scramble",
-        "_semiscramble",
-        "_spellout",
-        "_steam",
-        "_stopwatch",
-        "_topic",
-        "_urban",
-        "_regex",
-        "_regex_findall",
-        "_regex_fullmatch",
-    }
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
         self.__authors__ = __authors__
         self.__maintainers__ = __maintainers__
-        self.__version_info__ = __version_info__
-        self.__version__ = __version__
         self.__level__ = __level__
-
-        super().__init__()
         
     @commands.command(name="2D", aliases=["ascii"])
     async def _2D(self, ctx: commands.Context, *, text: str):
@@ -583,55 +549,6 @@ class General(commands.Cog, name="general"):
             message += " "
 
         await ctx.send(message)
-
-    @checks.is_alpha()
-    @commands.command(name="reminder", aliases=["remind", "remindme"])
-    async def _reminder(self, ctx: commands.Context, time: parse.FutureDateTime, *, reminder: str):
-        """
-        create a reminder
-
-        time values with spaces should be wrapped in quotes
-
-        valid time values:
-            `10`                          :: defaults to minutes
-            `"12h 5m"`
-            `"in 12 hours and 5 minutes"`
-            `tomorrow`
-            `"tomorrow at 10am"`
-            `"today at 10:30:20"`
-            `"at 10:30"`
-            `10pm`
-            `10:30`
-            `02-22-20`
-            `"02/22/2020 10:30"`
-
-        examples:
-            `>remindme "in 1h" get more food ;(`
-            `>remindme "at 6pm" eat :)`
-            `>reminder "tomorrow at 10am" work`
-        """
-
-        reminder_ = ctx.bot.get_cog("reminder")
-        if (not reminder_):
-            await ctx.send(r"¯\_(ツ)_/¯")
-            return
-
-        reminder_.add_reminder(ctx, time, reminder)
-
-        color = ctx.guild.me.color if ctx.guild else None
-        e = format.embed("Reminder Added",
-                         "{0}\n\nfor {1}".format(
-                             reminder,
-                             format.humanize_datetime(time)
-                         ),
-                         color=color,
-                         footer="{0} | {1}".format(
-                             ctx.author,
-                             format.humanize_datetime(time)
-                         ),
-                         footer_icon_url=ctx.author.avatar_url)
-
-        await ctx.send(embed=e)
 
     @commands.command(name="reverse")
     async def _reverse(self, ctx: commands.Context, *words: str):
