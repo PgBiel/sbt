@@ -361,7 +361,7 @@ def init() -> commands.Bot:
             bot._settings.save()
             ctx.command.enabled = False
 
-        await ctx.send("something went wrong! i disabled the command to reduce future errors but you should report this to the deveolper.")
+        await ctx.send("something went wrong! i disabled the command to reduce future errors but you should report this to the developer.")
         traceback.print_exception(type(exception), exception, None)
 
     return bot
